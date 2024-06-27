@@ -15,6 +15,13 @@ export interface IUser extends Document {
     generateAccessToken: () => string;
 }
 
+export interface JwtPayload {
+    _id: string;
+    firstName: string;
+    email: string;
+    rollNumber: string;
+}
+
 interface IUserModel extends Model<IUser> { }
 
 const userSchema = new Schema({
@@ -57,16 +64,14 @@ userSchema.methods.validPassword = function (password: string) {
 };
 
 userSchema.methods.generateAccessToken = function () {
-    return jwt.sign({
+    const jwtSecret = process.env.ACCESS_TOKEN || "";
+    const payload: JwtPayload = {
         _id: this._id,
         firstName: this.firstName,
         email: this.email,
         rollNumber: this.rollNumber,
-    },
-        process.env.ACCESS_TOKEN_SECRET || "",
-        {
-            expiresIn: process.env.ACCESS_TOKEN_EXPIRY
-        });
+    };
+    return jwt.sign(payload, jwtSecret, { expiresIn: process.env.ACCESS_TOKEN_EXPIRY });
 };
 
 
