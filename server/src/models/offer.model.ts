@@ -1,0 +1,38 @@
+import { Document, Model, Schema, model } from 'mongoose';
+
+export interface IOffer extends Document {
+    offerId: string;
+    studentEmail: string;
+    offer: RTCSessionDescriptionInit;
+    timestamp: Date;
+    answer?: RTCSessionDescriptionInit;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+interface IOfferModel extends Model<IOffer> { }
+
+const offerSchema = new Schema({
+    offerId: {
+        type: String,
+        required: true,
+        unique: true,
+    },
+    studentEmail: {
+        type: String,
+        required: true,
+    },
+    offer: {
+        type: Object,
+        required: true,
+    },
+    timestamp: {
+        type: Date,
+        default: Date.now,
+    },
+    answer: {
+        type: Object,
+    },
+}, { timestamps: true });
+
+export const Offer: IOfferModel = model<IOffer, IOfferModel>('Offer', offerSchema);
