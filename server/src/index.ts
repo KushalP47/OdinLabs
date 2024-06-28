@@ -1,12 +1,18 @@
-import express from 'express';
+import dotenv from "dotenv";
+dotenv.config({     // configure dotenv
+    path: "./.env"  // set path of env
+});
+import connectDB from "./config/db";
+import { app } from "./config/app";
+import { io } from "./config/socket";
 
-const app = express();
-const port = 3000;
-
-app.get('/', (req, res) => {
-    res.send('Hello, TypeScript with Express!');
+// starting the server
+app.listen(process.env.PORT || 8000, () => {
+    console.log("Server is running on Port", process.env.PORT);
 });
 
-app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
-});
+// starting the socket
+io.listen(8001);
+
+// connecting to the database
+connectDB();
