@@ -70,7 +70,7 @@ userSchema.methods.validPassword = function (password: string) {
 };
 
 userSchema.methods.generateAccessToken = function () {
-    const jwtSecret = process.env.ACCESS_TOKEN || "";
+    const jwtSecret = process.env.ACCESS_TOKEN_SECRET || "";
     const payload: JwtPayload = {
         _id: this._id,
         name: this.name,

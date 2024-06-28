@@ -63,11 +63,13 @@ class AuthController {
     async logout(req: Request, res: Response) {
         // Your logout logic here
         // check if user is logged in(by checking access tokens)
-        const user = req.body.user as IUser;
-        if (!user) {
-            throw new ApiError(400, "User not authenticated");
+        const { email } = req.body;
+        console.log(email);
+        const emailExists = await User.findOne({ email });
+        if (!emailExists) {
+            throw new ApiError(400, "Email Not Found");
         }
-
+        console.log(emailExists);
         // remove access tokens
         return res
             .status(200)
