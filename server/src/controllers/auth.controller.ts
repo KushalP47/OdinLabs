@@ -35,13 +35,17 @@ class AuthController {
         // check if user exixts
         const data: IUserFunctionResponse = await userExists(email, password);
         if (!data.ok) {
-            throw new ApiError(400, data.message);
+            return res
+                .status(401)
+                .json(new ApiError(401, data.message));
         }
 
         // generate access tokens
         const accessToken = data.user?.generateAccessToken();
         if (!accessToken) {
-            throw new ApiError(400, "Error creating access token");
+            return res
+                .status(401)
+                .json(new ApiError(401, "Error creating access token"));
         }
 
         data.user?.save({ validateBeforeSave: false });
@@ -67,7 +71,9 @@ class AuthController {
         console.log(email);
         const emailExists = await User.findOne({ email });
         if (!emailExists) {
-            throw new ApiError(400, "Email Not Found");
+            return res
+                .status(401)
+                .json(new ApiError(401, "Email not found!!"));
         }
         console.log(emailExists);
         // remove access tokens

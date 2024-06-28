@@ -1,26 +1,37 @@
 class ApiError extends Error {
     statusCode: number;
-    data: any; // Consider using a more specific type if possible
+    data: any;
     success: boolean;
-    errors: Array<any>; // Consider using a more specific type if possible
+    errors: Array<any>;
+    message: string;
 
     constructor(
         statusCode: number,
-        message: string = "Somethings went wrong",
+        message: string = "",
         errors: Array<any> = [],
         stack: string = "",
     ) {
         super(message);
         this.statusCode = statusCode;
         this.data = null;
-        this.message = message; // This is already set by super(message), but you can keep it if you need to do something specific with it.
         this.success = false;
         this.errors = errors;
+        this.message = message;
         if (stack) {
             this.stack = stack;
         } else {
             Error.captureStackTrace(this, this.constructor);
         }
+    }
+
+    toJSON() {
+        return {
+            statusCode: this.statusCode,
+            data: this.data,
+            success: this.success,
+            errors: this.errors,
+            message: this.message,
+        };
     }
 }
 

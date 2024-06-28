@@ -11,7 +11,10 @@ export const verifyJWT = asyncHandler(async (req: Request, res: Response, next: 
 
         // if user doesn't have access tokens then send error
         if (!accessToken) {
-            throw new ApiError(401, "User not authenticated!!");
+            // throw new ApiError(401, "User not authenticated!!");
+            return res
+                .status(401)
+                .json(new ApiError(401, "Request doesn't have token!!"));
         }
 
         // verify the user by comparing the access tokens
@@ -22,7 +25,10 @@ export const verifyJWT = asyncHandler(async (req: Request, res: Response, next: 
         const user = await User.findById(decoded._id).select("-password");
 
         if (!user) {
-            throw new ApiError(401, "User not authenticated!!");
+            // throw new ApiError(401, "User not authenticated!!");
+            return res
+                .status(401)
+                .json(new ApiError(401, "User is not registered!!"));
         }
 
         // req.user = user;
