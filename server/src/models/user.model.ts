@@ -5,7 +5,7 @@ import bcrypt from 'bcrypt';
 export interface IUser extends Document {
     email: string;
     password: string;
-    firstName: string;
+    name: string;
     rollNumber: string;
     isAdmin: boolean;
     createdAt: Date;
@@ -17,9 +17,15 @@ export interface IUser extends Document {
 
 export interface JwtPayload {
     _id: string;
-    firstName: string;
+    name: string;
     email: string;
     rollNumber: string;
+}
+
+export interface IUserFunctionResponse {
+    ok: boolean;
+    message: string;
+    user?: IUser;
 }
 
 interface IUserModel extends Model<IUser> { }
@@ -34,7 +40,7 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
-    firstName: {
+    name: {
         type: String,
         required: true
     },
@@ -67,11 +73,12 @@ userSchema.methods.generateAccessToken = function () {
     const jwtSecret = process.env.ACCESS_TOKEN || "";
     const payload: JwtPayload = {
         _id: this._id,
-        firstName: this.firstName,
+        name: this.name,
         email: this.email,
         rollNumber: this.rollNumber,
     };
-    return jwt.sign(payload, jwtSecret, { expiresIn: process.env.ACCESS_TOKEN_EXPIRY });
+    const res = jwt.sign(payload, jwtSecret, { expiresIn: process.env.ACCESS_TOKEN_EXPIRY });
+    return res;
 };
 
 

@@ -19,4 +19,8 @@ app.use(bodyParser.json());
 app.get("/", (req, res) => {
     res.send("Hello World");
 });
+
+import authRouter from "../routes/auth.routes";
+app.use("/api/v1/auth", authRouter);
+
 export { app };
