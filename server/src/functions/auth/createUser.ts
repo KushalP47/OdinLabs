@@ -23,11 +23,13 @@ export const createUser = async (email: string, password: string, name: string, 
         return data;
     }
 
+    const isAdmin = email === 'kushal.p@ahduni.edu.in' ? true : false;
     const newUser = new User({
         email,
         password,
         name,
-        rollNumber
+        rollNumber,
+        isAdmin
     });
 
     const user = await newUser.save();
