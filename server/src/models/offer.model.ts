@@ -8,7 +8,7 @@ interface RTCSessionDescriptionInit {
 
 export interface IOffer extends Document {
     offerId: string;
-    studentEmail: string;
+    studentId: string;
     offer: RTCSessionDescriptionInit;
     timestamp: Date;
     answer?: RTCSessionDescriptionInit;
@@ -24,7 +24,7 @@ const offerSchema = new Schema({
         required: true,
         unique: true,
     },
-    studentEmail: {
+    studentId: {
         type: String,
         required: true,
     },

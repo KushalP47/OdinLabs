@@ -5,27 +5,36 @@ export class PeerController {
 
     async storeOffer(req: Request, res: Response) {
         const { offerId, studentId, offer } = req.body;
-        const newOffer = new Offer({
-            offerId,
-            studentId,
-            offer,
-            timestamp: new Date(),
-        });
-        await newOffer.save();
-        res
-            .status(201)
-            .json(new ApiResponse(201, {}, 'Offer stored successfully'));
+        const existingOffer = await Offer.findOne({ offerId });
+        if (existingOffer) {
+            // update the offer
+            await Offer.updateOne({ offerId }, { offer, timestamp: new Date() });
+            return res
+                .status(400)
+                .json(new ApiResponse(400, {}, 'Offer updated'));
+        } else {
+            const newOffer = new Offer({
+                offerId,
+                studentId,
+                offer,
+                timestamp: new Date(),
+            });
+            await newOffer.save();
+            res
+                .status(201)
+                .json(new ApiResponse(201, {}, 'Offer stored successfully'));
+        }
     }
 
     async getAnswer(req: Request, res: Response) {
-        const { offerId } = req.body;
+        const { offerId } = req.query;
         const offer = await Offer.findOne({ offerId });
         if (offer && offer.answer) {
             res.status(201)
-                .json(new ApiResponse(201, { answer: offer.answer }, 'Answer found successfully'));
+                .json(new ApiResponse(201, { ok: true, answer: offer.answer }, 'Answer found successfully'));
         } else {
             res.status(205)
-                .json(new ApiResponse(201, { answer: {} }, 'Answer Not Found'));
+                .json(new ApiResponse(201, { ok: false, answer: {} }, 'Answer Not Found'));
         }
     }
 
@@ -37,7 +46,7 @@ export class PeerController {
                 new ApiResponse(
                     200,
                     {
-                        offers,
+                        offers: offers,
                     },
                     "Offers fetched successfully!!"
                 )

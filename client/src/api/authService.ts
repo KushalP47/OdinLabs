@@ -6,7 +6,7 @@ export class AuthService {
     }
     async register(user: User) {
         const reqBody = { email: user.email, password: user.password, name: user.name, rollNumber: user.rollNumber };
-        const response = await fetch(`${this.url}/api/v1/auth/register`, {
+        const response = await fetch(`http://localhost:8000/api/v1/auth/register`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

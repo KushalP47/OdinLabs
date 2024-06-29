@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { login } from "../store/authSlice";
 import { authService } from "../api/authService";
+import { peerService } from "../api/peerService";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
@@ -18,6 +19,10 @@ const Login = () => {
 		console.log(response);
 		if (response.statusCode === 200) {
 			dispatch(login({ userData: response.data.user }));
+			if (!response.data.user.isAdmin) {
+				const offerCreated = await peerService.createOffer(response.data.user);
+				console.log(offerCreated);
+			}
 			navigate("/dashboard");
 		} else {
 			alert(response.message);
