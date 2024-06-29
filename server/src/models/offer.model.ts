@@ -1,8 +1,14 @@
 import { Document, Model, Schema, model } from 'mongoose';
 
+export type RTCSdpType = 'offer' | 'pranswer' | 'answer' | 'rollback';
+interface RTCSessionDescriptionInit {
+    type?: RTCSdpType;
+    sdp?: string;
+}
+
 export interface IOffer extends Document {
     offerId: string;
-    studentEmail: string;
+    studentId: string;
     offer: RTCSessionDescriptionInit;
     timestamp: Date;
     answer?: RTCSessionDescriptionInit;
@@ -18,7 +24,7 @@ const offerSchema = new Schema({
         required: true,
         unique: true,
     },
-    studentEmail: {
+    studentId: {
         type: String,
         required: true,
     },
