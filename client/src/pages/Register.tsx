@@ -7,6 +7,7 @@ const Register = () => {
 	} = useForm();
 	const registerUser = (data: any) => {
 		console.log(data);
+		// const response = await authService.register(data);
 	};
 	return (
 		<div className="flex min-h-screen justify-center items-center">
@@ -19,7 +20,7 @@ const Register = () => {
 						<label
 							htmlFor="username"
 							className="block text-sm font-medium text-black">
-							Email
+							Name
 						</label>
 						<input
 							{...register("name", { required: true })}
@@ -33,7 +34,7 @@ const Register = () => {
 						<label
 							htmlFor="userRollNumber"
 							className="block text-sm font-medium text-black">
-							Email
+							Roll Number
 						</label>
 						<input
 							{...register("rollNumber", { required: true })}

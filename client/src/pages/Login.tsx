@@ -1,13 +1,27 @@
 import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
+import { login } from "../store/authSlice";
+import { authService } from "../api/authService";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
 	const {
 		register,
 		handleSubmit,
 		formState: { errors },
 	} = useForm();
-	const signin = (data: any) => {
+	const signin = async (data: any) => {
 		console.log(data);
+		const response = await authService.login(data);
+		console.log(response);
+		if (response.statusCode === 200) {
+			dispatch(login({ userData: response.data.user }));
+			navigate("/dashboard");
+		} else {
+			alert(response.message);
+		}
 	};
 	return (
 		<div className="flex min-h-screen justify-center items-center">
@@ -55,13 +69,6 @@ const Login = () => {
 					</div>
 				</form>
 			</div>
-			{/* <div className="flex justify-center border-4 border-black">
-				<img
-					src="./src/assets/react.svg"
-					alt="Illustration"
-					className="w-full h-full rounded-lg shadow-lg"
-				/>
-			</div> */}
 		</div>
 	);
 };
