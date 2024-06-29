@@ -1,5 +1,11 @@
 import { Document, Model, Schema, model } from 'mongoose';
 
+export type RTCSdpType = 'offer' | 'pranswer' | 'answer' | 'rollback';
+interface RTCSessionDescriptionInit {
+    type?: RTCSdpType;
+    sdp?: string;
+}
+
 export interface IOffer extends Document {
     offerId: string;
     studentEmail: string;
