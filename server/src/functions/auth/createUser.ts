@@ -1,4 +1,4 @@
-import { User, IUser, IUserFunctionResponse } from '../../models/user.model';
+import { User, IUserFunctionResponse } from '../../models/user.model';
 
 export const createUser = async (email: string, password: string, name: string, rollNumber: string): Promise<IUserFunctionResponse> => {
     const data: IUserFunctionResponse = {
