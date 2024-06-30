@@ -5,12 +5,13 @@ import FullscreenModal from "../components/FullscreenModal";
 const Contest: React.FC = () => {
   const [fullscreen, setFullscreen] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [contestOngoing, setContestOngoing] = useState<boolean>(false); // Track contest state
 
   useEffect(() => {
     const handleFullscreenChange = () => {
       setFullscreen(!!document.fullscreenElement);
-      if (!document.fullscreenElement) {
-        setShowModal(true); // Show modal if exiting fullscreen
+      if (!document.fullscreenElement && contestOngoing) {
+        setShowModal(true); // Show modal if exiting fullscreen during ongoing contest
       }
     };
 
@@ -19,7 +20,7 @@ const Contest: React.FC = () => {
     return () => {
       document.removeEventListener("fullscreenchange", handleFullscreenChange);
     };
-  }, []);
+  }, [contestOngoing]); // Include contestOngoing in dependency array
 
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
@@ -29,6 +30,16 @@ const Contest: React.FC = () => {
     } else {
       document.exitFullscreen();
     }
+  };
+
+  const handleStartContest = () => {
+    setContestOngoing(true); // Start contest
+    toggleFullscreen(); // Start fullscreen mode
+  };
+
+  const handleEndContest = () => {
+    setContestOngoing(false); // End contest
+    document.exitFullscreen(); // Exit fullscreen if still in fullscreen mode
   };
 
   const handleModalConfirm = () => {
@@ -48,13 +59,22 @@ const Contest: React.FC = () => {
           <h1 className="text-4xl font-bold">Contest</h1>
         </div>
 
-        {/* Fullscreen Button */}
-        <button
-          className="bg-blue-500 hover:bg-blue-700 text-black font-bold py-2 px-4 rounded"
-          onClick={toggleFullscreen}
-        >
-          {fullscreen ? "Exit Fullscreen" : "Start Contest (Fullscreen)"}
-        </button>
+        {/* Contest Button */}
+        {contestOngoing ? (
+          <button
+            className="bg-red-500 hover:bg-red-700 text-black font-bold py-2 px-4 rounded"
+            onClick={handleEndContest}
+          >
+            End Contest
+          </button>
+        ) : (
+          <button
+            className="bg-blue-500 hover:bg-blue-700 text-black font-bold py-2 px-4 rounded"
+            onClick={handleStartContest}
+          >
+            Start Contest (Fullscreen)
+          </button>
+        )}
 
         {/* Content Section */}
         <div className="flex-1 overflow-auto">
