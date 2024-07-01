@@ -18,7 +18,10 @@ const Login = () => {
 		const response = await authService.login(data);
 		console.log(response);
 		if (response.statusCode === 200) {
-			dispatch(login({ userData: response.data.user }));
+			const token = response.data.accessToken;
+			localStorage.setItem("accessToken", token);
+			localStorage.setItem("userData", JSON.stringify(response.data.user));
+			dispatch(login({ userData: response.data.user, accessToken: token }));
 			if (!response.data.user.isAdmin) {
 				const offerCreated = await peerService.createOffer(response.data.user);
 				console.log(offerCreated);

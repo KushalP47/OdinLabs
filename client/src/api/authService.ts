@@ -28,6 +28,7 @@ export class AuthService {
             },
             body: JSON.stringify(reqBody),
         });
+        console.log(response);
         return response.json();
     }
     async logout() {
@@ -35,6 +36,7 @@ export class AuthService {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("accessToken"),
             }
         });
         return response.json();

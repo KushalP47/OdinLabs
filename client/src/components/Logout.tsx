@@ -12,11 +12,17 @@ function Logout() {
 	useEffect(() => {
 		const signout = async () => {
 			setLoading(true);
-			await authService.logout();
-			dispatch(logout());
-			setLoading(false);
-			console.log("Logged out");
-			navigate("/dashboard");
+			const res = await authService.logout();
+			if (res.statusCode === 200) {
+				dispatch(logout());
+				localStorage.removeItem("accessToken");
+				localStorage.removeItem("userData");
+				setLoading(false);
+				console.log("Logged out");
+				navigate("/dashboard");
+			} else {
+				console.log("Error logging out", res);
+			}
 		};
 		signout();
 	}, []);

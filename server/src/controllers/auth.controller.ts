@@ -25,10 +25,15 @@ class AuthController {
                 .json(new ApiError(401, "Error creating access token"));
         }
 
+        const options = {
+            httpOnly: true,
+            secure: true
+        };
+
         data.user?.save({ validateBeforeSave: false });
         return res
             .status(201)
-            .cookie("accessToken", accessToken)
+            .cookie("accessToken", accessToken, options)
             .json(
                 new ApiResponse(
                     201,
@@ -38,7 +43,7 @@ class AuthController {
                     },
                     "User created successfully!!"
                 )
-            );
+            ).send();
     }
 
     async login(req: Request, res: Response) {
@@ -58,9 +63,14 @@ class AuthController {
                 .json(new ApiError(401, "Error creating access token"));
         }
 
+        const options = {
+            httpOnly: true,
+            secure: true
+        };
+
         return res
             .status(200)
-            .cookie("accessToken", accessToken)
+            .cookie("accessToken", accessToken, options)
             .json(
                 new ApiResponse(
                     200,
@@ -70,7 +80,7 @@ class AuthController {
                     },
                     "User logged in successfully!!"
                 )
-            );
+            ).send();
     }
 
     async logout(req: Request, res: Response) {
