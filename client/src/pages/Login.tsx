@@ -2,7 +2,6 @@ import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { login } from "../store/authSlice";
 import { authService } from "../api/authService";
-import { peerService } from "../api/peerService";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
@@ -22,10 +21,6 @@ const Login = () => {
 			localStorage.setItem("accessToken", token);
 			localStorage.setItem("userData", JSON.stringify(response.data.user));
 			dispatch(login({ userData: response.data.user, accessToken: token }));
-			if (!response.data.user.isAdmin) {
-				const offerCreated = await peerService.createOffer(response.data.user);
-				console.log(offerCreated);
-			}
 			navigate("/dashboard");
 		} else {
 			alert(response.message);

@@ -1,145 +1,94 @@
-import Navbar from "../components/Navbar";
-import { useState, useEffect, useRef } from "react";
-import { Offer } from "../types/offers";
-import { peerService } from "../api/peerService";
+import { useEffect, useState, useCallback } from "react";
+import { io } from "socket.io-client";
+interface studentSocket {
+	emailId: string;
+	socketId: string;
+}
+interface ConnectedStudentsEvent {
+	connectedUsers: Array<studentSocket>;
+}
 
 const Students = () => {
-	const [students, setStudents] = useState<Offer[]>([]);
-	const [currentStream, setCurrentStream] = useState<MediaStream | null>(null);
-	const videoRef = useRef<HTMLVideoElement>(null);
-	const [peerConnections, setPeerConnections] = useState<{
-		[key: string]: RTCPeerConnection;
-	}>({});
+	const socket = io("http://localhost:8001");
+	const [students, setStudents] = useState<Array<studentSocket>>([]); // Array of studentSocket
+	const handleConnectedStudents = useCallback(
+		({ connectedUsers }: ConnectedStudentsEvent) => {
+			setStudents(connectedUsers);
+		},
+		[students],
+	);
 
-	useEffect(() => {
-		async function getOffers(): Promise<Offer[]> {
-			const offers = await peerService.getOffers();
-			if (offers.statusCode === 200) {
-				return offers.data.offers;
-			}
-			return [];
-		}
-		getOffers().then((offers) => setStudents(offers));
+	const connectStudent = useCallback((emailId: string, socketId: string) => {
+		socket.emit("connect-student", { emailId, socketId });
+	}, []);
+	const disconnectStudent = useCallback((emailId: string, socketId: string) => {
+		socket.emit("disconnect-student", { emailId, socketId });
 	}, []);
 
-	const connectStudent = async (offer: Offer) => {
-		console.log(offer);
-		// Create answer
-		const peerConnection = new RTCPeerConnection();
-		setPeerConnections((prev) => ({
-			...prev,
-			[offer.offerId]: peerConnection,
-		}));
+	useEffect(() => {
+		socket.on("connected-students", handleConnectedStudents);
 
-		peerConnection.ontrack = (event) => {
-			if (event.streams && event.streams[0]) {
-				setCurrentStream(event.streams[0]);
-				if (videoRef.current) {
-					videoRef.current.srcObject = event.streams[0];
-				}
-			}
+		return () => {
+			socket.off("connected-students");
 		};
+	}, [socket]);
 
-		await peerConnection.setRemoteDescription(
-			new RTCSessionDescription(offer.offer),
-		);
-		const answer = await peerConnection.createAnswer();
-		await peerConnection.setLocalDescription(answer);
-
-		// Send answer
-		const response = await peerService.sendAnswer(offer, answer);
-		console.log(response);
-		if (response.statusCode === 201) {
-			alert("Connected successfully");
-		}
-	};
-
-	const disconnectStudent = (offerId: string) => {
-		const peerConnection = peerConnections[offerId];
-		if (peerConnection) {
-			peerConnection.close();
-			setPeerConnections((prev) => {
-				const { [offerId]: _, ...rest } = prev;
-				return rest;
-			});
-			setCurrentStream(null);
-		}
-	};
+	useEffect(() => {
+		socket.emit("get-connected-students");
+	}, [socket]);
 
 	return (
-		<div className="flex min-h-screen">
-			{/* Navbar */}
-			<Navbar currentPage="Students" />
-
-			{/* Right Section */}
-			<div className="bg-white w-5/6 border-4 border-blue shadow-xl flex flex-col p-8">
-				{/* Title Section */}
-				<div className="flex justify-start mb-8">
-					<h1 className="text-4xl font-bold">Students</h1>
-				</div>
-
-				{/* Content Section */}
-				<div className="flex-1 overflow-auto">
-					{/* Students Details */}
-					<table className="min-w-full divide-y divide-black">
-						<thead className="bg-gray-50">
-							<tr>
-								<th
-									scope="col"
-									className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
-									Roll Number
-								</th>
-								<th
-									scope="col"
-									className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
-									Email
-								</th>
-								<th scope="col" className="relative px-6 py-3">
-									<span className="sr-only">Connect</span>
-								</th>
-								<th scope="col" className="relative px-6 py-3">
-									<span className="sr-only">Disconnect</span>
-								</th>
+		<div className="p-4">
+			<h1 className="text-2xl font-bold text-black mb-4">Students</h1>
+			<div className="overflow-x-auto">
+				<table className="w-full text-sm text-left text-gray-500">
+					<thead className="text-xs text-gray-700 uppercase bg-gray-50">
+						<tr>
+							<th scope="col" className="px-6 py-3">
+								Sr. No.
+							</th>
+							<th scope="col" className="px-6 py-3">
+								Student Email
+							</th>
+							<th scope="col" className="px-6 py-3">
+								Student Socket ID
+							</th>
+							<th scope="col" className="px-6 py-3">
+								Connect
+							</th>
+							<th scope="col" className="px-6 py-3">
+								Disconnect
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						{students.map((student, index) => (
+							<tr key={student.emailId} className="bg-white border-b">
+								<td className="px-6 py-4">{index + 1}</td>
+								<td className="px-6 py-4">{student.emailId}</td>
+								<td className="px-6 py-4">{student.socketId}</td>
+								<td className="px-6 py-4">
+									<button
+										className="px-4 py-2 text-white bg-blue-500 hover:bg-blue-600 rounded"
+										onClick={() =>
+											connectStudent(student.emailId, student.socketId)
+										}>
+										Connect
+									</button>
+								</td>
+								<td className="px-6 py-4">
+									<button
+										className="px-4 py-2 text-white bg-red-500 hover:bg-red-600 rounded"
+										onClick={() =>
+											disconnectStudent(student.emailId, student.socketId)
+										}>
+										Disconnect
+									</button>
+								</td>
 							</tr>
-						</thead>
-						<tbody className="bg-white divide-y divide-black">
-							{students.map((student) => (
-								<tr key={student.offerId}>
-									<td className="px-6 py-4 whitespace-nowrap text-sm font-medium black">
-										{student.offerId}
-									</td>
-									<td className="px-6 py-4 whitespace-nowrap text-sm text-black">
-										{student.studentId}
-									</td>
-									<td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-										<button
-											className="text-black bg-blue hover:bg-black hover:text-blue py-2 px-4 rounded-lg"
-											onClick={() => connectStudent(student)}>
-											Connect
-										</button>
-									</td>
-									<td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-										<button
-											className="text-black bg-red hover:bg-black hover:text-red py-2 px-4 rounded-lg"
-											onClick={() => disconnectStudent(student.offerId)}>
-											Disconnect
-										</button>
-									</td>
-								</tr>
-							))}
-						</tbody>
-					</table>
-					{/* Students stream */}
-					<div>
-						{currentStream && (
-							<video
-								ref={videoRef}
-								autoPlay
-								controls
-								className="w-full mt-8"></video>
-						)}
-					</div>
-				</div>
+						))}
+					</tbody>
+				</table>
 			</div>
 		</div>
 	);
