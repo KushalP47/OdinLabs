@@ -5,6 +5,7 @@ import store from "./store/store.js";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Dashboard from "./pages/Dashboard.tsx";
 import Students from "./pages/Students.tsx";
+import Room from "./pages/Room.tsx";
 import Login from "./pages/Login.tsx";
 import Logout from "./components/Logout.tsx";
 import Register from "./pages/Register.tsx";
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
 				element: <Students />,
 			},
 			{
+				path: "/room",
+				element: <Room />,
+			},
+			{
 				path: "/auth/login",
 				element: <Login />,
 			},
@@ -39,6 +44,7 @@ const router = createBrowserRouter([
 		],
 	},
 ]);
+
 ReactDOM.createRoot(document.getElementById("root")!).render(
 	<React.StrictMode>
 		<Provider store={store}>

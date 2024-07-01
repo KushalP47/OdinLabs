@@ -20,6 +20,7 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage }) => {
 		{ item: "Assignment", url: "assignment" },
 		{ item: "Contest", url: "contest" },
 		{ item: "Practice", url: "practice" },
+		{ item: "Room", url: "room" },
 	];
 	const pages = user?.isAdmin === true ? adminPages : studentPages;
 	const getNavItemClass = (path: string) => {

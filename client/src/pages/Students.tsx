@@ -1,41 +1,101 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { io } from "socket.io-client";
+import ReactPlayer from "react-player";
+
 interface studentSocket {
 	emailId: string;
 	socketId: string;
+	roomId: string;
+	offer: RTCSessionDescriptionInit;
 }
 interface ConnectedStudentsEvent {
 	connectedUsers: Array<studentSocket>;
 }
 
 const Students = () => {
-	const socket = io("http://localhost:8001");
+	const socket = useMemo(() => io("http://localhost:8001"), []); // Ensuring single socket connection
+	const peer = useMemo(
+		() =>
+			new RTCPeerConnection({
+				iceServers: [
+					{
+						urls: "stun:stun.l.google.com:19302",
+					},
+				],
+			}),
+		[],
+	);
+	const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
 	const [students, setStudents] = useState<Array<studentSocket>>([]); // Array of studentSocket
+
+	// Updates the students list
 	const handleConnectedStudents = useCallback(
 		({ connectedUsers }: ConnectedStudentsEvent) => {
 			setStudents(connectedUsers);
 		},
-		[students],
+		[],
 	);
 
-	const connectStudent = useCallback((emailId: string, socketId: string) => {
-		socket.emit("connect-student", { emailId, socketId });
+	// Function which connects to the student
+	const connectStudent = useCallback(
+		async (
+			emailId: string,
+			socketId: string,
+			roomId: string,
+			offer: RTCSessionDescriptionInit,
+		) => {
+			await peer.setRemoteDescription(offer);
+			const answer = await peer.createAnswer();
+			await peer.setLocalDescription(answer);
+			socket.emit("send-answer", { emailId, roomId, answer });
+		},
+		[peer, socket],
+	);
+
+	// Function which starts the stream
+	const handleTrackEvent = useCallback((event: RTCTrackEvent) => {
+		setRemoteStream(event.streams[0]);
 	}, []);
-	const disconnectStudent = useCallback((emailId: string, socketId: string) => {
-		socket.emit("disconnect-student", { emailId, socketId });
+
+	// Function which disconnects the student
+	const handleRoomDisconnected = useCallback(() => {
+		setRemoteStream(null);
 	}, []);
+
+	const disconnectStudent = useCallback(
+		(emailId: string) => {
+			socket.emit("disconnect-student", { emailId });
+		},
+		[socket],
+	);
+
+	// useEffect(() => {
+	// 	socket.emit("get-student-offers");
+	// 	return () => {
+	// 		socket.disconnect(); // Ensure cleanup on component unmount
+	// 	};
+	// }, []);
 
 	useEffect(() => {
-		socket.on("connected-students", handleConnectedStudents);
-
+		peer.ontrack = handleTrackEvent;
 		return () => {
-			socket.off("connected-students");
+			peer.ontrack = null;
+		};
+	}, [peer]);
+
+	useEffect(() => {
+		socket.on("student-offers", handleConnectedStudents);
+		return () => {
+			socket.off("student-offers", handleConnectedStudents);
 		};
 	}, [socket]);
 
 	useEffect(() => {
-		socket.emit("get-connected-students");
-	}, [socket]);
+		socket.on("room-disconnected", handleRoomDisconnected);
+		return () => {
+			socket.off("room-disconnected", handleRoomDisconnected);
+		};
+	}, []);
 
 	return (
 		<div className="p-4">
@@ -71,7 +131,12 @@ const Students = () => {
 									<button
 										className="px-4 py-2 text-white bg-blue-500 hover:bg-blue-600 rounded"
 										onClick={() =>
-											connectStudent(student.emailId, student.socketId)
+											connectStudent(
+												student.emailId,
+												student.socketId,
+												student.roomId,
+												student.offer,
+											)
 										}>
 										Connect
 									</button>
@@ -79,9 +144,7 @@ const Students = () => {
 								<td className="px-6 py-4">
 									<button
 										className="px-4 py-2 text-white bg-red-500 hover:bg-red-600 rounded"
-										onClick={() =>
-											disconnectStudent(student.emailId, student.socketId)
-										}>
+										onClick={() => disconnectStudent(student.emailId)}>
 										Disconnect
 									</button>
 								</td>
@@ -89,6 +152,7 @@ const Students = () => {
 						))}
 					</tbody>
 				</table>
+				{remoteStream && <ReactPlayer url={remoteStream} playing controls />}
 			</div>
 		</div>
 	);
