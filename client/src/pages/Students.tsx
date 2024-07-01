@@ -32,6 +32,7 @@ const Students = () => {
 	const handleConnectedStudents = useCallback(
 		({ connectedUsers }: ConnectedStudentsEvent) => {
 			setStudents(connectedUsers);
+			console.log(connectedUsers);
 		},
 		[],
 	);
@@ -47,6 +48,7 @@ const Students = () => {
 			await peer.setRemoteDescription(offer);
 			const answer = await peer.createAnswer();
 			await peer.setLocalDescription(answer);
+			console.log(socketId, emailId, roomId, answer);
 			socket.emit("send-answer", { emailId, roomId, answer });
 		},
 		[peer, socket],
@@ -69,12 +71,18 @@ const Students = () => {
 		[socket],
 	);
 
-	// useEffect(() => {
-	// 	socket.emit("get-student-offers");
-	// 	return () => {
-	// 		socket.disconnect(); // Ensure cleanup on component unmount
-	// 	};
-	// }, []);
+	useEffect(() => {
+		// Fetch initial offers when component mounts
+		socket.emit("get-student-offers");
+
+		// Listen for new offers
+		socket.on("student-offers", handleConnectedStudents);
+
+		// Clean up socket listeners on component unmount
+		return () => {
+			socket.off("student-offers", handleConnectedStudents);
+		};
+	}, [socket, handleConnectedStudents]);
 
 	useEffect(() => {
 		peer.ontrack = handleTrackEvent;
@@ -84,18 +92,11 @@ const Students = () => {
 	}, [peer]);
 
 	useEffect(() => {
-		socket.on("student-offers", handleConnectedStudents);
-		return () => {
-			socket.off("student-offers", handleConnectedStudents);
-		};
-	}, [socket]);
-
-	useEffect(() => {
 		socket.on("room-disconnected", handleRoomDisconnected);
 		return () => {
-			socket.off("room-disconnected", handleRoomDisconnected);
+			socket.off("room-disconnected");
 		};
-	}, []);
+	}, [socket]);
 
 	return (
 		<div className="p-4">
@@ -122,34 +123,35 @@ const Students = () => {
 						</tr>
 					</thead>
 					<tbody>
-						{students.map((student, index) => (
-							<tr key={student.emailId} className="bg-white border-b">
-								<td className="px-6 py-4">{index + 1}</td>
-								<td className="px-6 py-4">{student.emailId}</td>
-								<td className="px-6 py-4">{student.socketId}</td>
-								<td className="px-6 py-4">
-									<button
-										className="px-4 py-2 text-white bg-blue-500 hover:bg-blue-600 rounded"
-										onClick={() =>
-											connectStudent(
-												student.emailId,
-												student.socketId,
-												student.roomId,
-												student.offer,
-											)
-										}>
-										Connect
-									</button>
-								</td>
-								<td className="px-6 py-4">
-									<button
-										className="px-4 py-2 text-white bg-red-500 hover:bg-red-600 rounded"
-										onClick={() => disconnectStudent(student.emailId)}>
-										Disconnect
-									</button>
-								</td>
-							</tr>
-						))}
+						{students &&
+							students.map((student, index) => (
+								<tr key={student.emailId} className="bg-white border-b">
+									<td className="px-6 py-4">{index + 1}</td>
+									<td className="px-6 py-4">{student.emailId}</td>
+									<td className="px-6 py-4">{student.socketId}</td>
+									<td className="px-6 py-4">
+										<button
+											className="px-4 py-2 text-black bg-blue hover:bg-blue-600 rounded"
+											onClick={() =>
+												connectStudent(
+													student.emailId,
+													student.socketId,
+													student.roomId,
+													student.offer,
+												)
+											}>
+											Connect
+										</button>
+									</td>
+									<td className="px-6 py-4">
+										<button
+											className="px-4 py-2 text-black bg-blue hover:bg-red-600 rounded"
+											onClick={() => disconnectStudent(student.emailId)}>
+											Disconnect
+										</button>
+									</td>
+								</tr>
+							))}
 					</tbody>
 				</table>
 				{remoteStream && <ReactPlayer url={remoteStream} playing controls />}

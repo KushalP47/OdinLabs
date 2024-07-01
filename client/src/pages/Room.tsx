@@ -34,19 +34,25 @@ const Room = () => {
 		console.log("room joined");
 	}, [socket, roomId, emailId]);
 
-	// on joining the room succesfully, creates a offer and sends it to the server
+	// on joining the room successfully, creates an offer and sends it to the server
 	const createOffer = useCallback(async () => {
 		console.log("User connected");
 		const offer = await peer.createOffer();
 		await peer.setLocalDescription(offer);
 		console.log("Offer created");
 		socket.emit("send-offer", { roomId, emailId, offer }); // Added missing offer
-	}, [socket, roomId, emailId]);
+	}, [socket, roomId, emailId, peer]);
 
 	// on receiving an answer, sets the remote description
 	// connects the admin to the room
 	const connectAdmin = useCallback(
-		async (answer: RTCSessionDescriptionInit, emailId: string) => {
+		async ({
+			answer,
+			emailId,
+		}: {
+			answer: RTCSessionDescriptionInit;
+			emailId: string;
+		}) => {
 			console.log("Admin connected", emailId);
 			await peer.setRemoteDescription(answer);
 			if (!myStream) {
@@ -74,16 +80,15 @@ const Room = () => {
 
 		return () => {
 			socket.off("answer-received", connectAdmin);
-			// socket.disconnect(); // Ensure cleanup on component unmount
 		};
-	}, []);
+	}, [socket, connectAdmin]);
 
 	useEffect(() => {
 		socket.on("user-connected", createOffer);
 		return () => {
-			socket.off("user-connected");
+			socket.off("user-connected", createOffer);
 		};
-	}, []);
+	}, [socket, createOffer]);
 
 	return (
 		<div className="flex min-h-screen">
@@ -93,30 +98,27 @@ const Room = () => {
 			{/* Right Section */}
 			<div className="bg-white w-5/6 border-4 border-blue shadow-xl flex flex-col p-8">
 				{/* Title Section */}
-				<div className="flex justify-start mb-8">
-					<h1 className="text-4xl font-bold">Room</h1>
+				<div className="flex justify-between items-center mb-8">
+					<h2 className="text-2xl font-bold text-black">Room</h2>
 				</div>
-
-				{/* Content Section */}
-
-				<div>
-					<h2 className="text-2xl">Room Id: {roomId} </h2>
-					<div className="flex flex-row justify-center items-center p-4">
-						{!status && (
+				{/* Stream Section */}
+				<div className="flex-grow">
+					{status ? (
+						<div>
+							<p className="text-lg text-black">Streaming...</p>
 							<button
-								className="py-2 px-4 m-2 hover:bg-black hover:text-blue border-4 hover:border-blue rounded bg-blue text-black border-black transition duration-300"
-								onClick={() => startStream()}>
-								Start Streaming
+								className="px-4 py-2 mt-4 text-white bg-blue hover:bg-black rounded"
+								onClick={endStream}>
+								End Stream
 							</button>
-						)}
-						{status && (
-							<button
-								className="py-2 px-4 m-2 hover:bg-black hover:text-blue border-4 hover:border-blue rounded bg-blue text-black border-black transition duration-300"
-								onClick={() => endStream()}>
-								Stop Streaming
-							</button>
-						)}
-					</div>
+						</div>
+					) : (
+						<button
+							className="px-4 py-2 text-white bg-blue hover:bg-black rounded"
+							onClick={startStream}>
+							Start Stream
+						</button>
+					)}
 				</div>
 			</div>
 		</div>
