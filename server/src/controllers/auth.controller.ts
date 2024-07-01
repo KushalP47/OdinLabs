@@ -3,6 +3,7 @@ import { User, IUserFunctionResponse } from '../models/user.model';
 import { userExists, createUser } from '../functions/auth';
 import { ApiResponse } from '../utils/ApiResponse';
 import { ApiError } from '../utils/ApiError';
+import { access } from 'fs';
 
 class AuthController {
 
@@ -33,7 +34,7 @@ class AuthController {
                     201,
                     {
                         user: data.user?.toJSON(),
-                        accessToken,
+                        accessToken: accessToken,
                     },
                     "User created successfully!!"
                 )
@@ -50,14 +51,22 @@ class AuthController {
                 .status(401)
                 .json(new ApiError(401, data.message));
         }
+        const accessToken = data.user?.generateAccessToken();
+        if (!accessToken) {
+            return res
+                .status(401)
+                .json(new ApiError(401, "Error creating access token"));
+        }
 
         return res
             .status(200)
+            .cookie("accessToken", accessToken)
             .json(
                 new ApiResponse(
                     200,
                     {
                         user: data.user?.toJSON(),
+                        accessToken: accessToken,
                     },
                     "User logged in successfully!!"
                 )
