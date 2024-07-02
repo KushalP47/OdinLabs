@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 const Dashboard = () => {
 	const status = useSelector((state: any) => state.auth.status);
+	
 	const [counter, setCounter] = useState(0);
 	return (
 		<div className="flex min-h-screen">

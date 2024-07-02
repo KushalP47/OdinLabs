@@ -3,6 +3,7 @@ import { User, IUserFunctionResponse } from '../models/user.model';
 import { userExists, createUser } from '../functions/auth';
 import { ApiResponse } from '../utils/ApiResponse';
 import { ApiError } from '../utils/ApiError';
+import { access } from 'fs';
 
 class AuthController {
 
@@ -24,20 +25,25 @@ class AuthController {
                 .json(new ApiError(401, "Error creating access token"));
         }
 
+        const options = {
+            httpOnly: true,
+            secure: true
+        };
+
         data.user?.save({ validateBeforeSave: false });
         return res
             .status(201)
-            .cookie("accessToken", accessToken)
+            .cookie("accessToken", accessToken, options)
             .json(
                 new ApiResponse(
                     201,
                     {
                         user: data.user?.toJSON(),
-                        accessToken,
+                        accessToken: accessToken,
                     },
                     "User created successfully!!"
                 )
-            );
+            ).send();
     }
 
     async login(req: Request, res: Response) {
@@ -50,18 +56,31 @@ class AuthController {
                 .status(401)
                 .json(new ApiError(401, data.message));
         }
+        const accessToken = data.user?.generateAccessToken();
+        if (!accessToken) {
+            return res
+                .status(401)
+                .json(new ApiError(401, "Error creating access token"));
+        }
+
+        const options = {
+            httpOnly: true,
+            secure: true
+        };
 
         return res
             .status(200)
+            .cookie("accessToken", accessToken, options)
             .json(
                 new ApiResponse(
                     200,
                     {
                         user: data.user?.toJSON(),
+                        accessToken: accessToken,
                     },
                     "User logged in successfully!!"
                 )
-            );
+            ).send();
     }
 
     async logout(req: Request, res: Response) {
