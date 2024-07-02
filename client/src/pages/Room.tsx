@@ -1,11 +1,14 @@
 import Navbar from "../components/Navbar";
-import { useState, useCallback, useEffect, useMemo } from "react";
+import { useState, useCallback, useEffect, useMemo, useRef } from "react";
 import { io } from "socket.io-client";
-
+interface AdminConnectionParams {
+	answer: RTCSessionDescriptionInit;
+	emailId: string;
+}
 const Room = () => {
 	const [status, setStatus] = useState(false);
 	const [myStream, setMyStream] = useState<MediaStream | null>(null);
-	const socket = useMemo(() => io("http://localhost:8001"), []); // Ensuring single socket connection
+	const socket = useMemo(() => io("http://localhost:8001"), []);
 	const peer = useMemo(
 		() =>
 			new RTCPeerConnection({
@@ -17,11 +20,11 @@ const Room = () => {
 			}),
 		[],
 	);
-	const userData = JSON.parse(localStorage.getItem("userData") || "{}");
-	const roomId: string = userData.rollNumber;
-	const emailId: string = userData.email;
 
-	// connects to the socket server
+	const userData = JSON.parse(localStorage.getItem("userData") || "{}");
+	const roomId = userData.rollNumber;
+	const emailId = userData.email;
+
 	const startStream = useCallback(async () => {
 		setStatus(true);
 		const stream = await navigator.mediaDevices.getDisplayMedia({
@@ -29,95 +32,96 @@ const Room = () => {
 			audio: false,
 		});
 		setMyStream(stream);
-		console.log("Calling socket");
+		console.log("Starting stream, joining room:", roomId);
 		socket.emit("join-room", { roomId, emailId });
-		console.log("room joined");
-	}, [socket, roomId, emailId]);
 
-	// on joining the room successfully, creates an offer and sends it to the server
-	const createOffer = useCallback(async () => {
-		console.log("User connected");
-		const offer = await peer.createOffer();
-		await peer.setLocalDescription(offer);
-		console.log("Offer created");
-		socket.emit("send-offer", { roomId, emailId, offer }); // Added missing offer
+		stream.getTracks().forEach((track) => peer.addTrack(track, stream));
+		console.log("Stream added to peer connection");
 	}, [socket, roomId, emailId, peer]);
 
-	// on receiving an answer, sets the remote description
-	// connects the admin to the room
+	const createOffer = useCallback(async () => {
+		console.log("Creating offer");
+		const offer = await peer.createOffer();
+		await peer.setLocalDescription(offer);
+		console.log("Offer created, sending to server");
+		socket.emit("send-offer", { roomId, emailId, offer });
+	}, [peer, socket, roomId, emailId]);
+
 	const connectAdmin = useCallback(
-		async ({
-			answer,
-			emailId,
-		}: {
-			answer: RTCSessionDescriptionInit;
-			emailId: string;
-		}) => {
-			console.log("Admin connected", emailId);
+		async ({ answer, emailId }: AdminConnectionParams) => {
+			console.log(
+				"Admin connected, setting remote description",
+				answer,
+				emailId,
+			);
 			await peer.setRemoteDescription(answer);
-			if (!myStream) {
-				socket.emit("no-stream-available");
-				return;
-			}
-			// sending stream to the admin
-			const tracks = myStream.getTracks();
-			for (const track of tracks) {
-				peer.addTrack(track, myStream);
-			}
-			socket.emit("send-stream", { emailId });
 		},
-		[socket, peer, myStream],
+		[peer],
 	);
 
 	const endStream = useCallback(() => {
 		setStatus(false);
+		console.log("Ending stream, disconnecting room:", roomId);
+		if (myStream) {
+			myStream.getTracks().forEach((track) => track.stop());
+		}
 		socket.emit("disconnect-room", { emailId, roomId });
-		socket.disconnect(); // Properly disconnecting socket
-	}, [socket, emailId, roomId]);
+		socket.disconnect();
+		peer.close();
+	}, [socket, emailId, roomId, peer, myStream]);
+
+	const handleAdminDisconnected = useCallback(() => {
+		console.log("Admin disconnected");
+		peer.close();
+	}, [peer]);
 
 	useEffect(() => {
 		socket.on("answer-received", connectAdmin);
+		socket.on("admin-disconnected", handleAdminDisconnected);
 
 		return () => {
-			socket.off("answer-received", connectAdmin);
+			socket.off("answer-received");
+			socket.off("admin-disconnected");
 		};
-	}, [socket, connectAdmin]);
+	}, [socket, connectAdmin, handleAdminDisconnected]);
 
 	useEffect(() => {
 		socket.on("user-connected", createOffer);
 		return () => {
-			socket.off("user-connected", createOffer);
+			socket.off("user-connected");
 		};
 	}, [socket, createOffer]);
 
+	const videoRef = useRef<HTMLVideoElement>(null);
+
+	useEffect(() => {
+		if (videoRef.current && myStream) {
+			videoRef.current.srcObject = myStream;
+		}
+	}, [myStream]);
+
 	return (
 		<div className="flex min-h-screen">
-			{/* Navbar */}
 			<Navbar currentPage="Dashboard" />
-
-			{/* Right Section */}
-			<div className="bg-white w-5/6 border-4 border-blue shadow-xl flex flex-col p-8">
-				{/* Title Section */}
-				<div className="flex justify-between items-center mb-8">
-					<h2 className="text-2xl font-bold text-black">Room</h2>
-				</div>
-				{/* Stream Section */}
-				<div className="flex-grow">
-					{status ? (
-						<div>
-							<p className="text-lg text-black">Streaming...</p>
-							<button
-								className="px-4 py-2 mt-4 text-white bg-blue hover:bg-black rounded"
-								onClick={endStream}>
-								End Stream
-							</button>
-						</div>
-					) : (
+			<div className="bg-white w-10/12 m-auto flex flex-col items-center justify-center">
+				<h1 className="text-3xl font-bold mb-4">Room</h1>
+				<div className="flex flex-col items-center justify-center">
+					{!status && (
 						<button
-							className="px-4 py-2 text-white bg-blue hover:bg-black rounded"
+							className="px-4 py-2 bg-blue text-white rounded hover:bg-black focus:outline-none focus:bg-blue-600 mb-4"
 							onClick={startStream}>
 							Start Stream
 						</button>
+					)}
+					{status && (
+						<button
+							className="px-4 py-2 bg-blue text-white rounded hover:bg-black focus:outline-none focus:bg-red-600 mb-4"
+							onClick={endStream}>
+							End Stream
+						</button>
+					)}
+					{myStream && (
+						<video autoPlay playsInline muted ref={videoRef}></video>
 					)}
 				</div>
 			</div>
