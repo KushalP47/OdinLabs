@@ -11,6 +11,7 @@ import Logout from "./components/Logout.tsx";
 import Register from "./pages/Register.tsx";
 import App from "./App.tsx";
 import "./index.css";
+import Contest from "./pages/Contest.tsx";
 
 const router = createBrowserRouter([
 	{
@@ -28,6 +29,10 @@ const router = createBrowserRouter([
 			{
 				path: "/room",
 				element: <Room />,
+      },
+      {
+				path: "/contest",
+				element: <Contest />,
 			},
 			{
 				path: "/auth/login",
