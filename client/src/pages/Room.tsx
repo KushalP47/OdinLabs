@@ -27,7 +27,7 @@ const Room = () => {
 
 	const startStream = useCallback(async () => {
 		setStatus(true);
-		const stream = await navigator.mediaDevices.getDisplayMedia({
+		const stream = await navigator.mediaDevices.getUserMedia({
 			video: true,
 			audio: false,
 		});
@@ -66,14 +66,15 @@ const Room = () => {
 			myStream.getTracks().forEach((track) => track.stop());
 		}
 		socket.emit("disconnect-room", { emailId, roomId });
-		socket.disconnect();
-		peer.close();
-	}, [socket, emailId, roomId, peer, myStream]);
+		// socket.disconnect();
+		// peer.close();
+	}, [socket, emailId, roomId, myStream]);
 
 	const handleAdminDisconnected = useCallback(() => {
 		console.log("Admin disconnected");
-		peer.close();
-	}, [peer]);
+		socket.emit("disconnect-room", { emailId, roomId });
+		createOffer();
+	}, [createOffer]);
 
 	useEffect(() => {
 		socket.on("answer-received", connectAdmin);
@@ -92,6 +93,17 @@ const Room = () => {
 		};
 	}, [socket, createOffer]);
 
+	useEffect(() => {
+		peer.addEventListener("negotiationneeded", () => {
+			console.log("Negotiation needed");
+		});
+
+		return () => {
+			peer.removeEventListener("negotiationneeded", () => {
+				console.log("Negotiation needed");
+			});
+		};
+	}, []);
 	const videoRef = useRef<HTMLVideoElement>(null);
 
 	useEffect(() => {
@@ -121,7 +133,12 @@ const Room = () => {
 						</button>
 					)}
 					{myStream && (
-						<video autoPlay playsInline muted ref={videoRef}></video>
+						<video
+							className="w-800px h-450px border-4 border-blue"
+							autoPlay
+							playsInline
+							muted
+							ref={videoRef}></video>
 					)}
 				</div>
 			</div>

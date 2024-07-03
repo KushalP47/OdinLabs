@@ -77,7 +77,7 @@ const Students = () => {
 	const disconnectStudent = useCallback(
 		(emailId: string, roomId: string) => {
 			console.log("Disconnecting from student:", emailId);
-			peer.close();
+			// peer.close();
 			setRemoteStream(null);
 			if (videoRef.current) {
 				videoRef.current.srcObject = null;
@@ -85,17 +85,17 @@ const Students = () => {
 			socket.emit("leave-student-room", { roomId });
 			console.log("Disconnected and left room:", roomId);
 		},
-		[peer, socket],
+		[socket],
 	);
 
 	const handleAdminDisconnected = useCallback(() => {
 		console.log("Admin disconnected");
-		peer.close();
+		// peer.close();
 		setRemoteStream(null);
 		if (videoRef.current) {
 			videoRef.current.srcObject = null;
 		}
-	}, [peer]);
+	}, []);
 
 	useEffect(() => {
 		socket.emit("get-student-offers");
@@ -180,7 +180,12 @@ const Students = () => {
 					</tbody>
 				</table>
 				{remoteStream && (
-					<video autoPlay playsInline muted ref={videoRef}></video>
+					<video
+						autoPlay
+						playsInline
+						muted
+						ref={videoRef}
+						className="w-800px h-450px border-4 border-blue"></video>
 				)}
 			</div>
 		</div>
