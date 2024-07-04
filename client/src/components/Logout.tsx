@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { authService } from "../api/authService";
 import { useDispatch } from "react-redux";
 import { logout } from "../store/authSlice";
 import { useNavigate } from "react-router-dom";
@@ -10,21 +9,18 @@ function Logout() {
 	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
-		const signout = async () => {
-			setLoading(true);
-			const res = await authService.logout();
-			if (res.statusCode === 200) {
-				dispatch(logout());
-				localStorage.removeItem("accessToken");
-				localStorage.removeItem("userData");
-				setLoading(false);
-				console.log("Logged out");
-				navigate("/dashboard");
-			} else {
-				console.log("Error logging out", res);
-			}
-		};
-		signout();
+		setLoading(true);
+		if (localStorage.getItem("accessToken") === null) {
+			setLoading(false);
+			navigate("/dashboard");
+			return;
+		}
+		dispatch(logout());
+		localStorage.removeItem("accessToken");
+		localStorage.removeItem("userData");
+		setLoading(false);
+		console.log("Logged out");
+		navigate("/dashboard");
 	}, []);
 
 	return !loading ? (
