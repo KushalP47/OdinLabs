@@ -71,7 +71,7 @@ const Students = () => {
 
 			const peer = createPeerConnection();
 			peerRef.current = peer;
-
+			console.log(offer);
 			await peer.setRemoteDescription(offer);
 			const answer = await peer.createAnswer();
 			await peer.setLocalDescription(answer);
@@ -104,7 +104,7 @@ const Students = () => {
 			if (videoRef.current) {
 				videoRef.current.srcObject = null;
 			}
-			socket.emit("leave-student-room", { roomId });
+			socket.emit("leave-student-room", { roomId, emailId });
 			console.log("Disconnected and left room:", roomId);
 		},
 		[socket],
@@ -140,15 +140,15 @@ const Students = () => {
 	}, [socket, handleAdminDisconnected]);
 
 	return (
-		<div className="flex min-h-screen">
+		<div className="flex flex-col min-h-screen">
 			<Navbar currentPage="Students" />
-			<div className="bg-white w-5/6 border-4 border-blue shadow-xl flex flex-col p-8">
+			<div className="bg-white w-full min-h-screen border-4 border-blue shadow-xl flex flex-col p-8">
 				<div className="flex justify-start mb-8">
 					<h1 className="text-4xl font-bold">Students</h1>
 				</div>
 				<div className="overflow-x-auto">
 					<table className="w-full text-sm text-left text-gray-500">
-						<thead className="text-xs text-gray-700 uppercase bg-gray-50">
+						<thead className="text-xs text-secondary uppercase bg-gray-50">
 							<tr>
 								<th scope="col" className="px-6 py-3">
 									Sr. No.
@@ -169,13 +169,15 @@ const Students = () => {
 						</thead>
 						<tbody>
 							{students.map((student, index) => (
-								<tr key={student.emailId} className="bg-white border-b">
+								<tr
+									key={student.emailId}
+									className="bg-white text-basecolor text-md border-b">
 									<td className="px-6 py-4">{index + 1}</td>
 									<td className="px-6 py-4">{student.emailId}</td>
 									<td className="px-6 py-4">{student.socketId}</td>
 									<td className="px-6 py-4">
 										<button
-											className="px-4 py-2 text-white bg-blue hover:bg-black rounded"
+											className="btn btn-primary text-white"
 											onClick={() =>
 												connectStudent(
 													student.emailId,
@@ -189,7 +191,7 @@ const Students = () => {
 									</td>
 									<td className="px-6 py-4">
 										<button
-											className="px-4 py-2 text-white bg-blue hover:bg-black rounded"
+											className="btn btn-outline btn-error text-white"
 											onClick={() =>
 												disconnectStudent(student.emailId, student.roomId)
 											}>
@@ -201,7 +203,7 @@ const Students = () => {
 						</tbody>
 					</table>
 
-					<div className="w-800px h-450px border-4 border-blue mt-4">
+					<div className="w-800px h-450px border-4 border-secondary mt-4">
 						<video
 							autoPlay
 							playsInline

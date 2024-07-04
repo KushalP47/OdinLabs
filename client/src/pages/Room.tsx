@@ -17,7 +17,7 @@ const Room = () => {
 	const dispatch = useDispatch();
 	const [myStream, setMyStream] = useState<MediaStream | null>(null);
 	const socket = useMemo(() => io("http://localhost:8001"), []);
-	const peer = useMemo(
+	let peer = useMemo(
 		() =>
 			new RTCPeerConnection({
 				iceServers: [
@@ -84,20 +84,27 @@ const Room = () => {
 
 	const handleAdminDisconnected = useCallback(() => {
 		console.log("Admin disconnected");
+		console.log(peer.localDescription);
+		console.log(peer.currentLocalDescription);
+		console.log(peer.remoteDescription);
+		console.log(peer.currentRemoteDescription);
 		socket.emit("disconnect-room", { emailId, roomId });
 		createOffer();
-	}, [createOffer]);
+	}, [socket, createOffer]);
 
 	useEffect(() => {
 		socket.on("answer-received", connectAdmin);
-		socket.on("admin-disconnected", handleAdminDisconnected);
 
 		return () => {
-			socket.off("answer-received");
-			socket.off("admin-disconnected");
+			socket.off("answer-received", connectAdmin);
 		};
-	}, [socket, connectAdmin, handleAdminDisconnected]);
-
+	}, [socket, connectAdmin]);
+	useEffect(() => {
+		socket.on("admin-disconnected", handleAdminDisconnected);
+		return () => {
+			socket.off("admin-disconnected", handleAdminDisconnected);
+		};
+	}, [socket, handleAdminDisconnected]);
 	useEffect(() => {
 		socket.on("user-connected", createOffer);
 		return () => {
@@ -125,23 +132,23 @@ const Room = () => {
 	}, [myStream]);
 
 	return (
-		<div className="flex min-h-screen">
+		<div className="flex flex-col min-h-screen">
 			<Navbar currentPage="Room" />
-			<div className="bg-white w-5/6 border-4 border-blue shadow-xl flex flex-col p-8">
+			<div className="bg-white w-full min-h-screen border-4 border-blue shadow-xl flex flex-col p-8">
 				<div className="flex justify-start mb-8">
-					<h1 className="text-4xl font-bold">Room</h1>
+					<h1 className="text-4xl font-bold">Streaming</h1>
 				</div>
 				<div className="flex flex-col items-center justify-center">
 					{!status && (
 						<button
-							className="px-4 py-2 bg-blue text-white rounded hover:bg-black focus:outline-none focus:bg-blue-600 mb-4"
+							className="btn btn-primary text-white text-lg"
 							onClick={startStream}>
 							Start Stream
 						</button>
 					)}
 					{status && (
 						<button
-							className="px-4 py-2 bg-blue text-white rounded hover:bg-black focus:outline-none focus:bg-red-600 mb-4"
+							className="btn btn-error text-white text-lg"
 							onClick={endStream}>
 							End Stream
 						</button>
