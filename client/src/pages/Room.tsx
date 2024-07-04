@@ -1,12 +1,20 @@
 import Navbar from "../components/Navbar";
 import { useState, useCallback, useEffect, useMemo, useRef } from "react";
 import { io } from "socket.io-client";
+import { useSelector, useDispatch } from "react-redux";
+import {
+	startStream as startStreamAction,
+	stopStream as stopStreamAction,
+} from "../store/streamSlice";
 interface AdminConnectionParams {
 	answer: RTCSessionDescriptionInit;
 	emailId: string;
 }
 const Room = () => {
-	const [status, setStatus] = useState(false);
+	const [status, setStatus] = useState<boolean>(
+		useSelector((state: any) => state.stream.status),
+	);
+	const dispatch = useDispatch();
 	const [myStream, setMyStream] = useState<MediaStream | null>(null);
 	const socket = useMemo(() => io("http://localhost:8001"), []);
 	const peer = useMemo(
@@ -27,10 +35,13 @@ const Room = () => {
 
 	const startStream = useCallback(async () => {
 		setStatus(true);
-		const stream = await navigator.mediaDevices.getUserMedia({
+		const stream = await navigator.mediaDevices.getDisplayMedia({
 			video: true,
 			audio: false,
 		});
+		dispatch(
+			startStreamAction({ streamData: stream.active, streamId: roomId }),
+		);
 		setMyStream(stream);
 		console.log("Starting stream, joining room:", roomId);
 		socket.emit("join-room", { roomId, emailId });
@@ -55,13 +66,13 @@ const Room = () => {
 				emailId,
 			);
 			await peer.setRemoteDescription(answer);
-			
 		},
 		[peer],
 	);
 
 	const endStream = useCallback(() => {
 		setStatus(false);
+		dispatch(stopStreamAction());
 		console.log("Ending stream, disconnecting room:", roomId);
 		if (myStream) {
 			myStream.getTracks().forEach((track) => track.stop());
