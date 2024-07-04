@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback, useMemo, useRef } from "react";
 import { io } from "socket.io-client";
-
+import Navbar from "../components/Navbar";
 interface studentSocket {
 	emailId: string;
 	socketId: string;
@@ -140,70 +140,75 @@ const Students = () => {
 	}, [socket, handleAdminDisconnected]);
 
 	return (
-		<div className="p-4">
-			<h1 className="text-2xl font-bold text-black mb-4">Students</h1>
-			<div className="overflow-x-auto">
-				<table className="w-full text-sm text-left text-gray-500">
-					<thead className="text-xs text-gray-700 uppercase bg-gray-50">
-						<tr>
-							<th scope="col" className="px-6 py-3">
-								Sr. No.
-							</th>
-							<th scope="col" className="px-6 py-3">
-								Student Email
-							</th>
-							<th scope="col" className="px-6 py-3">
-								Student Socket ID
-							</th>
-							<th scope="col" className="px-6 py-3">
-								Connect
-							</th>
-							<th scope="col" className="px-6 py-3">
-								Disconnect
-							</th>
-						</tr>
-					</thead>
-					<tbody>
-						{students.map((student, index) => (
-							<tr key={student.emailId} className="bg-white border-b">
-								<td className="px-6 py-4">{index + 1}</td>
-								<td className="px-6 py-4">{student.emailId}</td>
-								<td className="px-6 py-4">{student.socketId}</td>
-								<td className="px-6 py-4">
-									<button
-										className="px-4 py-2 text-white bg-blue hover:bg-black rounded"
-										onClick={() =>
-											connectStudent(
-												student.emailId,
-												student.socketId,
-												student.roomId,
-												student.offer,
-											)
-										}>
-										Connect
-									</button>
-								</td>
-								<td className="px-6 py-4">
-									<button
-										className="px-4 py-2 text-white bg-blue hover:bg-black rounded"
-										onClick={() =>
-											disconnectStudent(student.emailId, student.roomId)
-										}>
-										Disconnect
-									</button>
-								</td>
+		<div className="flex min-h-screen">
+			<Navbar currentPage="Students" />
+			<div className="bg-white w-5/6 border-4 border-blue shadow-xl flex flex-col p-8">
+				<div className="flex justify-start mb-8">
+					<h1 className="text-4xl font-bold">Students</h1>
+				</div>
+				<div className="overflow-x-auto">
+					<table className="w-full text-sm text-left text-gray-500">
+						<thead className="text-xs text-gray-700 uppercase bg-gray-50">
+							<tr>
+								<th scope="col" className="px-6 py-3">
+									Sr. No.
+								</th>
+								<th scope="col" className="px-6 py-3">
+									Student Email
+								</th>
+								<th scope="col" className="px-6 py-3">
+									Student Socket ID
+								</th>
+								<th scope="col" className="px-6 py-3">
+									Connect
+								</th>
+								<th scope="col" className="px-6 py-3">
+									Disconnect
+								</th>
 							</tr>
-						))}
-					</tbody>
-				</table>
+						</thead>
+						<tbody>
+							{students.map((student, index) => (
+								<tr key={student.emailId} className="bg-white border-b">
+									<td className="px-6 py-4">{index + 1}</td>
+									<td className="px-6 py-4">{student.emailId}</td>
+									<td className="px-6 py-4">{student.socketId}</td>
+									<td className="px-6 py-4">
+										<button
+											className="px-4 py-2 text-white bg-blue hover:bg-black rounded"
+											onClick={() =>
+												connectStudent(
+													student.emailId,
+													student.socketId,
+													student.roomId,
+													student.offer,
+												)
+											}>
+											Connect
+										</button>
+									</td>
+									<td className="px-6 py-4">
+										<button
+											className="px-4 py-2 text-white bg-blue hover:bg-black rounded"
+											onClick={() =>
+												disconnectStudent(student.emailId, student.roomId)
+											}>
+											Disconnect
+										</button>
+									</td>
+								</tr>
+							))}
+						</tbody>
+					</table>
 
-				<div className="w-800px h-450px border-4 border-blue mt-4">
-					<video
-						autoPlay
-						playsInline
-						muted
-						ref={videoRef}
-						className="w-full h-full"></video>
+					<div className="w-800px h-450px border-4 border-blue mt-4">
+						<video
+							autoPlay
+							playsInline
+							muted
+							ref={videoRef}
+							className="w-full h-full"></video>
+					</div>
 				</div>
 			</div>
 		</div>

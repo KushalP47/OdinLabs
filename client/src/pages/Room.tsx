@@ -126,9 +126,11 @@ const Room = () => {
 
 	return (
 		<div className="flex min-h-screen">
-			<Navbar currentPage="Dashboard" />
-			<div className="bg-white w-10/12 m-auto flex flex-col items-center justify-center">
-				<h1 className="text-3xl font-bold mb-4">Room</h1>
+			<Navbar currentPage="Room" />
+			<div className="bg-white w-5/6 border-4 border-blue shadow-xl flex flex-col p-8">
+				<div className="flex justify-start mb-8">
+					<h1 className="text-4xl font-bold">Room</h1>
+				</div>
 				<div className="flex flex-col items-center justify-center">
 					{!status && (
 						<button

@@ -31,7 +31,9 @@ function Logout() {
 		<>
 			<h1>Logout</h1>
 		</>
-	) : null;
+	) : (
+		<span className="loading loading-spinner loading-4xl text-secondary"></span>
+	);
 }
 
 export default Logout;

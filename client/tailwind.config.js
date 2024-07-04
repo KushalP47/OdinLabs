@@ -1,26 +1,53 @@
 /** @type {import('tailwindcss').Config} */
-export default {
+import daisyui from "daisyui";
+module.exports = {
+	darkMode: "class",
 	content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
 	theme: {
-		// extends: {
-		colors: {
-			transparent: "transparent",
-			current: "currentColor",
-			white: "#fafaff",
-			black: "#011627",
-			blue: "#2081c3",
-			yellow: "#ffee31",
-			green: "#e9fffe",
-			"green-dark": "#2d6a4f",
-			gray: "#f5f6f9",
-			red: "#eb9f9f",
-			"red-dark": "#e74c3c",
-			indigo: "#3b5998",
+		extend: {
+			colors: {
+				primary: "#dbeafe",
+				secondary: "#767FFE",
+				accent: "#5b21b6",
+				neutral: "#311c04",
+				basecolor: "#1f2937",
+				info: "#00c4f2",
+				success: "#00a35c",
+				warning: "#ff8d00",
+				error: "#fc002d",
+			},
 		},
-		fontFamily: {
-			sans: ["Poppins", "sans-serif"],
-		},
-		// },
 	},
-	plugins: [],
+
+	plugins: [daisyui],
 };
+// export default {
+// 	content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+// 	daisyui: {
+// 		themes: [
+// 			{
+// 				mytheme: {
+// 					primary: "#0034ff",
+
+// 					secondary: "#0067ff",
+
+// 					accent: "#5b21b6",
+
+// 					neutral: "#311c04",
+
+// 					"base-100": "#1f2937",
+
+// 					info: "#00c4f2",
+
+// 					success: "#00a35c",
+
+// 					warning: "#ff8d00",
+
+// 					error: "#fc002d",
+// 				},
+// 			},
+// 		],
+// 	},
+// 	plugins: [daisyui],
+// 	//...
+// };
