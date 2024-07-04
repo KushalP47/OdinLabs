@@ -1,12 +1,20 @@
 import Navbar from "../components/Navbar";
 import { useState, useCallback, useEffect, useMemo, useRef } from "react";
 import { io } from "socket.io-client";
+import { useSelector, useDispatch } from "react-redux";
+import {
+	startStream as startStreamAction,
+	stopStream as stopStreamAction,
+} from "../store/streamSlice";
 interface AdminConnectionParams {
 	answer: RTCSessionDescriptionInit;
 	emailId: string;
 }
 const Room = () => {
-	const [status, setStatus] = useState(false);
+	const [status, setStatus] = useState<boolean>(
+		useSelector((state: any) => state.stream.status),
+	);
+	const dispatch = useDispatch();
 	const [myStream, setMyStream] = useState<MediaStream | null>(null);
 	const socket = useMemo(() => io("http://localhost:8001"), []);
 	const peer = useMemo(
@@ -31,6 +39,9 @@ const Room = () => {
 			video: true,
 			audio: false,
 		});
+		dispatch(
+			startStreamAction({ streamData: stream.active, streamId: roomId }),
+		);
 		setMyStream(stream);
 		console.log("Starting stream, joining room:", roomId);
 		socket.emit("join-room", { roomId, emailId });
@@ -61,19 +72,21 @@ const Room = () => {
 
 	const endStream = useCallback(() => {
 		setStatus(false);
+		dispatch(stopStreamAction());
 		console.log("Ending stream, disconnecting room:", roomId);
 		if (myStream) {
 			myStream.getTracks().forEach((track) => track.stop());
 		}
 		socket.emit("disconnect-room", { emailId, roomId });
-		socket.disconnect();
-		peer.close();
-	}, [socket, emailId, roomId, peer, myStream]);
+		// socket.disconnect();
+		// peer.close();
+	}, [socket, emailId, roomId, myStream]);
 
 	const handleAdminDisconnected = useCallback(() => {
 		console.log("Admin disconnected");
-		peer.close();
-	}, [peer]);
+		socket.emit("disconnect-room", { emailId, roomId });
+		createOffer();
+	}, [createOffer]);
 
 	useEffect(() => {
 		socket.on("answer-received", connectAdmin);
@@ -92,6 +105,17 @@ const Room = () => {
 		};
 	}, [socket, createOffer]);
 
+	useEffect(() => {
+		peer.addEventListener("negotiationneeded", () => {
+			console.log("Negotiation needed");
+		});
+
+		return () => {
+			peer.removeEventListener("negotiationneeded", () => {
+				console.log("Negotiation needed");
+			});
+		};
+	}, []);
 	const videoRef = useRef<HTMLVideoElement>(null);
 
 	useEffect(() => {
@@ -121,7 +145,12 @@ const Room = () => {
 						</button>
 					)}
 					{myStream && (
-						<video autoPlay playsInline muted ref={videoRef}></video>
+						<video
+							className="w-800px h-450px border-4 border-blue"
+							autoPlay
+							playsInline
+							muted
+							ref={videoRef}></video>
 					)}
 				</div>
 			</div>

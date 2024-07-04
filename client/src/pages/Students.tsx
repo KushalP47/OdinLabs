@@ -14,21 +14,30 @@ interface ConnectedStudentsEvent {
 
 const Students = () => {
 	const socket = useMemo(() => io("http://localhost:8001"), []);
-	const peer = useMemo(
-		() =>
-			new RTCPeerConnection({
-				iceServers: [
-					{
-						urls: "stun:stun.l.google.com:19302",
-					},
-				],
-			}),
-		[],
-	);
-
 	const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
 	const [students, setStudents] = useState<Array<studentSocket>>([]);
 	const videoRef = useRef<HTMLVideoElement>(null);
+	const peerRef = useRef<RTCPeerConnection | null>(null);
+
+	const createPeerConnection = useCallback(() => {
+		const peer = new RTCPeerConnection({
+			iceServers: [
+				{
+					urls: "stun:stun.l.google.com:19302",
+				},
+			],
+		});
+
+		peer.addEventListener("track", handleTrackEvent);
+
+		peer.addEventListener("icecandidate", (event) => {
+			if (event.candidate) {
+				console.log("ICE candidate:", event.candidate);
+			}
+		});
+
+		return peer;
+	}, []);
 
 	const handleConnectedStudents = useCallback(
 		({ connectedUsers }: ConnectedStudentsEvent) => {
@@ -55,6 +64,14 @@ const Students = () => {
 				"Socket ID:",
 				socketId,
 			);
+
+			if (peerRef.current) {
+				peerRef.current.close();
+			}
+
+			const peer = createPeerConnection();
+			peerRef.current = peer;
+
 			await peer.setRemoteDescription(offer);
 			const answer = await peer.createAnswer();
 			await peer.setLocalDescription(answer);
@@ -62,22 +79,27 @@ const Students = () => {
 			socket.emit("join-student-room", { roomId });
 			console.log("Connected and joined room:", roomId);
 		},
-		[peer, socket],
+		[createPeerConnection, socket],
 	);
 
 	const handleTrackEvent = useCallback((event: RTCTrackEvent) => {
 		console.log("Track event:", event);
 		const incomingStream = event.streams[0];
+		console.log("Incoming stream:", incomingStream);
+
 		setRemoteStream(incomingStream);
 		if (videoRef.current) {
 			videoRef.current.srcObject = incomingStream;
+			console.log("Video ref:", videoRef.current.srcObject);
 		}
 	}, []);
 
 	const disconnectStudent = useCallback(
 		(emailId: string, roomId: string) => {
 			console.log("Disconnecting from student:", emailId);
-			peer.close();
+			if (peerRef.current) {
+				peerRef.current.close();
+			}
 			setRemoteStream(null);
 			if (videoRef.current) {
 				videoRef.current.srcObject = null;
@@ -85,40 +107,35 @@ const Students = () => {
 			socket.emit("leave-student-room", { roomId });
 			console.log("Disconnected and left room:", roomId);
 		},
-		[peer, socket],
+		[socket],
 	);
 
 	const handleAdminDisconnected = useCallback(() => {
 		console.log("Admin disconnected");
-		peer.close();
+		if (peerRef.current) {
+			peerRef.current.close();
+		}
 		setRemoteStream(null);
 		if (videoRef.current) {
 			videoRef.current.srcObject = null;
 		}
-	}, [peer]);
+	}, []);
 
 	useEffect(() => {
 		socket.emit("get-student-offers");
 	}, [socket]);
 
 	useEffect(() => {
-		peer.ontrack = handleTrackEvent;
-		return () => {
-			peer.ontrack = null;
-		};
-	}, [peer, handleTrackEvent]);
-
-	useEffect(() => {
 		socket.on("student-offers", handleConnectedStudents);
 		return () => {
-			socket.off("student-offers");
+			socket.off("student-offers", handleConnectedStudents);
 		};
 	}, [socket, handleConnectedStudents]);
 
 	useEffect(() => {
 		socket.on("admin-disconnected", handleAdminDisconnected);
 		return () => {
-			socket.off("admin-disconnected");
+			socket.off("admin-disconnected", handleAdminDisconnected);
 		};
 	}, [socket, handleAdminDisconnected]);
 
@@ -179,9 +196,15 @@ const Students = () => {
 						))}
 					</tbody>
 				</table>
-				{remoteStream && (
-					<video autoPlay playsInline muted ref={videoRef}></video>
-				)}
+
+				<div className="w-800px h-450px border-4 border-blue mt-4">
+					<video
+						autoPlay
+						playsInline
+						muted
+						ref={videoRef}
+						className="w-full h-full"></video>
+				</div>
 			</div>
 		</div>
 	);

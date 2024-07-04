@@ -31,7 +31,15 @@ io.on("connection", (socket) => {
 
     socket.on("send-offer", ({ roomId, emailId, offer }) => {
         const user: studentSocket = { emailId, socketId: socket.id, roomId, offer };
-        connectedUsers.push(user);
+        if (connectedUsers.find((user) => user.emailId === emailId)) {
+            connectedUsers.map((user) => {
+                if (user.emailId === emailId) {
+                    user.offer = offer;
+                }
+            });
+        } else {
+            connectedUsers.push(user);
+        }
         console.log("Offer received from:", emailId);
         io.emit("student-offers", { connectedUsers });
     });
@@ -40,6 +48,7 @@ io.on("connection", (socket) => {
         console.log("Fetching student offers");
         socket.emit("student-offers", { connectedUsers });
     });
+
 
     socket.on("send-answer", ({ emailId, roomId, answer }) => {
         console.log("Answer received for:", emailId);
