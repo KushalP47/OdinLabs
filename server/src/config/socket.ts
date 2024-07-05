@@ -8,6 +8,7 @@ interface RTCSessionDescriptionInit {
 interface studentSocket {
     emailId: string;
     socketId: string;
+    userName: string;
     roomId: string;
     offer: RTCSessionDescriptionInit;
 }
@@ -29,8 +30,8 @@ io.on("connection", (socket) => {
         socket.emit("user-connected", roomId);
     });
 
-    socket.on("send-offer", ({ roomId, emailId, offer }) => {
-        const user: studentSocket = { emailId, socketId: socket.id, roomId, offer };
+    socket.on("send-offer", ({ roomId, emailId, offer, userName }) => {
+        const user: studentSocket = { emailId, socketId: socket.id, roomId, offer, userName };
         if (connectedUsers.find((user) => user.emailId === emailId)) {
             connectedUsers.map((user) => {
                 if (user.emailId === emailId) {
@@ -42,6 +43,13 @@ io.on("connection", (socket) => {
         }
         console.log("Offer received from:", emailId);
         io.emit("student-offers", { connectedUsers });
+    });
+
+    socket.on("send-offer-again", ({ roomId, emailId, offer }) => {
+        console.log("Offer received again from:", emailId);
+        // const student = connectedUsers.find((user) => user.emailId === emailId);
+        const socketId = socket.id;
+        io.to(roomId).emit("sending-nego-offer", { emailId, socketId, roomId, offer });
     });
 
     socket.on("get-student-offers", () => {
@@ -63,10 +71,14 @@ io.on("connection", (socket) => {
         socket.join(roomId);
     });
 
-    socket.on("leave-student-room", ({ roomId }) => {
+    socket.on("leave-student-room", ({ emailId, roomId }) => {
         console.log("Admin leaving room:", roomId);
+        const student = connectedUsers.find((user) => user.emailId === emailId);
+        if (student) {
+            io.to(student.socketId).emit("admin-disconnected");
+        }
         socket.leave(roomId);
-        io.to(roomId).emit("admin-disconnected");
+        // io.to(roomId).emit("admin-disconnected");
     });
 
     socket.on("disconnect-room", ({ emailId, roomId }) => {

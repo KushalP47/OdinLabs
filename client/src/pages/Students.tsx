@@ -1,10 +1,11 @@
 import { useEffect, useState, useCallback, useMemo, useRef } from "react";
 import { io } from "socket.io-client";
-
+import Navbar from "../components/Navbar";
 interface studentSocket {
 	emailId: string;
 	socketId: string;
 	roomId: string;
+	userName: string;
 	offer: RTCSessionDescriptionInit;
 }
 
@@ -15,9 +16,39 @@ interface ConnectedStudentsEvent {
 const Students = () => {
 	const socket = useMemo(() => io("http://localhost:8001"), []);
 	const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
+	const [isConnected, setIsConnected] = useState(false);
 	const [students, setStudents] = useState<Array<studentSocket>>([]);
+	const [selectedStudents, setSelectedStudents] = useState<
+		Array<studentSocket>
+	>([]);
 	const videoRef = useRef<HTMLVideoElement>(null);
 	const peerRef = useRef<RTCPeerConnection | null>(null);
+	const [totalUsers, setTotalUsers] = useState([
+		{
+			emailId: "harsh.b2@ahduni.edu.in",
+			rollNumber: "AU214080",
+			name: "Harsh Bhagat",
+			status: "offline",
+		},
+		{
+			emailId: "jeet.b2@ahduni.edu.in",
+			rollNumber: "AU214033",
+			name: "Jeet Bhadaniya",
+			status: "offline",
+		},
+		{
+			emailId: "neel.s2@ahduni.edu.in",
+			rollNumber: "AU2140005",
+			name: "Neel Sheth",
+			status: "offline",
+		},
+		{
+			emailId: "kushalp4774@gmail.com",
+			rollNumber: "AU2140105",
+			name: "Kushal Patel",
+			status: "offline",
+		},
+	]);
 
 	const createPeerConnection = useCallback(() => {
 		const peer = new RTCPeerConnection({
@@ -42,9 +73,33 @@ const Students = () => {
 	const handleConnectedStudents = useCallback(
 		({ connectedUsers }: ConnectedStudentsEvent) => {
 			setStudents(connectedUsers);
+			for (let i = 0; i < totalUsers.length; i++) {
+				const student = connectedUsers.find(
+					(user) => user.emailId === totalUsers[i].emailId,
+				);
+				if (student) {
+					totalUsers[i].status = "online";
+				} else {
+					totalUsers[i].status = "offline";
+				}
+			}
+			setTotalUsers([...totalUsers]);
 			console.log("Connected Users:", connectedUsers);
 		},
 		[],
+	);
+
+	const handleStudentClick = useCallback(
+		(name: string, email: string) => {
+			console.log("Student clicked");
+			const student = students.find((user) => user.emailId === email);
+			if (student) {
+				setSelectedStudents([student]);
+				console.log("Selected student:", student);
+			}
+			console.log("Name:", name, "Email:", email);
+		},
+		[selectedStudents, students],
 	);
 
 	const connectStudent = useCallback(
@@ -64,14 +119,14 @@ const Students = () => {
 				"Socket ID:",
 				socketId,
 			);
-
+			setIsConnected(true);
 			if (peerRef.current) {
 				peerRef.current.close();
 			}
 
 			const peer = createPeerConnection();
 			peerRef.current = peer;
-
+			console.log(offer);
 			await peer.setRemoteDescription(offer);
 			const answer = await peer.createAnswer();
 			await peer.setLocalDescription(answer);
@@ -96,6 +151,7 @@ const Students = () => {
 
 	const disconnectStudent = useCallback(
 		(emailId: string, roomId: string) => {
+			setIsConnected(false);
 			console.log("Disconnecting from student:", emailId);
 			if (peerRef.current) {
 				peerRef.current.close();
@@ -104,7 +160,7 @@ const Students = () => {
 			if (videoRef.current) {
 				videoRef.current.srcObject = null;
 			}
-			socket.emit("leave-student-room", { roomId });
+			socket.emit("leave-student-room", { roomId, emailId });
 			console.log("Disconnected and left room:", roomId);
 		},
 		[socket],
@@ -112,6 +168,7 @@ const Students = () => {
 
 	const handleAdminDisconnected = useCallback(() => {
 		console.log("Admin disconnected");
+		setIsConnected(false);
 		if (peerRef.current) {
 			peerRef.current.close();
 		}
@@ -127,6 +184,7 @@ const Students = () => {
 
 	useEffect(() => {
 		socket.on("student-offers", handleConnectedStudents);
+
 		return () => {
 			socket.off("student-offers", handleConnectedStudents);
 		};
@@ -140,70 +198,174 @@ const Students = () => {
 	}, [socket, handleAdminDisconnected]);
 
 	return (
-		<div className="p-4">
-			<h1 className="text-2xl font-bold text-black mb-4">Students</h1>
-			<div className="overflow-x-auto">
-				<table className="w-full text-sm text-left text-gray-500">
-					<thead className="text-xs text-gray-700 uppercase bg-gray-50">
-						<tr>
-							<th scope="col" className="px-6 py-3">
-								Sr. No.
-							</th>
-							<th scope="col" className="px-6 py-3">
-								Student Email
-							</th>
-							<th scope="col" className="px-6 py-3">
-								Student Socket ID
-							</th>
-							<th scope="col" className="px-6 py-3">
-								Connect
-							</th>
-							<th scope="col" className="px-6 py-3">
-								Disconnect
-							</th>
-						</tr>
-					</thead>
-					<tbody>
-						{students.map((student, index) => (
-							<tr key={student.emailId} className="bg-white border-b">
-								<td className="px-6 py-4">{index + 1}</td>
-								<td className="px-6 py-4">{student.emailId}</td>
-								<td className="px-6 py-4">{student.socketId}</td>
-								<td className="px-6 py-4">
-									<button
-										className="px-4 py-2 text-white bg-blue hover:bg-black rounded"
-										onClick={() =>
-											connectStudent(
-												student.emailId,
-												student.socketId,
-												student.roomId,
-												student.offer,
-											)
-										}>
-										Connect
-									</button>
-								</td>
-								<td className="px-6 py-4">
-									<button
-										className="px-4 py-2 text-white bg-blue hover:bg-black rounded"
-										onClick={() =>
-											disconnectStudent(student.emailId, student.roomId)
-										}>
-										Disconnect
-									</button>
-								</td>
-							</tr>
-						))}
-					</tbody>
-				</table>
+		<div className="flex flex-col min-h-screen">
+			<Navbar currentPage="Students" />
+			<div className="bg-white w-full min-h-screen border-4 border-blue shadow-xl flex flex-col p-8">
+				<div className="overflow-x-auto">
+					<div className="flex flex-row">
+						<div className="flex flex-col">
+							<div className="text-basecolor text-2xl font-bold">
+								Online Students
+							</div>
+							<table className="scroll-smooth">
+								<thead className="text-xs text-secondary uppercase bg-gray-50">
+									<tr>
+										<th scope="col" className="px-6 py-3">
+											Sr. No.
+										</th>
+										<th scope="col" className="px-6 py-3">
+											Student Name
+										</th>
+										<th scope="col" className="px-6 py-3">
+											Email
+										</th>
+										<th scope="col" className="px-6 py-3">
+											Roll Number
+										</th>
+									</tr>
+								</thead>
+								<tbody>
+									{totalUsers.map((student, index) => (
+										<tr
+											key={student.emailId}
+											className="bg-white text-basecolor hover:bg-gray-50 text-md border-b"
+											onClick={() =>
+												handleStudentClick(student.name, student.emailId)
+											}>
+											{student.status === "online" && (
+												<>
+													<td className="px-6 py-4">{index + 1}</td>
+													<td className="px-6 py-4">{student.name}</td>
+													<td className="px-6 py-4">{student.emailId}</td>
+													<td className="px-6 py-4">{student.rollNumber}</td>
+												</>
+											)}
+										</tr>
+									))}
+								</tbody>
+							</table>
+						</div>
+						<div className="divider divider-horizontal"></div>
+						<div>
+							<div className="flex flex-col">
+								<div className="text-basecolor text-2xl font-bold">
+									Offline Students
+								</div>
+								<table className="scroll-smooth">
+									<thead className="text-xs sticky top-0 text-secondary uppercase bg-gray-50">
+										<tr>
+											<th scope="col" className="px-6 py-3">
+												Sr. No.
+											</th>
+											<th scope="col" className="px-6 py-3">
+												Student Name
+											</th>
+											<th scope="col" className="px-6 py-3">
+												Email
+											</th>
+											<th scope="col" className="px-6 py-3">
+												Roll Number
+											</th>
+										</tr>
+									</thead>
+									<tbody>
+										{totalUsers.map((student, index) => (
+											<tr
+												key={student.emailId}
+												className="bg-gray-100 select-none text-basecolor text-md border-b">
+												{student.status === "offline" && (
+													<>
+														<td className="px-6 py-4">{index + 1}</td>
+														<td className="px-6 py-4">{student.name}</td>
+														<td className="px-6 py-4">{student.emailId}</td>
+														<td className="px-6 py-4">{student.rollNumber}</td>
+													</>
+												)}
+											</tr>
+										))}
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<div className="divider"></div>
 
-				<div className="w-800px h-450px border-4 border-blue mt-4">
-					<video
-						autoPlay
-						playsInline
-						muted
-						ref={videoRef}
-						className="w-full h-full"></video>
+					<div>
+						<div className="text-basecolor text-2xl font-bold">
+							Selected Student
+						</div>
+						<table className="w-full text-sm text-left text-gray-500">
+							<thead className="text-xs text-secondary uppercase bg-gray-50">
+								<tr>
+									<th scope="col" className="px-6 py-3">
+										Sr. No.
+									</th>
+									<th scope="col" className="px-6 py-3">
+										Student Email
+									</th>
+									<th scope="col" className="px-6 py-3">
+										Student Socket ID
+									</th>
+									<th scope="col" className="px-6 py-3">
+										Connect
+									</th>
+									<th scope="col" className="px-6 py-3">
+										Disconnect
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								{students.map((student, index) =>
+									student.emailId === selectedStudents[0]?.emailId ? (
+										<tr
+											key={student.emailId}
+											className="bg-white text-basecolor text-md border-b">
+											<td className="px-6 py-4">{index + 1}</td>
+											<td className="px-6 py-4">{student.emailId}</td>
+											<td className="px-6 py-4">{student.socketId}</td>
+											<td className="px-6 py-4">
+												<button
+													className={`btn btn-outline btn-primary text-white ${
+														isConnected ? "cursor-not-allowed" : ""
+													}`}
+													{...(isConnected ? { disabled: true } : {})}
+													onClick={() =>
+														connectStudent(
+															student.emailId,
+															student.socketId,
+															student.roomId,
+															student.offer,
+														)
+													}>
+													Connect
+												</button>
+											</td>
+											<td className="px-6 py-4">
+												<button
+													className={`btn btn-outline btn-error text-white ${
+														!isConnected ? "cursor-not-allowed" : ""
+													}`}
+													{...(!isConnected ? { disabled: true } : {})}
+													onClick={() =>
+														disconnectStudent(student.emailId, student.roomId)
+													}>
+													Disconnect
+												</button>
+											</td>
+										</tr>
+									) : null,
+								)}
+							</tbody>
+						</table>
+					</div>
+					<div className="w-800px h-450px border-4 border-secondary mt-4">
+						<video
+							autoPlay
+							playsInline
+							muted
+							ref={videoRef}
+							className="w-full h-full"></video>
+					</div>
 				</div>
 			</div>
 		</div>

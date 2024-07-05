@@ -5,6 +5,8 @@ import store from "./store/store.js";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Dashboard from "./pages/Dashboard.tsx";
 import Students from "./pages/Students.tsx";
+import Assignments from "./pages/Assignments.tsx";
+import Problems from "./pages/Practice.tsx";
 import Room from "./pages/Room.tsx";
 import Login from "./pages/Login.tsx";
 import Logout from "./components/Logout.tsx";
@@ -29,8 +31,16 @@ const router = createBrowserRouter([
 			{
 				path: "/room",
 				element: <Room />,
-      },
-      {
+			},
+			{
+				path: "/assignment",
+				element: <Assignments />,
+			},
+			{
+				path: "/practice",
+				element: <Problems />,
+			},
+			{
 				path: "/contest",
 				element: <Contest />,
 			},
