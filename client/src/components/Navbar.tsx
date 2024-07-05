@@ -25,7 +25,7 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage }) => {
 	const pages = user?.isAdmin === true ? adminPages : studentPages;
 	const getNavItemClass = (path: string) => {
 		return currentPage === path
-			? "block py-2 px-4 text-xl rounded bg-secondary text-white transition duration-300"
+			? "block py-2 px-4 text-xl rounded font-bold bg-secondary text-white transition duration-300"
 			: "block py-2 px-4 text-xl font-bold text-white rounded hover:text-secondary transition duration-300";
 	};
 	return (
@@ -40,7 +40,7 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage }) => {
 					</Link>
 				</div>
 				<div className="navbar-center hidden lg:flex">
-					<ul className="menu menu-horizontal px-1">
+					<ul className="menu menu-horizontal px-4">
 						{pages.map((page) => (
 							<li key={page.url}>
 								<Link

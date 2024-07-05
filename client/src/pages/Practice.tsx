@@ -167,7 +167,7 @@ const Problems = () => {
 												}`}>
 												{problem.id}
 											</td>
-											<td className="px-4 py-2 border hover:bg-slate-100">
+											<td className="px-4 py-2 border hover:bg-slate-100 hover:link hover:link-primary">
 												<Link
 													to="/practice"
 													className="text-secondary font-semibold text-center">
