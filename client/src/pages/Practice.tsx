@@ -9,7 +9,7 @@ const Problems = () => {
 	const [problemsPerPage] = useState(10);
 
 	const currentStatus = useSelector((state: any) => state.auth.status);
-	const isAdmin = useSelector((state: any) => state.auth.userData.isAdmin);
+	const isAdmin = useSelector((state: any) => state.auth.userData?.isAdmin);
 	const problems = [
 		{
 			id: 1,
@@ -98,11 +98,11 @@ const Problems = () => {
 	const getDifficultyClassName = (difficulty: string | undefined) => {
 		switch (difficulty) {
 			case "Easy":
-				return "bg-green-100";
+				return "text-success";
 			case "Medium":
-				return "bg-yellow-100";
+				return "text-warning";
 			case "Hard":
-				return "bg-red-100";
+				return "text-error";
 			default:
 				return ""; // Default class if needed
 		}
@@ -145,25 +145,32 @@ const Problems = () => {
 							</div>
 
 							{/* Problems Table */}
-							<table className="table-auto w-full text-basecolor border-collapse">
+							<table className="w-full rounded-xl text-basecolor text-lg border-collapse">
 								<thead>
 									<tr>
-										<th className="px-4 py-2 border">Status</th>
+										<th className="px-4 py-2 border rounded-tl-xl">ID</th>
 										<th className="px-4 py-2 border">Title</th>
 										<th className="px-4 py-2 border">Tags</th>
-										<th className="px-4 py-2 border">Difficulty</th>
+										<th className="px-4 py-2 border rounded-tr-xl">
+											Difficulty
+										</th>
 									</tr>
 								</thead>
 								<tbody>
-									{currentProblems.map((problem) => (
-										<tr
-											key={problem.id}
-											className={`${problem.status === "Solved" ? "" : ""}`}>
-											<td className="px-4 py-2 border">{problem.status}</td>
-											<td className="px-4 py-2 border">
+									{currentProblems.map((problem, index) => (
+										<tr key={problem.id}>
+											<td
+												className={`px-4 py-2 border text-center ${
+													index === currentProblems.length - 1
+														? "rounded-bl-xl"
+														: ""
+												}`}>
+												{problem.id}
+											</td>
+											<td className="px-4 py-2 border hover:bg-slate-100">
 												<Link
 													to="/practice"
-													className="text-secondary text-center">
+													className="text-secondary font-semibold text-center">
 													{problem.title}
 												</Link>
 											</td>
@@ -171,9 +178,15 @@ const Problems = () => {
 												{problem.tags.join(", ")}
 											</td>
 											<td
-												className={`px-4 py-2 border ${getDifficultyClassName(
+												className={`px-4 py-2 border ${
+													problem.status === "Solved" ? "bg-green-100" : ""
+												} text-center ${getDifficultyClassName(
 													problem.difficulty,
-												)}`}>
+												)} ${
+													index === currentProblems.length - 1
+														? "rounded-br-xl"
+														: ""
+												}`}>
 												{problem.difficulty}
 											</td>
 										</tr>
@@ -194,7 +207,9 @@ const Problems = () => {
 											key={i}
 											onClick={() => paginate(i + 1)}
 											className={`btn btn-sm mx-1 ${
-												currentPage === i + 1 ? "btn-primary" : "btn-secondary"
+												currentPage === i + 1
+													? "btn-primary"
+													: "btn bg-white border border-secondary text-secondary hover:bg-secondary hover:text-white hover:border-secondary"
 											}`}>
 											{i + 1}
 										</button>
