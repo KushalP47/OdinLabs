@@ -1,7 +1,6 @@
 import { useEffect, useState, useCallback, useMemo, useRef } from "react";
 import { io } from "socket.io-client";
 import Navbar from "../components/Navbar";
-
 interface studentSocket {
 	emailId: string;
 	socketId: string;
@@ -18,9 +17,6 @@ const Students = () => {
 	const socket = useMemo(() => io("http://localhost:8001"), []);
 	const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
 	const [students, setStudents] = useState<Array<studentSocket>>([]);
-	const [currentStudent, setCurrentStudent] = useState<studentSocket | null>(
-		null,
-	);
 	const videoRef = useRef<HTMLVideoElement>(null);
 	const peerRef = useRef<RTCPeerConnection | null>(null);
 	const [totalUsers, setTotalUsers] = useState([
@@ -49,6 +45,7 @@ const Students = () => {
 			status: "offline",
 		},
 	]);
+
 	const createPeerConnection = useCallback(() => {
 		const peer = new RTCPeerConnection({
 			iceServers: [
@@ -69,22 +66,6 @@ const Students = () => {
 		return peer;
 	}, []);
 
-	const handleStudentClick = useCallback(
-		(name: string, email: string) => {
-			console.log("Student clicked");
-			const student = students.find((student) => student.emailId === email);
-			if (!student) return;
-			setCurrentStudent({
-				emailId: email,
-				socketId: student.socketId,
-				roomId: student.roomId,
-				userName: name,
-				offer: student.offer,
-			});
-		},
-		[setCurrentStudent, students],
-	);
-
 	const handleConnectedStudents = useCallback(
 		({ connectedUsers }: ConnectedStudentsEvent) => {
 			setStudents(connectedUsers);
@@ -103,6 +84,11 @@ const Students = () => {
 		},
 		[],
 	);
+
+	const handleStudentClick = useCallback((name: string, email: string) => {
+		console.log("Student clicked");
+		console.log("Name:", name, "Email:", email);
+	}, []);
 
 	const connectStudent = useCallback(
 		async (
@@ -288,46 +274,48 @@ const Students = () => {
 						</div>
 					</div>
 					<div className="divider"></div>
+
 					<div>
 						<div className="text-basecolor text-2xl font-bold">
 							Selected Student
 						</div>
-						{!currentStudent && <>Select a student</>}
-						{currentStudent && (
-							<table className="w-full text-sm text-left text-gray-500">
-								<thead className="text-xs text-secondary uppercase bg-gray-50">
-									<tr>
-										<th scope="col" className="px-6 py-3">
-											Student Name
-										</th>
-										<th scope="col" className="px-6 py-3">
-											Email
-										</th>
-										<th scope="col" className="px-6 py-3">
-											Student Roll Number
-										</th>
-										<th scope="col" className="px-6 py-3">
-											Connect
-										</th>
-										<th scope="col" className="px-6 py-3">
-											Disconnect
-										</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td className="px-6 py-4">{currentStudent.userName}</td>
-										<td className="px-6 py-4">{currentStudent.emailId}</td>
-										<td className="px-6 py-4">{currentStudent.roomId}</td>
+						<table className="w-full text-sm text-left text-gray-500">
+							<thead className="text-xs text-secondary uppercase bg-gray-50">
+								<tr>
+									<th scope="col" className="px-6 py-3">
+										Sr. No.
+									</th>
+									<th scope="col" className="px-6 py-3">
+										Student Email
+									</th>
+									<th scope="col" className="px-6 py-3">
+										Student Socket ID
+									</th>
+									<th scope="col" className="px-6 py-3">
+										Connect
+									</th>
+									<th scope="col" className="px-6 py-3">
+										Disconnect
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								{students.map((student, index) => (
+									<tr
+										key={student.emailId}
+										className="bg-white text-basecolor text-md border-b">
+										<td className="px-6 py-4">{index + 1}</td>
+										<td className="px-6 py-4">{student.emailId}</td>
+										<td className="px-6 py-4">{student.socketId}</td>
 										<td className="px-6 py-4">
 											<button
 												className="btn btn-primary text-white"
 												onClick={() =>
 													connectStudent(
-														currentStudent.emailId,
-														currentStudent.socketId,
-														currentStudent.roomId,
-														currentStudent.offer,
+														student.emailId,
+														student.socketId,
+														student.roomId,
+														student.offer,
 													)
 												}>
 												Connect
@@ -337,18 +325,15 @@ const Students = () => {
 											<button
 												className="btn btn-outline btn-error text-white"
 												onClick={() =>
-													disconnectStudent(
-														currentStudent.emailId,
-														currentStudent.roomId,
-													)
+													disconnectStudent(student.emailId, student.roomId)
 												}>
 												Disconnect
 											</button>
 										</td>
 									</tr>
-								</tbody>
-							</table>
-						)}
+								))}
+							</tbody>
+						</table>
 					</div>
 					<div className="w-800px h-450px border-4 border-secondary mt-4">
 						<video
