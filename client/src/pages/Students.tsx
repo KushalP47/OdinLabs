@@ -16,7 +16,11 @@ interface ConnectedStudentsEvent {
 const Students = () => {
 	const socket = useMemo(() => io("http://localhost:8001"), []);
 	const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
+	const [isConnected, setIsConnected] = useState(false);
 	const [students, setStudents] = useState<Array<studentSocket>>([]);
+	const [selectedStudents, setSelectedStudents] = useState<
+		Array<studentSocket>
+	>([]);
 	const videoRef = useRef<HTMLVideoElement>(null);
 	const peerRef = useRef<RTCPeerConnection | null>(null);
 	const [totalUsers, setTotalUsers] = useState([
@@ -85,10 +89,18 @@ const Students = () => {
 		[],
 	);
 
-	const handleStudentClick = useCallback((name: string, email: string) => {
-		console.log("Student clicked");
-		console.log("Name:", name, "Email:", email);
-	}, []);
+	const handleStudentClick = useCallback(
+		(name: string, email: string) => {
+			console.log("Student clicked");
+			const student = students.find((user) => user.emailId === email);
+			if (student) {
+				setSelectedStudents([student]);
+				console.log("Selected student:", student);
+			}
+			console.log("Name:", name, "Email:", email);
+		},
+		[selectedStudents, students],
+	);
 
 	const connectStudent = useCallback(
 		async (
@@ -107,7 +119,7 @@ const Students = () => {
 				"Socket ID:",
 				socketId,
 			);
-
+			setIsConnected(true);
 			if (peerRef.current) {
 				peerRef.current.close();
 			}
@@ -139,6 +151,7 @@ const Students = () => {
 
 	const disconnectStudent = useCallback(
 		(emailId: string, roomId: string) => {
+			setIsConnected(false);
 			console.log("Disconnecting from student:", emailId);
 			if (peerRef.current) {
 				peerRef.current.close();
@@ -155,6 +168,7 @@ const Students = () => {
 
 	const handleAdminDisconnected = useCallback(() => {
 		console.log("Admin disconnected");
+		setIsConnected(false);
 		if (peerRef.current) {
 			peerRef.current.close();
 		}
@@ -170,6 +184,7 @@ const Students = () => {
 
 	useEffect(() => {
 		socket.on("student-offers", handleConnectedStudents);
+
 		return () => {
 			socket.off("student-offers", handleConnectedStudents);
 		};
@@ -300,38 +315,46 @@ const Students = () => {
 								</tr>
 							</thead>
 							<tbody>
-								{students.map((student, index) => (
-									<tr
-										key={student.emailId}
-										className="bg-white text-basecolor text-md border-b">
-										<td className="px-6 py-4">{index + 1}</td>
-										<td className="px-6 py-4">{student.emailId}</td>
-										<td className="px-6 py-4">{student.socketId}</td>
-										<td className="px-6 py-4">
-											<button
-												className="btn btn-primary text-white"
-												onClick={() =>
-													connectStudent(
-														student.emailId,
-														student.socketId,
-														student.roomId,
-														student.offer,
-													)
-												}>
-												Connect
-											</button>
-										</td>
-										<td className="px-6 py-4">
-											<button
-												className="btn btn-outline btn-error text-white"
-												onClick={() =>
-													disconnectStudent(student.emailId, student.roomId)
-												}>
-												Disconnect
-											</button>
-										</td>
-									</tr>
-								))}
+								{students.map((student, index) =>
+									student.emailId === selectedStudents[0]?.emailId ? (
+										<tr
+											key={student.emailId}
+											className="bg-white text-basecolor text-md border-b">
+											<td className="px-6 py-4">{index + 1}</td>
+											<td className="px-6 py-4">{student.emailId}</td>
+											<td className="px-6 py-4">{student.socketId}</td>
+											<td className="px-6 py-4">
+												<button
+													className={`btn btn-outline btn-primary text-white ${
+														isConnected ? "cursor-not-allowed" : ""
+													}`}
+													{...(isConnected ? { disabled: true } : {})}
+													onClick={() =>
+														connectStudent(
+															student.emailId,
+															student.socketId,
+															student.roomId,
+															student.offer,
+														)
+													}>
+													Connect
+												</button>
+											</td>
+											<td className="px-6 py-4">
+												<button
+													className={`btn btn-outline btn-error text-white ${
+														!isConnected ? "cursor-not-allowed" : ""
+													}`}
+													{...(!isConnected ? { disabled: true } : {})}
+													onClick={() =>
+														disconnectStudent(student.emailId, student.roomId)
+													}>
+													Disconnect
+												</button>
+											</td>
+										</tr>
+									) : null,
+								)}
 							</tbody>
 						</table>
 					</div>
