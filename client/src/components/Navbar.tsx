@@ -32,7 +32,7 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage }) => {
 		<>
 			<div className="navbar bg-base-100">
 				<div className="navbar-start">
-					<div className="dropdown">
+					{/* <div className="dropdown">
 						<div
 							tabIndex={0}
 							role="button"
@@ -63,10 +63,11 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage }) => {
 								</li>
 							))}
 						</ul>
-					</div>
+					</div> */}
 					<Link
 						to="/dashboard"
 						className="btn btn-ghost text-3xl font-bold text-secondary">
+						<img src="./src/assets/valknut-1.png" className="w-24px h-24px" />
 						OdinLabs
 					</Link>
 				</div>
@@ -101,7 +102,7 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage }) => {
 							</div>
 							<ul
 								tabIndex={0}
-								className="menu menu-lg text-primary dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
+								className="menu menu-lg text-primary dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-60 p-2 shadow">
 								<li>
 									<a className="justify-between">Profile</a>
 								</li>
@@ -114,8 +115,23 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage }) => {
 										<Link to="/room">Stream</Link>
 									</li>
 								)}
-
 								<li>
+									<div className="flex flex-row justify-between">
+										Dark Mode
+										<input
+											type="checkbox"
+											value="synthwave"
+											className="toggle theme-controller"
+										/>
+									</div>
+								</li>
+								<li>
+									<a className="justify-between">Marks</a>
+								</li>
+								<li>
+									<a className="justify-between">Submissions</a>
+								</li>
+								<li className="btn btn-primary text-white">
 									<Link to="/auth/logout">Logout</Link>
 								</li>
 							</ul>

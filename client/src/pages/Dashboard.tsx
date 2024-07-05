@@ -13,10 +13,10 @@ const Dashboard = () => {
 
 			{/* Right Section */}
 			<div className="bg-white w-full min-h-screen border-4 border-secondary shadow-xl flex flex-col p-8">
-				{/* Title Section */}
+				{/* Title Section
 				<div className="flex justify-start mb-8">
 					<h1 className="text-4xl text-basecolor font-bold">Dashboard</h1>
-				</div>
+				</div> */}
 
 				{/* Content Section */}
 
@@ -45,15 +45,9 @@ const Dashboard = () => {
 					)}
 					{!status && (
 						<>
-							<h2 className="text-2xl">Please login to view this page</h2>
-							<div className="flex flex-row justify-center items-center p-4">
-								<button className="py-2 px-4 m-2 hover:bg-basecolor hover:text-secondary border-4 hover:border-secondary rounded bg-secondary text-basecolor border-basecolor transition duration-300">
-									<Link to="/auth/login">Login</Link>
-								</button>
-								<button className="py-2 px-4 m-2 hover:bg-basecolor hover:text-secondary border-4 hover:border-secondary rounded bg-secondary text-basecolor border-basecolor transition duration-300">
-									<Link to="/auth/register">Register</Link>
-								</button>
-							</div>
+							<h2 className="text-2xl text-basecolor">
+								Please login to view this page
+							</h2>
 						</>
 					)}
 				</div>
