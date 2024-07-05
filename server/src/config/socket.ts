@@ -8,6 +8,7 @@ interface RTCSessionDescriptionInit {
 interface studentSocket {
     emailId: string;
     socketId: string;
+    userName: string;
     roomId: string;
     offer: RTCSessionDescriptionInit;
 }
@@ -29,8 +30,8 @@ io.on("connection", (socket) => {
         socket.emit("user-connected", roomId);
     });
 
-    socket.on("send-offer", ({ roomId, emailId, offer }) => {
-        const user: studentSocket = { emailId, socketId: socket.id, roomId, offer };
+    socket.on("send-offer", ({ roomId, emailId, offer, userName }) => {
+        const user: studentSocket = { emailId, socketId: socket.id, roomId, offer, userName };
         if (connectedUsers.find((user) => user.emailId === emailId)) {
             connectedUsers.map((user) => {
                 if (user.emailId === emailId) {

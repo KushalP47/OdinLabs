@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Navbar from "../components/Navbar";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+
 const Dashboard = () => {
 	const status = useSelector((state: any) => state.auth.status);
 

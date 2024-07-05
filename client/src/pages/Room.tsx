@@ -32,6 +32,7 @@ const Room = () => {
 	const userData = JSON.parse(localStorage.getItem("userData") || "{}");
 	const roomId = userData.rollNumber;
 	const emailId = userData.email;
+	const userName = userData.name;
 
 	const startStream = useCallback(async () => {
 		setStatus(true);
@@ -44,7 +45,7 @@ const Room = () => {
 		);
 		setMyStream(stream);
 		console.log("Starting stream, joining room:", roomId);
-		socket.emit("join-room", { roomId, emailId });
+		socket.emit("join-room", { roomId, emailId, userName });
 
 		stream.getTracks().forEach((track) => peer.addTrack(track, stream));
 		console.log("Stream added to peer connection");
