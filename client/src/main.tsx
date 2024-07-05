@@ -3,17 +3,19 @@ import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
 import store from "./store/store.js";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Dashboard from "./pages/Dashboard.tsx";
-import Students from "./pages/Students.tsx";
-import Assignments from "./pages/Assignments.tsx";
-import Problems from "./pages/Practice.tsx";
-import Room from "./pages/Room.tsx";
-import Login from "./pages/Login.tsx";
+import {
+	Dashboard,
+	Students,
+	Assignments,
+	Problems,
+	Room,
+	Login,
+	Contest,
+	Register,
+} from "./pages/index.ts";
 import Logout from "./components/Logout.tsx";
-import Register from "./pages/Register.tsx";
 import App from "./App.tsx";
 import "./index.css";
-import Contest from "./pages/Contest.tsx";
 
 const router = createBrowserRouter([
 	{
