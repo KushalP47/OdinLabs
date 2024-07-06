@@ -47,11 +47,13 @@ const Assignments = () => {
 			{/* Right Section */}
 			<div className="bg-white w-full min-h-screen border-4 border-secondary shadow-xl flex flex-col p-8">
 				<div>
-					{isAdmin && (
-						<button className="btn btn-primary btn-md text-lg mb-4 text-white">
-							Add Assignment
-						</button>
-					)}
+					<div className="flex flex-row justify-end items-center m-4">
+						{isAdmin && (
+							<button className="btn btn-primary btn-md text-lg mb-4 text-white">
+								Add Assignment
+							</button>
+						)}
+					</div>
 					{status && (
 						<div className="flex flex-col">
 							<div className="collapse collapse-arrow bg-gray-100 mb-4">
@@ -69,7 +71,7 @@ const Assignments = () => {
 															<h2 className="card-title text-basecolor text-xl font-semibold">
 																{assignment.title}
 															</h2>
-															<div className="flex flex-row">
+															<div className="flex flex-row text-basecolor">
 																Marks: {assignment.marks}
 																<div className="divider divider-horizontal"></div>
 																Deadline: {assignment.deadline}
@@ -103,7 +105,7 @@ const Assignments = () => {
 															<h2 className="card-title text-basecolor text-xl font-semibold">
 																{assignment.title}
 															</h2>
-															<div className="flex flex-row">
+															<div className="flex flex-row text-basecolor">
 																Marks: {assignment.marks}
 																<div className="divider divider-horizontal"></div>
 																Deadline: {assignment.deadline}
@@ -139,7 +141,7 @@ const Assignments = () => {
 															<h2 className="card-title text-basecolor text-xl font-semibold">
 																{assignment.title}
 															</h2>
-															<div className="flex flex-row">
+															<div className="flex flex-row text-basecolor">
 																Marks: {assignment.marks}
 																<div className="divider divider-horizontal"></div>
 																Deadline: {assignment.deadline}

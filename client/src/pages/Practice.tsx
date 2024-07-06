@@ -129,21 +129,32 @@ const Problems = () => {
 				<div>
 					{status ? (
 						<div className="flex flex-col justify-center overflow-x-auto">
-							<div className="flex flex-row justify-between items-center m-4">
-								{isAdmin && (
+							{isAdmin && (
+								<div className="flex flex-row justify-between items-center m-4">
 									<button className="btn btn-primary btn-md text-lg text-white">
 										Add Problem
 									</button>
-								)}
-								<input
-									type="text"
-									placeholder="Search problems"
-									value={searchTerm}
-									onChange={handleSearch}
-									className="input input-primary bg-gray-50 w-full max-w-md"
-								/>
-							</div>
 
+									<input
+										type="text"
+										placeholder="Search problems"
+										value={searchTerm}
+										onChange={handleSearch}
+										className="input input-primary bg-gray-50 w-full max-w-md"
+									/>
+								</div>
+							)}
+							{!isAdmin && (
+								<div className="flex flex-row justify-end items-center m-4">
+									<input
+										type="text"
+										placeholder="Search problems"
+										value={searchTerm}
+										onChange={handleSearch}
+										className="input input-primary bg-gray-50 w-full max-w-md"
+									/>
+								</div>
+							)}
 							{/* Problems Table */}
 							<table className="w-full rounded-xl text-basecolor text-lg border-collapse">
 								<thead>
