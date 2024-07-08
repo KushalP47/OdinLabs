@@ -1,7 +1,5 @@
-import React, { useState } from "react";
-
 import Editor from "@monaco-editor/react";
-
+import { useState } from "react";
 type CodeEditorWindowProps = {
 	onChange: (key: string, value: string) => void;
 	language: string;
