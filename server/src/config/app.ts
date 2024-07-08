@@ -23,7 +23,7 @@ app.get("/", (req, res) => {
 import authRouter from "../routes/auth.routes";
 app.use("/api/v1/auth", authRouter);
 
-import peerRouter from "../routes/peer.routes";
-app.use("/api/v1/peer", peerRouter);
+import problemRouter from "../routes/problem.routes";
+app.use("/api/v1/problems", problemRouter);
 
 export { app };

@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
-import { User, IUserFunctionResponse } from '../models/user.model';
+import { IUserFunctionResponse } from '../models/user.model';
 import { userExists, createUser } from '../functions/auth';
 import { ApiResponse } from '../utils/ApiResponse';
 import { ApiError } from '../utils/ApiError';
-import { access } from 'fs';
+
 
 class AuthController {
 
