@@ -7,7 +7,7 @@ import {
 	Dashboard,
 	Students,
 	Assignments,
-	Problems,
+	Practice,
 	Room,
 	Login,
 	Contest,
@@ -40,7 +40,7 @@ const router = createBrowserRouter([
 			},
 			{
 				path: "/practice",
-				element: <Problems />,
+				element: <Practice />,
 			},
 			{
 				path: "/contest",

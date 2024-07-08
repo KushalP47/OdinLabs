@@ -60,6 +60,7 @@ class ProblemController {
 
     async getAllProblems(req: Request, res: Response) {
         try {
+            console.log("Fetching problems")
             const problems = await Problem.find();
             const response: IProblemFunctionResponse = {
                 ok: true,
