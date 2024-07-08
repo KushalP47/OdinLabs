@@ -118,7 +118,7 @@ const Practice = () => {
 											</td>
 											<td className="px-4 py-2 border hover:bg-slate-100 hover:link hover:link-primary">
 												<Link
-													to="/practice"
+													to={`/problem/${problem.problemId}`}
 													className="text-secondary font-semibold text-center">
 													{problem.problemTitle}
 												</Link>

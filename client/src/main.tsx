@@ -12,6 +12,7 @@ import {
 	Login,
 	Contest,
 	Register,
+	Problem,
 } from "./pages/index.ts";
 import Logout from "./components/Logout.tsx";
 import App from "./App.tsx";
@@ -41,6 +42,10 @@ const router = createBrowserRouter([
 			{
 				path: "/practice",
 				element: <Practice />,
+			},
+			{
+				path: "/problem/:problemId",
+				element: <Problem />,
 			},
 			{
 				path: "/contest",

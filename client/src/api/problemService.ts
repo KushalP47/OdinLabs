@@ -23,6 +23,23 @@ class ProblemService {
         }
         return response.json();
     }
+
+    async getProblem(problemId: string) {
+        const response = await fetch(`${this.url}/api/v1/problems/${problemId}`,
+            {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("accessToken"),
+                },
+            }
+        );
+        if (!response.ok) {
+            throw new Error("Error fetching problem");
+        }
+        return response.json();
+    }
+
 }
 
 export const problemService = new ProblemService();
