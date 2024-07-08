@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { Problem as IProblem } from "../types/problems";
 import { problemService } from "../api/problemService";
-import Editor from "@monaco-editor/react";
+import CodeEditor from "../components/CodeEditor";
 
 const Problem = () => {
 	const [status, setStatus] = useState(false);
@@ -93,12 +93,7 @@ const Problem = () => {
 
 						{/* Right Section: Code Editor */}
 						<div className="w-1/2 p-4 bg-gray-50">
-							<Editor
-								height="90vh"
-								defaultLanguage="javascript"
-								defaultValue="// start coding here"
-							/>
-							;
+							<CodeEditor />
 						</div>
 					</>
 				) : (
