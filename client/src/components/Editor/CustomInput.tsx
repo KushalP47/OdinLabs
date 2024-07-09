@@ -10,7 +10,7 @@ const CustomInput = ({ customInput, setCustomInput }: CustomInputProps) => {
 				value={customInput}
 				onChange={(e) => setCustomInput(e.target.value)}
 				placeholder={`Custom input`}
-				className={`focus:outline-none w-full text-basecolor z-10 rounded-lg px-4 py-2 hover:shadow transition duration-200 bg-white mt-2`}></textarea>
+				className={`focus:outline-none w-full text-basecolor text-lg z-10 rounded-lg px-4 py-2 hover:shadow transition duration-200 bg-white mt-2`}></textarea>
 		</>
 	);
 };

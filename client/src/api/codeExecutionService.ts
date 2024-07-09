@@ -4,11 +4,12 @@ export class CodeExecutionService {
     constructor() {
         this.url = import.meta.env.VITE_RAPIDAPI_URL;
     }
-    async executeCode(code: string, language: number, input: string) {
+    async executeCode(code: string, language: number, input: string, languageName: string) {
         const reqBody = JSON.stringify({ source_code: code, language_id: language, stdin: input });
         console.log(this.url, reqBody)
         const options = {
             method: "POST",
+            params: { base64_encoded: `${languageName === 'cpp' ? 'true' : 'false'}` },
             headers: {
                 "Content-Type": "application/json",
                 "X-RapidAPI-Host": import.meta.env.VITE_RAPIDAPI_HOST,
@@ -22,12 +23,10 @@ export class CodeExecutionService {
     }
 
     async checkStatus(token: string) {
-        const url = `${this.url}/${token}`;
+        const url = `${this.url}/${token}?base64_encoded=true`;
         console.log("url", url);
         const options = {
             method: "GET",
-            params: { base64_encoded: "true" },
-            // url: `${this.url}/${token}`,
             headers: {
                 "X-RapidAPI-Host": import.meta.env.VITE_RAPIDAPI_HOST,
                 "X-RapidAPI-Key": import.meta.env.VITE_RAPIDAPI_KEY,

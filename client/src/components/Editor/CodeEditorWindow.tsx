@@ -25,10 +25,10 @@ const CodeEditorWindow = ({
 			<Editor
 				height="65vh"
 				width={`100%`}
-				language={language || "javascript"}
+				language={language || "C++"}
 				value={value}
 				theme={theme}
-				defaultValue="// some comment"
+				defaultValue="// start coding here..."
 				onChange={handleEditorChange}
 				options={{
 					fontSize: 18,

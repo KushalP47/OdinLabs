@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 interface NavbarProps {
 	currentPage: string;
 }
+import logo from "../assets/viking.png";
 
 const Navbar: React.FC<NavbarProps> = ({ currentPage }) => {
 	const user = useSelector((state: any) => state.auth.userData);
@@ -35,7 +36,7 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage }) => {
 					<Link
 						to="/dashboard"
 						className="btn btn-ghost text-3xl font-bold text-secondary">
-						<img src="./src/assets/viking.png" className="w-16px h-16px" />
+						<img src={logo} className="w-16px h-16px" />
 						OdinLabs
 					</Link>
 				</div>

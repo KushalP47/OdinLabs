@@ -4,22 +4,27 @@ type OutputDetailsProps = {
 
 const OutputDetails = ({ outputDetails }: OutputDetailsProps) => {
 	return (
-		<div className="metrics-container mt-4 flex flex-col space-y-3">
-			<p className="text-sm">
+		<div className="w-full flex flex-row justify-between text-basecolor items-center p-3">
+			<p className="text-md flex flex-row">
 				Status:{" "}
-				<span className="font-semibold px-2 py-1 rounded-md bg-gray-100">
+				<span
+					className={`font-semibold px-4  rounded-md bg-gray-100 ${
+						outputDetails?.status?.description === "Accepted"
+							? "text-success"
+							: "text-error"
+					}`}>
 					{outputDetails?.status?.description}
 				</span>
 			</p>
-			<p className="text-sm">
+			<p className="text-md flex flex-row">
 				Memory:{" "}
-				<span className="font-semibold px-2 py-1 rounded-md bg-gray-100">
+				<span className="font-semibold px-4  rounded-md bg-gray-100">
 					{outputDetails?.memory}
 				</span>
 			</p>
-			<p className="text-sm">
+			<p className="text-md flex flex-row">
 				Time:{" "}
-				<span className="font-semibold px-2 py-1 rounded-md bg-gray-100">
+				<span className="font-semibold px-4 rounded-md bg-gray-100">
 					{outputDetails?.time}
 				</span>
 			</p>

@@ -45,6 +45,7 @@ const CodeEditor = () => {
 			code,
 			language.id,
 			customInput,
+			language.value,
 		);
 		console.log("res...", res);
 		if (res.errors) {
@@ -83,9 +84,10 @@ const CodeEditor = () => {
 	const handleSubmit = async () => {
 		setProcessing(true);
 		const res = await codeExecutionService.executeCode(
-			btoa(code),
+			code,
 			language.id,
-			btoa(customInput),
+			customInput,
+			language.value,
 		);
 		console.log("res...", res);
 		if (res.errors) {
@@ -98,7 +100,8 @@ const CodeEditor = () => {
 		await checkStatus(token);
 	};
 
-	function handleThemeChange(th: themeOption) {
+	function handleThemeChange(th: themeOption | null) {
+		if (!th) return;
 		const theme = th;
 		console.log("theme...", theme);
 		defineTheme(theme.value).then((_) => setTheme(theme));
@@ -145,19 +148,16 @@ const CodeEditor = () => {
 				pauseOnHover
 			/>
 
-			<div className="flex flex-col items-start">
-				<div className="w-full">
-					<div className="flex flex-row justify-center items-center">
-						<div className="px-4 py-2">
-							<LanguagesDropdown onSelectChange={onSelectChange} />
-						</div>
-						<div className="px-4 py-2">
-							<ThemeDropdown
-								handleThemeChange={handleThemeChange}
-								theme={theme}
-							/>
-						</div>
+			<div className="flex flex-col ">
+				<div className="flex flex-row justify-center items-center">
+					<div className="px-4 py-2">
+						<LanguagesDropdown onSelectChange={onSelectChange} />
 					</div>
+					<div className="px-4 py-2">
+						<ThemeDropdown handleThemeChange={handleThemeChange} />
+					</div>
+				</div>
+				<div className="w-full border-4 border-secondary p-2 rounded-xl">
 					<div className="flex flex-col w-full h-full justify-start items-end">
 						<CodeEditorWindow
 							code={code}
@@ -181,6 +181,10 @@ const CodeEditor = () => {
 							Submit
 						</button>
 					</div>
+				</div>
+				<div className="flex flex-shrink-0 w-full flex-col">
+					<div className="flex flex-col items-end"></div>
+					{outputDetails && <OutputDetails outputDetails={outputDetails} />}
 				</div>
 				<div
 					role="tablist"
@@ -212,12 +216,11 @@ const CodeEditor = () => {
 					<div
 						role="tabpanel"
 						className="tab-content bg-white border-basecolor rounded-box p-6">
-						<OutputWindow outputDetails={outputDetails} />
+						<OutputWindow
+							outputDetails={outputDetails}
+							language_id={language.id}
+						/>
 					</div>
-				</div>
-				<div className="right-container flex flex-shrink-0 w-[30%] flex-col">
-					<div className="flex flex-col items-end"></div>
-					{outputDetails && <OutputDetails outputDetails={outputDetails} />}
 				</div>
 			</div>
 		</>

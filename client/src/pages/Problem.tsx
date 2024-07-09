@@ -48,6 +48,7 @@ const Problem = () => {
 									role="tab"
 									className="tab [--tab-bg:#767FFE] [--tab-border-color:#767FFE] [--tab-text:white] text-basecolor border-4 border-secondary text-lg"
 									aria-label="Details"
+									defaultChecked
 								/>
 								<div
 									role="tabpanel"
@@ -114,7 +115,6 @@ const Problem = () => {
 									role="tab"
 									className="tab [--tab-bg:#767FFE] [--tab-border-color:#767FFE] [--tab-text:white] text-basecolor border-4 border-secondary text-lg"
 									aria-label="Editorial"
-									defaultChecked
 								/>
 								<div
 									role="tabpanel"
