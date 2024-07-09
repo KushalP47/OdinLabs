@@ -5,7 +5,6 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { codeExecutionService } from "../api/codeExecutionService";
 import { defineTheme } from "../lib/defineThemes";
-import useKeyPress from "../hooks/useKeyPress";
 import OutputWindow from "./Editor/OutputWindow";
 import CustomInput from "./Editor/CustomInput";
 import OutputDetails from "./Editor/OutputDetails";
@@ -27,22 +26,12 @@ const CodeEditor = () => {
 	});
 	const [language, setLanguage] = useState(languageOptions[0]);
 
-	const enterPress = useKeyPress("Enter");
-	const ctrlPress = useKeyPress("Control");
-
 	const onSelectChange = (sl: LanguageOption | null) => {
 		if (!sl) return;
 		console.log("selected Option...", sl);
 		setLanguage(sl);
 	};
 
-	useEffect(() => {
-		if (enterPress && ctrlPress) {
-			console.log("enterPress", enterPress);
-			console.log("ctrlPress", ctrlPress);
-			handleCompile();
-		}
-	}, [ctrlPress, enterPress]);
 	const onChange = (action: string, data: string) => {
 		switch (action) {
 			case "code": {
@@ -151,7 +140,7 @@ const CodeEditor = () => {
 				draggable
 				pauseOnHover
 			/>
-			<div className="flex flex-row">
+			<div className="flex flex-row justify-center items-center">
 				<div className="px-4 py-2">
 					<LanguagesDropdown onSelectChange={onSelectChange} />
 				</div>
@@ -159,7 +148,7 @@ const CodeEditor = () => {
 					<ThemeDropdown handleThemeChange={handleThemeChange} theme={theme} />
 				</div>
 			</div>
-			<div className="flex flex-row space-x-4 items-start px-4 py-4">
+			<div className="flex flex-col space-x-4 items-start px-1 py-1">
 				<div className="flex flex-col w-full h-full justify-start items-end">
 					<CodeEditorWindow
 						code={code}
@@ -168,14 +157,39 @@ const CodeEditor = () => {
 						theme={theme.value}
 					/>
 				</div>
-
-				<div className="right-container flex flex-shrink-0 w-[30%] flex-col">
-					<OutputWindow outputDetails={outputDetails} />
-					<div className="flex flex-col items-end">
+				<div role="tablist" className="tabs tabs-lifted w-full bg-white mt-2">
+					<input
+						type="radio"
+						name="my_tabs_2"
+						role="tab"
+						className="tab [--tab-bg:white] text-basecolor text-lg"
+						aria-label="Input"
+					/>
+					<div
+						role="tabpanel"
+						className="tab-content bg-white border-basecolor rounded-box p-6">
 						<CustomInput
 							customInput={customInput}
 							setCustomInput={setCustomInput}
 						/>
+					</div>
+
+					<input
+						type="radio"
+						name="my_tabs_2"
+						role="tab"
+						className="tab [--tab-bg:white] text-basecolor text-lg"
+						aria-label="Output"
+						defaultChecked
+					/>
+					<div
+						role="tabpanel"
+						className="tab-content bg-white border-basecolor rounded-box p-6">
+						<OutputWindow outputDetails={outputDetails} />
+					</div>
+				</div>
+				<div className="right-container flex flex-shrink-0 w-[30%] flex-col">
+					<div className="flex flex-col items-end">
 						<button
 							onClick={handleCompile}
 							disabled={!code}

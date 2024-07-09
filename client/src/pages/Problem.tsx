@@ -11,7 +11,6 @@ const Problem = () => {
 	const currentStatus = useSelector((state: any) => state.auth.status);
 	const { problemId } = useParams();
 	const [problem, setProblem] = useState<IProblem>();
-	const [code, setCode] = useState("// Write your code here");
 
 	useEffect(() => {
 		setStatus(currentStatus);
@@ -32,10 +31,6 @@ const Problem = () => {
 		}
 		getProblem();
 	}, [problemId]);
-
-	const handleCodeChange = (newCode: string) => {
-		setCode(newCode);
-	};
 
 	return (
 		<div className="flex flex-col min-h-screen">

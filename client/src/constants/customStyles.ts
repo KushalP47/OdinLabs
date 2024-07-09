@@ -2,15 +2,15 @@ export const customStyles = {
     control: (styles: any) => ({
         ...styles,
         width: "100%",
-        maxWidth: "14rem",
-        minWidth: "12rem",
+        // maxWidth: "14rem",
+        minWidth: "8rem",
         borderRadius: "5px",
-        color: "#000",
-        fontSize: "0.8rem",
-        lineHeight: "1.75rem",
+        color: "#767FFE",
+        // fontSize: "0.8rem",
+        // lineHeight: "1.75rem",
         backgroundColor: "#FFFFFF",
         cursor: "pointer",
-        border: "2px solid #000000",
+        // border: "2px solid #000000",
         ":hover": {
             border: "2px solid #767FFE",
         },
@@ -18,14 +18,11 @@ export const customStyles = {
     option: (styles: any) => {
         return {
             ...styles,
-            color: "#000",
-            fontSize: "0.8rem",
-            lineHeight: "1.75rem",
-            width: "100%",
-            background: "#fff",
+            color: "#767FFE",
+            backgroundColor: "#FFFFFF",
             ":hover": {
-                backgroundColor: "rgb(243 244 246)",
-                color: "#000",
+                backgroundColor: "#dbeafe",
+                color: "#767FFE",
                 cursor: "pointer",
             },
         };
@@ -33,19 +30,19 @@ export const customStyles = {
     menu: (styles: any) => {
         return {
             ...styles,
-            backgroundColor: "#fff",
-            maxWidth: "14rem",
-            border: "2px solid #000000",
+            backgroundColor: "#ffffff",
+            // maxWidth: "14rem",
+            // border: "2px solid #000000",
             borderRadius: "5px",
         };
     },
 
-    placeholder: (defaultStyles: any) => {
+    placeholder: () => {
         return {
-            ...defaultStyles,
-            color: "#000",
-            fontSize: "0.8rem",
-            lineHeight: "1.75rem",
+            // ...defaultStyles,
+            color: "#767FFE",
+            // fontSize: "0.8rem",
+            // lineHeight: "1.75rem",
         };
     },
 };
