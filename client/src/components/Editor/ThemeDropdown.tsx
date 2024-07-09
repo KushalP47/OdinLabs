@@ -1,30 +1,20 @@
 import Select from "react-select";
-import { monacoThemes } from "../../lib/defineThemes";
 import { customStyles } from "../../constants/customStyles";
+import { themeOptions } from "../../constants/themeOptions";
+import { themeOption } from "../../constants/themeOptions";
 
-export type themeOption = {
-	label: string;
-	value: string;
-	key: string;
-};
-type themeDropdownProps = {
-	handleThemeChange: (selectedOption: any) => void;
-	theme: { label: string; value: string; key: string };
+type ThemeDropdownProps = {
+	handleThemeChange: (selectedOption: themeOption | null) => void;
 };
 
-const ThemeDropdown = ({ handleThemeChange, theme }: themeDropdownProps) => {
+const ThemeDropdown = ({ handleThemeChange }: ThemeDropdownProps) => {
 	return (
 		<Select
-			placeholder={`Select Theme`}
-			// options={languageOptions}
-			options={Object.entries(monacoThemes).map(([themeId, themeName]) => ({
-				label: themeName,
-				value: themeId,
-				key: themeId,
-			}))}
-			value={theme}
+			placeholder={`Filter By Category`}
+			options={themeOptions}
 			styles={customStyles}
-			onChange={handleThemeChange}
+			defaultValue={themeOptions[1]}
+			onChange={(selectedOption) => handleThemeChange(selectedOption)}
 		/>
 	);
 };

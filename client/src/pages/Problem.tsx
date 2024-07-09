@@ -41,13 +41,13 @@ const Problem = () => {
 						{/* Left Section: Problem Details */}
 
 						<div className="w-1/2 p-4 overflow-auto">
-							<div role="tablist" className="tabs tabs-lifted border-secondary">
+							<div role="tablist" className="tabs tabs-lifted">
 								<input
 									type="radio"
-									name="my_tabs_2"
+									name="my_tabs_1"
 									role="tab"
 									className="tab [--tab-bg:#767FFE] [--tab-border-color:#767FFE] [--tab-text:white] text-basecolor border-4 border-secondary text-lg"
-									aria-label="Detials"
+									aria-label="Details"
 								/>
 								<div
 									role="tabpanel"
@@ -110,7 +110,7 @@ const Problem = () => {
 
 								<input
 									type="radio"
-									name="my_tabs_2"
+									name="my_tabs_1"
 									role="tab"
 									className="tab [--tab-bg:#767FFE] [--tab-border-color:#767FFE] [--tab-text:white] text-basecolor border-4 border-secondary text-lg"
 									aria-label="Editorial"
@@ -129,7 +129,7 @@ const Problem = () => {
 
 								<input
 									type="radio"
-									name="my_tabs_2"
+									name="my_tabs_1"
 									role="tab"
 									className="tab [--tab-bg:#767FFE] [--tab-border-color:#767FFE] [--tab-text:white] text-basecolor border-4 border-secondary text-lg"
 									aria-label="Submissions"
