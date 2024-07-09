@@ -13,12 +13,18 @@ import LanguagesDropdown from "./Editor/LanguageDropdown";
 import ThemeDropdown from "./Editor/ThemeDropdown";
 import { LanguageOption } from "../constants/languageOptions";
 import { themeOption } from "../constants/themeOptions";
+import { Submission } from "../types/submissions";
 
-const CodeEditor = () => {
+type CodeEditorProps = {
+	problemId: number;
+};
+
+const CodeEditor = ({ problemId }: CodeEditorProps) => {
 	const [code, setCode] = useState("");
 	const [customInput, setCustomInput] = useState("");
 	const [outputDetails, setOutputDetails] = useState(null);
-	const [processing, setProcessing] = useState(false);
+	const [runProcessing, setRunProcessing] = useState(false);
+	const [submitProcessing, setSubmitProcessing] = useState(false);
 	const [theme, setTheme] = useState<themeOption>(themeOptions[0]);
 	const [language, setLanguage] = useState<LanguageOption>(languageOptions[0]);
 
@@ -40,7 +46,7 @@ const CodeEditor = () => {
 		}
 	};
 	const handleCompile = async () => {
-		setProcessing(true);
+		setRunProcessing(true);
 		const res = await codeExecutionService.executeCode(
 			code,
 			language.id,
@@ -49,7 +55,7 @@ const CodeEditor = () => {
 		);
 		console.log("res...", res);
 		if (res.errors) {
-			setProcessing(false);
+			setRunProcessing(false);
 			showErrorToast(res.errors);
 		} else {
 			showSuccessToast("Compiled Successfully!");
@@ -62,7 +68,7 @@ const CodeEditor = () => {
 		// We will come to the implementation later in the code
 		const res = await codeExecutionService.checkStatus(token);
 		if (res.errors) {
-			setProcessing(false);
+			setRunProcessing(false);
 			showErrorToast(res.errors);
 		}
 		const statusId = res.status?.id;
@@ -73,7 +79,7 @@ const CodeEditor = () => {
 			}, 2000);
 			return;
 		} else {
-			setProcessing(false);
+			setRunProcessing(false);
 			setOutputDetails(res);
 			showSuccessToast(`Compiled Successfully!`);
 			console.log("response.data", res);
@@ -82,23 +88,25 @@ const CodeEditor = () => {
 	};
 
 	const handleSubmit = async () => {
-		setProcessing(true);
-		const res = await codeExecutionService.executeCode(
+		setSubmitProcessing(true);
+		const res = await codeExecutionService.submitCode(
 			code,
 			language.id,
-			customInput,
-			language.value,
+			problemId,
 		);
 		console.log("res...", res);
 		if (res.errors) {
-			setProcessing(false);
+			setSubmitProcessing(false);
 			showErrorToast(res.errors);
+			return;
 		} else {
 			showSuccessToast("Compiled Successfully!");
 		}
-		const token = res.token;
-		await checkStatus(token);
+		const submissionDetails: Submission = res.data;
+		displayOutput(submissionDetails);
 	};
+
+	const displayOutput = (submissionDetails: Submission) => {};
 
 	function handleThemeChange(th: themeOption | null) {
 		if (!th) return;
@@ -171,14 +179,14 @@ const CodeEditor = () => {
 							onClick={handleCompile}
 							disabled={!code}
 							className="btn btn-sm btn-primary text-white text-lg">
-							{processing ? "Processing..." : "Compile"}
+							{runProcessing ? "Processing..." : "Compile"}
 						</button>
 						<div className="divider divider-horizontal"></div>
 						<button
 							disabled={!code}
 							onClick={handleSubmit}
 							className="btn btn-sm btn-success text-white text-lg">
-							Submit
+							{submitProcessing ? "Submitting..." : "Submit"}
 						</button>
 					</div>
 				</div>
