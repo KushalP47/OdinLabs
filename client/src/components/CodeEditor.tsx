@@ -84,6 +84,24 @@ const CodeEditor = () => {
 		}
 	};
 
+	const handleSubmit = async () => {
+		setProcessing(true);
+		const res = await codeExecutionService.executeCode(
+			btoa(code),
+			language.id,
+			btoa(customInput),
+		);
+		console.log("res...", res);
+		if (res.errors) {
+			setProcessing(false);
+			showErrorToast(res.errors);
+		} else {
+			showSuccessToast("Compiled Successfully!");
+		}
+		const token = res.token;
+		await checkStatus(token);
+	};
+
 	function handleThemeChange(th: themeOption) {
 		const theme = th;
 		console.log("theme...", theme);
@@ -140,26 +158,47 @@ const CodeEditor = () => {
 				draggable
 				pauseOnHover
 			/>
-			<div className="flex flex-row justify-center items-center">
-				<div className="px-4 py-2">
-					<LanguagesDropdown onSelectChange={onSelectChange} />
-				</div>
-				<div className="px-4 py-2">
-					<ThemeDropdown handleThemeChange={handleThemeChange} theme={theme} />
-				</div>
-			</div>
-			<div className="flex flex-col space-x-4 items-start px-1 py-1">
-				<div className="flex flex-col w-full h-full justify-start items-end">
-					<CodeEditorWindow
-						code={code}
-						onChange={onChange}
-						language={language?.value}
-						theme={theme.value}
-					/>
+
+			<div className="flex flex-col items-start">
+				<div className="w-full">
+					<div className="flex flex-row justify-center items-center">
+						<div className="px-4 py-2">
+							<LanguagesDropdown onSelectChange={onSelectChange} />
+						</div>
+						<div className="px-4 py-2">
+							<ThemeDropdown
+								handleThemeChange={handleThemeChange}
+								theme={theme}
+							/>
+						</div>
+					</div>
+					<div className="flex flex-col w-full h-full justify-start items-end">
+						<CodeEditorWindow
+							code={code}
+							onChange={onChange}
+							language={language?.value}
+							theme={theme.value}
+						/>
+					</div>
+					<div className="flex flex-row justify-end items-center m-2 px-4">
+						<button
+							onClick={handleCompile}
+							disabled={!code}
+							className="btn btn-sm btn-primary text-white text-lg">
+							{processing ? "Processing..." : "Compile"}
+						</button>
+						<div className="divider divider-horizontal"></div>
+						<button
+							disabled={!code}
+							onClick={handleSubmit}
+							className="btn btn-sm btn-success text-white text-lg">
+							Submit
+						</button>
+					</div>
 				</div>
 				<div
 					role="tablist"
-					className="tabs tabs-lifted w-full bg-secondary mt-2">
+					className="tabs tabs-lifted w-full rounded-xl bg-white mt-2">
 					<input
 						type="radio"
 						name="my_tabs_2"
@@ -169,7 +208,7 @@ const CodeEditor = () => {
 					/>
 					<div
 						role="tabpanel"
-						className="tab-content bg-white border-basecolor rounded-box p-6">
+						className="tab-content bg-white border-basecolor rounded-box p-2">
 						<CustomInput
 							customInput={customInput}
 							setCustomInput={setCustomInput}
@@ -191,15 +230,7 @@ const CodeEditor = () => {
 					</div>
 				</div>
 				<div className="right-container flex flex-shrink-0 w-[30%] flex-col">
-					<div className="flex flex-col items-end">
-						<button
-							onClick={handleCompile}
-							disabled={!code}
-							className={`mt-4 border-2 border-black z-10 rounded-md px-4 py-2 hover:shadow transition duration-200 bg-white flex-shrink-0
-								${!code ? "opacity-50" : ""}`}>
-							{processing ? "Processing..." : "Compile and Execute"}
-						</button>
-					</div>
+					<div className="flex flex-col items-end"></div>
 					{outputDetails && <OutputDetails outputDetails={outputDetails} />}
 				</div>
 			</div>
