@@ -20,6 +20,7 @@ export interface JwtPayload {
     name: string;
     email: string;
     rollNumber: string;
+    isAdmin: boolean;
 }
 
 export interface IUserFunctionResponse {
@@ -75,6 +76,7 @@ userSchema.methods.generateAccessToken = function () {
         _id: this._id,
         name: this.name,
         email: this.email,
+        isAdmin: this.isAdmin,
         rollNumber: this.rollNumber,
     };
     const res = jwt.sign(payload, jwtSecret, { expiresIn: process.env.ACCESS_TOKEN_EXPIRY });

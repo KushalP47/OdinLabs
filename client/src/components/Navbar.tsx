@@ -35,7 +35,7 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage }) => {
 					<Link
 						to="/dashboard"
 						className="btn btn-ghost text-3xl font-bold text-secondary">
-						<img src="./src/assets/valknut-1.png" className="w-24px h-24px" />
+						<img src="./src/assets/viking.png" className="w-16px h-16px" />
 						OdinLabs
 					</Link>
 				</div>

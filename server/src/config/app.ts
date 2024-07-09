@@ -6,7 +6,7 @@ import bodyParser from "body-parser";
 const app = express();
 
 app.use(cors({
-    origin: process.env.CORS_ORIGIN,
+    origin: '*',
 }));
 
 app.use(express.json({ limit: "16kb" })); // to limit the size of data which express should accept
@@ -23,7 +23,7 @@ app.get("/", (req, res) => {
 import authRouter from "../routes/auth.routes";
 app.use("/api/v1/auth", authRouter);
 
-import peerRouter from "../routes/peer.routes";
-app.use("/api/v1/peer", peerRouter);
+import problemRouter from "../routes/problem.routes";
+app.use("/api/v1/problems", problemRouter);
 
 export { app };
