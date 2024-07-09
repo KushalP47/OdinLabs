@@ -150,14 +150,14 @@ const CodeEditor = () => {
 
 			<div className="flex flex-col ">
 				<div className="flex flex-row justify-center items-center">
-					<div className="px-4 py-2">
+					<div className="px-4 mb-2">
 						<LanguagesDropdown onSelectChange={onSelectChange} />
 					</div>
-					<div className="px-4 py-2">
+					<div className="px-4 mb-2">
 						<ThemeDropdown handleThemeChange={handleThemeChange} />
 					</div>
 				</div>
-				<div className="w-full border-4 border-secondary p-2 rounded-xl">
+				<div className="w-full border-4 bg-basecolor border-secondary p-2 rounded-xl">
 					<div className="flex flex-col w-full h-full justify-start items-end">
 						<CodeEditorWindow
 							code={code}

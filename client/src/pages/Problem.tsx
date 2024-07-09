@@ -41,12 +41,12 @@ const Problem = () => {
 						{/* Left Section: Problem Details */}
 
 						<div className="w-1/2 p-4 overflow-auto">
-							<div role="tablist" className="tabs tabs-lifted">
+							<div role="tablist" className="tabs tabs-lifted mt-3">
 								<input
 									type="radio"
 									name="my_tabs_1"
 									role="tab"
-									className="tab [--tab-bg:#767FFE] [--tab-border-color:#767FFE] [--tab-text:white] text-basecolor border-4 border-secondary text-lg"
+									className="tab [--tab-bg:#767FFE] [--tab-border-color:#767FFE] [--tab-text:white] text-basecolor border-4 border-secondary text-xl"
 									aria-label="Details"
 									defaultChecked
 								/>

@@ -15,11 +15,11 @@ const OutputWindow = ({ outputDetails, language_id }: OutputWindowProps) => {
 						: null}
 
 					{language_id === 62 && outputDetails.compile_output !== null
-						? `${atob(outputDetails.stdout)}`
+						? `${atob(outputDetails.compile_output)}`
 						: null}
 
 					{language_id === 71 && outputDetails.compile_output !== null
-						? `${atob(outputDetails.stdout)}`
+						? `${atob(outputDetails.compile_output)}`
 						: null}
 				</pre>
 			);
