@@ -1,3 +1,4 @@
+import {getCookie} from '../lib/cookieUtility';
 import { Problem, Testcase } from '../types/problems';
 
 class ProblemService {
@@ -13,7 +14,7 @@ class ProblemService {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("accessToken"),
+                    "Authorization": "Bearer " + getCookie("accessToken"),
                 },
             }
         );
@@ -30,7 +31,7 @@ class ProblemService {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("accessToken"),
+                    "Authorization": "Bearer " + getCookie("accessToken"),
                 },
             }
         );
