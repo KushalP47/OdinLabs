@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { login } from "../store/authSlice";
 import { authService } from "../api/authService";
 import { useNavigate } from "react-router-dom";
+import {getCookie} from "../lib/cookieUtility";
 
 const Login = () => {
 	const dispatch = useDispatch();
@@ -17,8 +18,7 @@ const Login = () => {
 		const response = await authService.login(data);
 		console.log(response);
 		if (response.statusCode === 200) {
-			const token = response.data.accessToken;
-			localStorage.setItem("accessToken", token);
+			const token = getCookie("accessToken");
 			localStorage.setItem("userData", JSON.stringify(response.data.user));
 			dispatch(login({ userData: response.data.user, accessToken: token }));
 			navigate("/dashboard");

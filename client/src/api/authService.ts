@@ -1,3 +1,4 @@
+import {getCookie} from "../lib/cookieUtility";
 import { User } from "../types/user";
 export class AuthService {
     url;
@@ -23,12 +24,13 @@ export class AuthService {
         const reqBody = { email: data.email, password: data.password };
         const response = await fetch(`http://localhost:8000/api/v1/auth/login`, {
             method: "POST",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(reqBody),
         });
-        console.log(response);
+        console.log(document.cookie)
         return response.json();
     }
     async logout() {
@@ -36,7 +38,7 @@ export class AuthService {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": "Bearer " + localStorage.getItem("accessToken"),
+                "Authorization": "Bearer " + getCookie("accessToken"),
             }
         });
         return response.json();
