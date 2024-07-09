@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import CodeEditorWindow from "./Editor/CodeEditorWindow";
 import { languageOptions } from "../constants/languageOptions";
+import { themeOptions } from "../constants/themeOptions";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { codeExecutionService } from "../api/codeExecutionService";
@@ -8,23 +9,18 @@ import { defineTheme } from "../lib/defineThemes";
 import OutputWindow from "./Editor/OutputWindow";
 import CustomInput from "./Editor/CustomInput";
 import OutputDetails from "./Editor/OutputDetails";
-import ThemeDropdown from "./Editor/ThemeDropdown";
 import LanguagesDropdown from "./Editor/LanguageDropdown";
+import ThemeDropdown from "./Editor/ThemeDropdown";
 import { LanguageOption } from "../constants/languageOptions";
-import { themeOption } from "./Editor/ThemeDropdown";
-const javascriptDefault = `// some comment`;
+import { themeOption } from "../constants/themeOptions";
 
 const CodeEditor = () => {
-	const [code, setCode] = useState(javascriptDefault);
+	const [code, setCode] = useState("");
 	const [customInput, setCustomInput] = useState("");
 	const [outputDetails, setOutputDetails] = useState(null);
 	const [processing, setProcessing] = useState(false);
-	const [theme, setTheme] = useState<themeOption>({
-		value: "oceanic-next",
-		label: "Oceanic Next",
-		key: "oceanic-next",
-	});
-	const [language, setLanguage] = useState(languageOptions[0]);
+	const [theme, setTheme] = useState<themeOption>(themeOptions[0]);
+	const [language, setLanguage] = useState<LanguageOption>(languageOptions[0]);
 
 	const onSelectChange = (sl: LanguageOption | null) => {
 		if (!sl) return;
@@ -46,9 +42,9 @@ const CodeEditor = () => {
 	const handleCompile = async () => {
 		setProcessing(true);
 		const res = await codeExecutionService.executeCode(
-			btoa(code),
+			code,
 			language.id,
-			btoa(customInput),
+			customInput,
 		);
 		console.log("res...", res);
 		if (res.errors) {
@@ -105,21 +101,11 @@ const CodeEditor = () => {
 	function handleThemeChange(th: themeOption) {
 		const theme = th;
 		console.log("theme...", theme);
-
-		if (["light", "vs-dark"].includes(theme.value)) {
-			setTheme(theme);
-		} else {
-			defineTheme(theme.value).then((_) => setTheme(theme));
-		}
+		defineTheme(theme.value).then((_) => setTheme(theme));
 	}
+
 	useEffect(() => {
-		defineTheme("oceanic-next").then((_) =>
-			setTheme({
-				value: "oceanic-next",
-				label: "Oceanic Next",
-				key: "oceanic-next",
-			}),
-		);
+		defineTheme("dark").then((_) => setTheme(themeOptions[1]));
 	}, []);
 
 	const showSuccessToast = (msg: string) => {

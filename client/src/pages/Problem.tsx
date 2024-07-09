@@ -47,7 +47,7 @@ const Problem = () => {
 									name="my_tabs_1"
 									role="tab"
 									className="tab [--tab-bg:#767FFE] [--tab-border-color:#767FFE] [--tab-text:white] text-basecolor border-4 border-secondary text-lg"
-									aria-label="Detials"
+									aria-label="Details"
 								/>
 								<div
 									role="tabpanel"
