@@ -6,15 +6,16 @@ export class AuthService {
         this.url = import.meta.env.VITE_SERVER_URL;
     }
     async register(user: User) {
-        const reqBody = { email: user.email, password: user.password, name: user.name, rollNumber: user.rollNumber };
+        const reqBody = { email: user.email, password: user.password, name: user.name, rollNumber: user.rollNumber, section: user.section };
         const response = await fetch(`http://localhost:8000/api/v1/auth/register`, {
             method: "POST",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(reqBody),
         });
-        if (response.status === 200)
+        if (response.status === 201)
             return this.login(user);
         return response.json();
     }

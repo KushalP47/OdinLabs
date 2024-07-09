@@ -1,12 +1,12 @@
 import { User, IUserFunctionResponse } from '../../models/user.model';
 
-export const createUser = async (email: string, password: string, name: string, rollNumber: string): Promise<IUserFunctionResponse> => {
+export const createUser = async (email: string, password: string, name: string, rollNumber: string, section: string): Promise<IUserFunctionResponse> => {
     const data: IUserFunctionResponse = {
         ok: false,
         message: '',
     };
 
-    if (!email || !password || !name || !rollNumber) {
+    if (!email || !password || !name || !rollNumber || !section) {
         data.message = 'All fields are required';
         return data;
     }
@@ -29,6 +29,7 @@ export const createUser = async (email: string, password: string, name: string, 
         password,
         name,
         rollNumber,
+        section,
         isAdmin
     });
 

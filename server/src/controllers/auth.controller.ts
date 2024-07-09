@@ -8,13 +8,16 @@ import { ApiError } from '../utils/ApiError';
 class AuthController {
     
     async register(req: Request, res: Response) {
-        const { email, password, name, rollNumber } = req.body;
+        const { email, password, name, rollNumber, section} = req.body;
 
+        console.log(req.body)
         // create a new user
-        const data = await createUser(email, password, name, rollNumber);
+        const data = await createUser(email, password, name, rollNumber, section);
 
         if (!data.ok) {
-            throw new ApiError(400, data.message);
+            return res
+            .status(400)
+            .json(new ApiError(400, data.message));
         }
 
         // generate access tokens
