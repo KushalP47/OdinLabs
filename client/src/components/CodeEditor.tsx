@@ -157,7 +157,9 @@ const CodeEditor = () => {
 						theme={theme.value}
 					/>
 				</div>
-				<div role="tablist" className="tabs tabs-lifted w-full bg-white mt-2">
+				<div
+					role="tablist"
+					className="tabs tabs-lifted w-full bg-secondary mt-2">
 					<input
 						type="radio"
 						name="my_tabs_2"
