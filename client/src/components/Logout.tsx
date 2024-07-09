@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { logout } from "../store/authSlice";
 import { useNavigate } from "react-router-dom";
+import {getCookie, delete_cookie} from "../lib/cookieUtility";
 
 function Logout() {
 	const dispatch = useDispatch();
@@ -10,13 +11,13 @@ function Logout() {
 
 	useEffect(() => {
 		setLoading(true);
-		if (localStorage.getItem("accessToken") === null) {
+		if (getCookie("accessToken") === null) {
 			setLoading(false);
 			navigate("/dashboard");
 			return;
 		}
 		dispatch(logout());
-		localStorage.removeItem("accessToken");
+		delete_cookie("accessToken");
 		localStorage.removeItem("userData");
 		setLoading(false);
 		console.log("Logged out");

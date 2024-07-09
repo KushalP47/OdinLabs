@@ -5,9 +5,24 @@ import bodyParser from "body-parser";
 
 const app = express();
 
-app.use(cors({
-    origin: '*',
-}));
+const corsOptions = {
+    origin: function(origin: string | undefined, callback: (error?: any, allow?: boolean) => void){
+        // Check if origin is defined before proceeding
+        if (!origin) {
+            callback(new Error('Invalid origin'), false);
+            return;
+        }
+        // Allow specific origins, replace 'http://example.com' with your actual origin
+        if (origin === "http://localhost:5173") {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true, // Reflect (pass through) the request's credentials
+};
+
+app.use(cors(corsOptions));
 
 app.use(express.json({ limit: "16kb" })); // to limit the size of data which express should accept
 app.use(express.urlencoded({ extended: true, limit: "16kb" })) // with extended flag, we will get the nested data at deep level
