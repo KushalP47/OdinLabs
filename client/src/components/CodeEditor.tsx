@@ -61,8 +61,6 @@ const CodeEditor = ({ problemId }: CodeEditorProps) => {
 		if (res.errors) {
 			setRunProcessing(false);
 			showErrorToast(res.errors);
-		} else {
-			showSuccessToast("Compiled Successfully!");
 		}
 		const token = res.token;
 		await checkStatus(token);
@@ -107,30 +105,6 @@ const CodeEditor = ({ problemId }: CodeEditorProps) => {
 		}
 		const submissionDetails = res.data;
 		setSubmissionDetails(submissionDetails);
-		const dummySubmissionDetails: Submission = {
-			id: 1,
-			source_code: code,
-			language_id: language.id, // Assuming 101 represents a specific programming language, e.g., Python
-			problem_id: problemId, // Example problem ID
-			user_id: 123, // Example user ID
-			status: "Accepted",
-			testcasesVerdict: [
-				{
-					status: "Accepted",
-					time: 0.1,
-					memory: 256,
-				},
-				{
-					status: "Accepted",
-					time: 0.2,
-					memory: 512,
-				},
-			],
-			created_at: "2023-04-01T12:00:00Z",
-			updated_at: "2023-04-01T12:00:00Z",
-		};
-		console.log("dummySubmissionDetails...", dummySubmissionDetails);
-		setSubmissionDetails(dummySubmissionDetails);
 		setIsModalVisible(true);
 		console.log("Modal visibility should be true now: ", isModalVisible);
 		setSubmitProcessing(false);

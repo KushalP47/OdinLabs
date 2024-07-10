@@ -7,27 +7,31 @@ import { problemService } from "../api/problemService";
 import CodeEditor from "../components/CodeEditor";
 import Submissions from "../components/Submissions";
 import { codeExecutionService } from "../api/codeExecutionService";
+import { Submission } from "../types/submissions";
 
 const Problem = () => {
 	const [status, setStatus] = useState(false);
 	const currentStatus = useSelector((state: any) => state.auth.status);
 	const { problemId } = useParams();
 	const [problem, setProblem] = useState<IProblem>();
-	const [submissions, setSubmissions] = useState([]);
+	const [submissions, setSubmissions] = useState<Array<Submission>>([]);
 
 	useEffect(() => {
 		setStatus(currentStatus);
 	}, [currentStatus]);
 
+	const fetchSubmissions = async () => {
+		const data = await codeExecutionService.getSubmissions();
+		if (data.statusCode !== 200) {
+			console.log("Error fetching submissions", data);
+			return;
+		}
+		const problemSubmissions: Array<Submission> = data.data.filter(
+			(submission: Submission) => submission.problemId === Number(problemId),
+		);
+		setSubmissions(problemSubmissions);
+	};
 	useEffect(() => {
-		const fetchSubmissions = async () => {
-			const data = await codeExecutionService.getSubmissions();
-			if (data.statusCode !== 200) {
-				console.log("Error fetching submissions", data);
-				return;
-			}
-			setSubmissions(data.data);
-		};
 		fetchSubmissions();
 	}, []);
 
@@ -148,11 +152,12 @@ const Problem = () => {
 									role="tab"
 									className="tab [--tab-bg:#767FFE] [--tab-border-color:#767FFE] [--tab-text:white] text-basecolor border-4 border-secondary text-lg"
 									aria-label="Submissions"
+									onClick={fetchSubmissions}
 								/>
 								<div
 									role="tabpanel"
 									className="tab-content bg-white border-secondary border-4 rounded-box p-6">
-									<h1 className="text-2xl text-secondary font-bold">
+									<h1 className="text-2xl text-secondary font-bold mb-4">
 										Submissions
 									</h1>
 

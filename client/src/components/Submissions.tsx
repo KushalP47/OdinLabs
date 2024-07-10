@@ -72,7 +72,7 @@ const Submissions = ({ submissions, problemId = null }: SubmissionsProps) => {
 						{submissions.map((submission) => (
 							<tr
 								key={submission.submissionId}
-								className="cursor-pointer hover:bg-gray-100 p-2 rounded"
+								className="text-basecolor text-center cursor-pointer hover:bg-gray-100 p-2 rounded"
 								onClick={() => handleClick(submission)}>
 								<td className="px-4 py-2 border">{submission.submissionId}</td>
 								<td className="px-4 py-2 border">{submission.problemId}</td>
