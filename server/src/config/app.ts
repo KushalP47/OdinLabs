@@ -1,7 +1,6 @@
 import express from "express";
 import cors from "cors";    // cross origin resource sharing
 import cookieParser from "cookie-parser"; // middleware used in parsing cookies
-import bodyParser from "body-parser";
 
 const app = express();
 
@@ -40,5 +39,8 @@ app.use("/api/v1/auth", authRouter);
 
 import problemRouter from "../routes/problem.routes";
 app.use("/api/v1/problems", problemRouter);
+
+import judgeRouter from "../routes/judge.routes";
+app.use("/api/v1/submit", judgeRouter);
 
 export { app };
