@@ -3,5 +3,6 @@ import { judgeController } from "../controllers/judge.controller";
 
 const router = Router();
 
-router.route('/judge').post(judgeController.check);
+router.route('/judge').post(judgeController.submit);
+
 export default router;

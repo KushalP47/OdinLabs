@@ -31,7 +31,7 @@ export const verifyJWT = asyncHandler(async (req: Request, res: Response, next: 
                 .json(new ApiError(401, "User is not registered!!"));
         }
 
-        // req.user = user;
+        req.body.user = user;
         next();
     } catch (error: any) {
         throw new ApiError(401, error?.message || "User not authenticated!!");
