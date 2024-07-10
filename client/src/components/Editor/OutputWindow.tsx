@@ -82,7 +82,7 @@ const OutputWindow = ({ outputDetails, language_id }: OutputWindowProps) => {
 	};
 	return (
 		<>
-			<div className="w-full h-full min-h-32 rounded-md text-white font-normal text-sm overflow-y-auto">
+			<div className="max-w-xl min-h-32 rounded-md text-white font-normal text-sm overflow-y-auto">
 				{outputDetails ? <>{getOutput()}</> : null}
 				{!outputDetails && <p>Output Window</p>}
 			</div>

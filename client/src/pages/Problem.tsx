@@ -5,16 +5,31 @@ import Navbar from "../components/Navbar";
 import { Problem as IProblem } from "../types/problems";
 import { problemService } from "../api/problemService";
 import CodeEditor from "../components/CodeEditor";
+import Submissions from "../components/Submissions";
+import { codeExecutionService } from "../api/codeExecutionService";
 
 const Problem = () => {
 	const [status, setStatus] = useState(false);
 	const currentStatus = useSelector((state: any) => state.auth.status);
 	const { problemId } = useParams();
 	const [problem, setProblem] = useState<IProblem>();
+	const [submissions, setSubmissions] = useState([]);
 
 	useEffect(() => {
 		setStatus(currentStatus);
 	}, [currentStatus]);
+
+	useEffect(() => {
+		// const fetchSubmissions = async () => {
+		// 	const data = await codeExecutionService.getSubmissions();
+		// 	if (!data.ok) {
+		// 		console.log("Error fetching submissions", data);
+		// 		return;
+		// 	}
+		// 	setSubmissions(data.data);
+		// };
+		// fetchSubmissions();
+	}, []);
 
 	useEffect(() => {
 		async function getProblem() {
@@ -140,12 +155,19 @@ const Problem = () => {
 									<h1 className="text-2xl text-secondary font-bold">
 										Submissions
 									</h1>
+
+									<div className="w-full text-basecolor">
+										<Submissions
+											submissions={submissions}
+											problemId={problemId}
+										/>
+									</div>
 								</div>
 							</div>
 						</div>
 						{/* Right Section: Code Editor */}
 						<div className="w-1/2 p-4 bg-gray-50">
-							<CodeEditor />
+							<CodeEditor problemId={Number(problemId)} />
 						</div>
 					</>
 				) : (

@@ -7,7 +7,8 @@ import Room from "./Room.tsx";
 import Login from "./Login.tsx";
 import Register from "./Register.tsx";
 import Contest from "./Contest.tsx";
+import SubmissionPage from "./SubmissionPage.tsx";
 
-export { Dashboard, Students, Contest, Problem, Assignments, Practice, Room, Login, Register }
+export { Dashboard, Students, Contest, Problem, SubmissionPage, Assignments, Practice, Room, Login, Register }
 
 

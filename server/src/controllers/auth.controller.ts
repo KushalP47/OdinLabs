@@ -6,7 +6,7 @@ import { ApiError } from '../utils/ApiError';
 
 
 class AuthController {
-    
+
     async register(req: Request, res: Response) {
         const { email, password, name, rollNumber, section} = req.body;
 
@@ -16,8 +16,10 @@ class AuthController {
 
         if (!data.ok) {
             return res
+
             .status(400)
             .json(new ApiError(400, data.message));
+
         }
 
         // generate access tokens
@@ -32,8 +34,8 @@ class AuthController {
         return res
             .status(201)
             .cookie("accessToken", accessToken, {
-                    maxAge: 18000000, //5 hours
-                }
+                maxAge: 18000000, //5 hours
+            }
             )
             .json(
                 new ApiResponse(
@@ -65,8 +67,8 @@ class AuthController {
 
         return res
             .cookie("accessToken", accessToken, {
-                    maxAge: 18000000, //5 hours
-                }
+                maxAge: 18000000, //5 hours
+            }
             )
             .json(
                 new ApiResponse(

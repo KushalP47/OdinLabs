@@ -98,7 +98,7 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage }) => {
 									<a className="justify-between">Marks</a>
 								</li>
 								<li>
-									<a className="justify-between">Submissions</a>
+									<Link to="/submissions">Submissions</Link>
 								</li>
 								<li className="btn btn-primary text-white">
 									<Link to="/auth/logout">Logout</Link>

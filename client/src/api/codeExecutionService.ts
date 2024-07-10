@@ -1,4 +1,4 @@
-
+import { getCookie } from "../lib/cookieUtility";
 export class CodeExecutionService {
     url;
     constructor() {
@@ -22,6 +22,21 @@ export class CodeExecutionService {
         return response.json();
     }
 
+    async submitCode(code: string, language: number, problemId: number) {
+        const userCookie = getCookie("accessToken");
+        const reqBody = JSON.stringify({ source_code: code, language_id: language, problem_id: problemId });
+        const options = {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${userCookie}`,
+            },
+            body: reqBody,
+        };
+        const response = await fetch(this.url, options);
+        return response.json();
+    }
+
     async checkStatus(token: string) {
         const url = `${this.url}/${token}?base64_encoded=true`;
         console.log("url", url);
@@ -34,6 +49,19 @@ export class CodeExecutionService {
         };
         const response = await fetch(url, options);
         console.log("response", response);
+        return response.json();
+    }
+
+    async getSubmissions() {
+        const userCookie = getCookie("accessToken");
+        const options = {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${userCookie}`,
+            },
+        };
+        const response = await fetch(this.url, options);
         return response.json();
     }
 }
