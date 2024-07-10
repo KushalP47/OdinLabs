@@ -7,6 +7,7 @@ export interface IUser extends Document {
     password: string;
     name: string;
     rollNumber: string;
+    section: string;
     isAdmin: boolean;
     createdAt: Date;
     updatedAt: Date;
@@ -46,6 +47,10 @@ const userSchema = new Schema({
         required: true
     },
     rollNumber: {
+        type: String,
+        required: true
+    },
+    section: {
         type: String,
         required: true
     },
