@@ -13,6 +13,7 @@ import {
 	Contest,
 	Register,
 	Problem,
+	SubmissionPage,
 } from "./pages/index.ts";
 import Logout from "./components/Logout.tsx";
 import App from "./App.tsx";
@@ -34,6 +35,10 @@ const router = createBrowserRouter([
 			{
 				path: "/room",
 				element: <Room />,
+			},
+			{
+				path: "/submissions",
+				element: <SubmissionPage />,
 			},
 			{
 				path: "/assignment",

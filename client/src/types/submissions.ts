@@ -5,10 +5,14 @@ export interface Submission {
     problem_id: number;
     user_id: number;
     status: string;
-    testcasesVerdict: Array<number>;
-    time: number;
-    memory: number;
+    testcasesVerdict: Array<testcaseVerdict>;
     created_at: string;
     updated_at: string;
+}
+
+export interface testcaseVerdict {
+    status: string;
+    time: number;
+    memory: number;
 }
 

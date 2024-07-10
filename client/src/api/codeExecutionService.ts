@@ -51,6 +51,19 @@ export class CodeExecutionService {
         console.log("response", response);
         return response.json();
     }
+
+    async getSubmissions() {
+        const userCookie = getCookie("accessToken");
+        const options = {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${userCookie}`,
+            },
+        };
+        const response = await fetch(this.url, options);
+        return response.json();
+    }
 }
 
 export const codeExecutionService = new CodeExecutionService();
