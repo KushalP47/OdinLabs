@@ -22,7 +22,7 @@ const Problem = () => {
 	useEffect(() => {
 		const fetchSubmissions = async () => {
 			const data = await codeExecutionService.getSubmissions();
-			if (!data.ok) {
+			if (data.statusCode !== 200) {
 				console.log("Error fetching submissions", data);
 				return;
 			}

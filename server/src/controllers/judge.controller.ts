@@ -3,15 +3,15 @@ import { ApiResponse } from '../utils/ApiResponse';
 import { ApiError } from '../utils/ApiError';
 import getTestCases from '../functions/judge/getTestCases';
 import getTokens from '../functions/judge/getTokens';
-import { SubmissionResponse, testcaseVerdict } from '../models/submissions.model';
-import { Submission } from '../models/submissions.model';
+import { Submission, SubmissionResponse, testcaseVerdict } from '../models/submissions.model';
+import { generateRandomLargeInteger } from '../utils/randomGenerator';
 class JudgeController {
 
     async submit(req: Request, res: Response) {
         try {
 
             const { sourceCode, languageId, problemId } = req.body;
-            // const userId = req.body.user.rollNumber;
+            const userId = req.body.user.rollNumber;
             console.log(sourceCode, languageId, problemId);
 
             const testcases = await getTestCases(problemId);
@@ -56,17 +56,38 @@ class JudgeController {
             } else {
                 const resp = await response.json() as SubmissionResponse;
 
-                // Transforming the response
-                const transformedSubmissions: testcaseVerdict[] = resp.submissions.map(submission => ({
-                    time: submission.time,
-                    memory: submission.memory,
-                    status: submission.status.description
-                }));
+                let acceptedCount = 0;
 
+                const transformedSubmissions: testcaseVerdict[] = resp.submissions.map(submission => {
+                    if (submission.status.description === 'Accepted') {
+                        acceptedCount += 1;
+                    }
+
+                    return ({
+                        time: submission.time,
+                        memory: submission.memory,
+                        status: submission.status.description
+                    })
+                });
+
+                const newSubmission = new Submission({
+                    submissionId: generateRandomLargeInteger(),
+                    sourceCode: sourceCode,
+                    languageId: languageId,
+                    problemId: problemId,
+                    userId: userId,
+                    status: `${acceptedCount}/${transformedSubmissions.length}`,
+                    testcasesVerdict: transformedSubmissions,
+                })
+
+                const savedSubmission = await newSubmission.save();
+                if (!savedSubmission) {
+                    throw new Error("Error saving submission");
+                }
                 res.json(
                     new ApiResponse(
                         200,
-                        transformedSubmissions
+                        savedSubmission
                     )
                 );
             }

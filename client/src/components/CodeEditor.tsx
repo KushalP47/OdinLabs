@@ -100,7 +100,7 @@ const CodeEditor = ({ problemId }: CodeEditorProps) => {
 			problemId,
 		);
 		console.log("res...", res);
-		if (!res.ok) {
+		if (res.statusCode !== 200) {
 			setSubmitProcessing(false);
 			showErrorToast(res.errors);
 			return;

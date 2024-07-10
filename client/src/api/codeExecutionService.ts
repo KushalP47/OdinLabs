@@ -26,7 +26,7 @@ export class CodeExecutionService {
 
     async submitCode(code: string, language: number, problemId: number) {
         const userCookie = getCookie("accessToken");
-        const reqBody = JSON.stringify({ source_code: code, language_id: language, problem_id: problemId });
+        const reqBody = JSON.stringify({ sourceCode: code, languageId: language, problemId: problemId });
         const options = {
             method: "POST",
             headers: {
@@ -64,7 +64,8 @@ export class CodeExecutionService {
                 "Authorization": `Bearer ${userCookie}`,
             },
         };
-        const response = await fetch(this.url, options);
+        const apiUrl = `${this.serverUrl}/api/v1/judge/getSubmission`;
+        const response = await fetch(apiUrl, options);
         return response.json();
     }
 }

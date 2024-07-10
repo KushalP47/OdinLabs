@@ -38,13 +38,13 @@ const Submissions = ({ submissions, problemId = null }: SubmissionsProps) => {
 					<tbody>
 						{submissions.map((submission) => (
 							<tr
-								key={submission.id}
+								key={submission.submissionId}
 								className="cursor-pointer hover:bg-gray-100 p-2 rounded"
 								onClick={() => handleClick(submission)}>
-								<td className="px-4 py-2 border">{problemId}</td>
-								<td className="px-4 py-2 border">{submission.id}</td>
+								<td className="px-4 py-2 border">{submission.problemId}</td>
+								<td className="px-4 py-2 border">{submission.submissionId}</td>
 								<td className="px-4 py-2 border">{submission.status}</td>
-								<td className="px-4 py-2 border">{submission.created_at}</td>
+								<td className="px-4 py-2 border">{submission.createdAt}</td>
 							</tr>
 						))}
 					</tbody>
@@ -71,13 +71,13 @@ const Submissions = ({ submissions, problemId = null }: SubmissionsProps) => {
 					<tbody>
 						{submissions.map((submission) => (
 							<tr
-								key={submission.id}
+								key={submission.submissionId}
 								className="cursor-pointer hover:bg-gray-100 p-2 rounded"
 								onClick={() => handleClick(submission)}>
-								<td className="px-4 py-2 border">{submission.id}</td>
-								<td className="px-4 py-2 border">{submission.problem_id}</td>
+								<td className="px-4 py-2 border">{submission.submissionId}</td>
+								<td className="px-4 py-2 border">{submission.problemId}</td>
 								<td className="px-4 py-2 border">{submission.status}</td>
-								<td className="px-4 py-2 border">{submission.created_at}</td>
+								<td className="px-4 py-2 border">{submission.createdAt}</td>
 							</tr>
 						))}
 					</tbody>

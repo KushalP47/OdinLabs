@@ -29,7 +29,7 @@ const SubmissionDetails = ({
 								Code
 							</h2>
 							<pre className="bg-gray-900 text-white p-4 rounded-lg min-w-max overflow-auto h-96">
-								<code>{submissionDetails?.source_code}</code>
+								<code>{submissionDetails?.sourceCode}</code>
 							</pre>
 						</div>
 						<div className="flex flex-col w-full justify-start items-center space-y-4">
@@ -44,12 +44,14 @@ const SubmissionDetails = ({
 								</thead>
 								<tbody className="text-basecolor">
 									<tr className="bg-white border-b border-gray-200">
-										<td className="px-4 py-2">{submissionDetails?.id}</td>
 										<td className="px-4 py-2">
-											{submissionDetails?.language_id}
+											{submissionDetails?.submissionId}
 										</td>
 										<td className="px-4 py-2">
-											{submissionDetails?.problem_id}
+											{submissionDetails?.languageId}
+										</td>
+										<td className="px-4 py-2">
+											{submissionDetails?.problemId}
 										</td>
 										<td className="px-4 py-2">{submissionDetails?.status}</td>
 									</tr>

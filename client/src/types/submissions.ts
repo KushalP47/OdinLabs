@@ -1,13 +1,13 @@
 export interface Submission {
-    id: number;
-    source_code: string;
-    language_id: number;
-    problem_id: number;
-    user_id: number;
+    submissionId: number;
+    sourceCode: string;
+    languageId: number;
+    problemId: number;
+    userId: string;
     status: string;
     testcasesVerdict: Array<testcaseVerdict>;
-    created_at: string;
-    updated_at: string;
+    createdAt: string;
+    updatedAt: string;
 }
 
 export interface testcaseVerdict {
