@@ -156,7 +156,7 @@ const CodeEditor = ({ problemId }: CodeEditorProps) => {
 				pauseOnHover
 			/>
 
-			<div className="flex flex-col ">
+			<div className="flex flex-col">
 				<div className="flex flex-row justify-center items-center">
 					<div className="px-4 mb-2">
 						<LanguagesDropdown onSelectChange={onSelectChange} />
@@ -165,7 +165,10 @@ const CodeEditor = ({ problemId }: CodeEditorProps) => {
 						<ThemeDropdown handleThemeChange={handleThemeChange} />
 					</div>
 				</div>
-				<div className="w-full border-4 bg-basecolor border-secondary p-2 rounded-xl">
+				<div
+					className={`w-full border-4 ${
+						theme.label === "Light" ? "bg-gray-50" : "bg-basecolor"
+					} border-secondary p-2 rounded-xl`}>
 					<div className="flex flex-col w-full h-full justify-start items-end">
 						<CodeEditorWindow
 							code={code}
@@ -201,7 +204,7 @@ const CodeEditor = ({ problemId }: CodeEditorProps) => {
 						type="radio"
 						name="my_tabs_2"
 						role="tab"
-						className="tab [--tab-bg:white] text-basecolor text-lg"
+						className="tab [--tab-bg:white] text-secondary font-semibold text-xl"
 						aria-label="Input"
 					/>
 					<div
@@ -217,13 +220,13 @@ const CodeEditor = ({ problemId }: CodeEditorProps) => {
 						type="radio"
 						name="my_tabs_2"
 						role="tab"
-						className="tab [--tab-bg:white] text-basecolor text-lg"
+						className="tab [--tab-bg:white] text-secondary font-semibold text-xl"
 						aria-label="Output"
 						defaultChecked
 					/>
 					<div
 						role="tabpanel"
-						className="tab-content bg-white border-basecolor rounded-box p-6">
+						className="w-full tab-content bg-white border-basecolor rounded-box p-6">
 						<OutputWindow
 							outputDetails={outputDetails}
 							language_id={language.id}

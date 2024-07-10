@@ -12,7 +12,7 @@ export const customStyles = {
         cursor: "pointer",
         // border: "2px solid #000000",
         ":hover": {
-            border: "2px solid #767FFE",
+            border: "#767FFE",
         },
     }),
     option: (styles: any) => {

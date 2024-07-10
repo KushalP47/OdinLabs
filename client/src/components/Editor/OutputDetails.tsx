@@ -5,7 +5,7 @@ type OutputDetailsProps = {
 const OutputDetails = ({ outputDetails }: OutputDetailsProps) => {
 	return (
 		<div className="w-full flex flex-row justify-between text-basecolor items-center p-3">
-			<p className="text-md flex flex-row">
+			<p className="text-xl flex flex-row">
 				Status:{" "}
 				<span
 					className={`font-semibold px-4  rounded-md bg-gray-100 ${
@@ -16,13 +16,13 @@ const OutputDetails = ({ outputDetails }: OutputDetailsProps) => {
 					{outputDetails?.status?.description}
 				</span>
 			</p>
-			<p className="text-md flex flex-row">
+			<p className="text-xl flex flex-row">
 				Memory:{" "}
 				<span className="font-semibold px-4  rounded-md bg-gray-100">
 					{outputDetails?.memory}
 				</span>
 			</p>
-			<p className="text-md flex flex-row">
+			<p className="text-xl flex flex-row">
 				Time:{" "}
 				<span className="font-semibold px-4 rounded-md bg-gray-100">
 					{outputDetails?.time}
