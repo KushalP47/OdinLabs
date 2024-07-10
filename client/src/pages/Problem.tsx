@@ -20,15 +20,15 @@ const Problem = () => {
 	}, [currentStatus]);
 
 	useEffect(() => {
-		const fetchSubmissions = async () => {
-			const data = await codeExecutionService.getSubmissions();
-			if (!data.ok) {
-				console.log("Error fetching submissions", data);
-				return;
-			}
-			setSubmissions(data.data);
-		};
-		fetchSubmissions();
+		// const fetchSubmissions = async () => {
+		// 	const data = await codeExecutionService.getSubmissions();
+		// 	if (!data.ok) {
+		// 		console.log("Error fetching submissions", data);
+		// 		return;
+		// 	}
+		// 	setSubmissions(data.data);
+		// };
+		// fetchSubmissions();
 	}, []);
 
 	useEffect(() => {
@@ -155,10 +155,17 @@ const Problem = () => {
 									<h1 className="text-2xl text-secondary font-bold">
 										Submissions
 									</h1>
-									<Submissions
-										submissions={submissions}
-										problemId={problemId}
-									/>
+									{submissions.length === 0 && (
+										<p className="text-xl text-basecolor">
+											No submissions yet.
+										</p>
+									)}
+
+									{submissions.length > 0 && (
+										<div className="border-4 border-secondary">
+											<Submissions submissions={submissions} />
+										</div>
+									)}
 								</div>
 							</div>
 						</div>

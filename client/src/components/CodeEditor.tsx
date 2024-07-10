@@ -27,7 +27,10 @@ const CodeEditor = ({ problemId }: CodeEditorProps) => {
 	const [submitProcessing, setSubmitProcessing] = useState(false);
 	const [theme, setTheme] = useState<themeOption>(themeOptions[0]);
 	const [language, setLanguage] = useState<LanguageOption>(languageOptions[0]);
-
+	const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+	const [submissionDetails, setSubmissionDetails] = useState<Submission | null>(
+		null,
+	);
 	const onSelectChange = (sl: LanguageOption | null) => {
 		if (!sl) return;
 		console.log("selected Option...", sl);
@@ -89,24 +92,40 @@ const CodeEditor = ({ problemId }: CodeEditorProps) => {
 
 	const handleSubmit = async () => {
 		setSubmitProcessing(true);
-		const res = await codeExecutionService.submitCode(
-			code,
-			language.id,
-			problemId,
-		);
-		console.log("res...", res);
-		if (res.errors) {
-			setSubmitProcessing(false);
-			showErrorToast(res.errors);
-			return;
-		} else {
-			showSuccessToast("Compiled Successfully!");
-		}
-		const submissionDetails: Submission = res.data;
-		displayOutput(submissionDetails);
+		console.log("submitting code...", code);
+		const dummySubmissionDetails: Submission = {
+			id: 1,
+			source_code: code,
+			language_id: language.id, // Assuming 101 represents a specific programming language, e.g., Python
+			problem_id: problemId, // Example problem ID
+			user_id: 123, // Example user ID
+			status: "Accepted",
+			testcasesVerdict: [
+				{
+					status: "Accepted",
+					time: 0.1,
+					memory: 256,
+				},
+				{
+					status: "Accepted",
+					time: 0.2,
+					memory: 512,
+				},
+			],
+			created_at: "2023-04-01T12:00:00Z",
+			updated_at: "2023-04-01T12:00:00Z",
+		};
+		console.log("dummySubmissionDetails...", dummySubmissionDetails);
+		setSubmissionDetails(dummySubmissionDetails);
+		setIsModalVisible(true);
+		console.log("Modal visibility should be true now: ", isModalVisible);
+		setSubmitProcessing(false);
 	};
 
-	const displayOutput = (submissionDetails: Submission) => {};
+	const closeModal = () => {
+		setIsModalVisible(false);
+		console.log("Modal visibility should be false now: ", isModalVisible);
+	};
 
 	function handleThemeChange(th: themeOption | null) {
 		if (!th) return;
@@ -193,6 +212,96 @@ const CodeEditor = ({ problemId }: CodeEditorProps) => {
 						</button>
 					</div>
 				</div>
+				{isModalVisible && (
+					<div className="modal modal-open" role="dialog" id="verdict">
+						<div className="modal-box bg-white rounded-lg shadow-lg w-3/4 mx-auto">
+							<div className="modal-header w-full border-b border-gray-200 pb-2 mb-4">
+								<h2 className="text-2xl w-full text-center text-secondary font-bold">
+									Submission
+								</h2>
+							</div>
+							{submissionDetails && (
+								<div className="flex flex-col w-full space-y-6">
+									<div className="w-full">
+										<h2 className="text-secondary font-bold text-left w-full text-lg">
+											Code
+										</h2>
+										<pre className="bg-gray-900 text-white p-4 rounded-lg w-full overflow-auto">
+											<code>{submissionDetails?.source_code}</code>
+										</pre>
+									</div>
+									<div className="flex flex-col w-full justify-start items-center space-y-4">
+										<table className="table-auto w-full bg-gray-50 rounded-lg overflow-hidden">
+											<thead className="bg-secondary text-white">
+												<tr>
+													<th className="px-4 py-2 text-left">Submission ID</th>
+													<th className="px-4 py-2 text-left">Language</th>
+													<th className="px-4 py-2 text-left">Problem ID</th>
+													<th className="px-4 py-2 text-left">Status</th>
+												</tr>
+											</thead>
+											<tbody className="text-basecolor">
+												<tr className="bg-white border-b border-gray-200">
+													<td className="px-4 py-2">{submissionDetails?.id}</td>
+													<td className="px-4 py-2">
+														{submissionDetails?.language_id}
+													</td>
+													<td className="px-4 py-2">
+														{submissionDetails?.problem_id}
+													</td>
+													<td className="px-4 py-2">
+														{submissionDetails?.status}
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+									<div className="mt-4 w-full">
+										<h2 className="text-lg text-secondary font-semibold">
+											Testcases Verdict
+										</h2>
+										<table className="table-auto w-full bg-gray-50 rounded-lg overflow-hidden">
+											<thead className="bg-secondary text-white">
+												<tr>
+													<th className="px-4 py-2 text-left">Testcase</th>
+													<th className="px-4 py-2 text-left">Status</th>
+													<th className="px-4 py-2 text-left">Time</th>
+													<th className="px-4 py-2 text-left">Memory</th>
+												</tr>
+											</thead>
+											<tbody className="text-basecolor">
+												{submissionDetails?.testcasesVerdict.map(
+													(testcase, index) => (
+														<tr
+															key={index}
+															className="bg-white border-b border-gray-200">
+															<td className="px-4 py-2">{index + 1}</td>
+															<td
+																className={`px-4 py-2 font-bold ${
+																	testcase.status === "Accepted"
+																		? "text-success"
+																		: "text-error"
+																}`}>
+																{testcase.status}
+															</td>
+															<td className="px-4 py-2">{testcase.time}</td>
+															<td className="px-4 py-2">{testcase.memory}</td>
+														</tr>
+													),
+												)}
+											</tbody>
+										</table>
+									</div>
+								</div>
+							)}
+							<div className="modal-action mt-6 w-full flex justify-end">
+								<button onClick={closeModal} className="btn btn-primary">
+									Close
+								</button>
+							</div>
+						</div>
+					</div>
+				)}
 				<div className="flex flex-shrink-0 w-full flex-col">
 					<div className="flex flex-col items-end"></div>
 					{outputDetails && <OutputDetails outputDetails={outputDetails} />}
@@ -237,4 +346,5 @@ const CodeEditor = ({ problemId }: CodeEditorProps) => {
 		</>
 	);
 };
+
 export default CodeEditor;
