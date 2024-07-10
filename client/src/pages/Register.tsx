@@ -63,17 +63,19 @@ const Register = () => {
 						/>
 						{errors.rollNumber && <p className="text-error">Roll No. is required.</p>}
 					</div>
-					<div>
-						<label htmlFor="usersection" className="label">
-							<span className="label-text text-black text-lg">Section</span>
+					<div className="form-control mt-2">
+						<label htmlFor="sectionSelect" className="label">
+							<span className="label-text text-black text-lg">Choose Section</span>
 						</label>
-						<input
+						<select
 							{...register("section", { required: true })}
-							type="string"
-							id="section"
-							placeholder="section A or B"
+							id="sectionSelect"
 							className="mt-1 block w-full px-3 py-2 border border-secondary bg-white text-basecolor rounded-md shadow-sm sm:text-sm"
-						/>
+						>
+							<option value="">Select Section</option>
+							<option value="1">1</option>
+							<option value="2">2</option>
+						</select>
 						{errors.section && <p className="text-error">Section is required.</p>}
 					</div>
 					<div className="form-control">
