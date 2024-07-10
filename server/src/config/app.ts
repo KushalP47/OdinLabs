@@ -41,6 +41,6 @@ import problemRouter from "../routes/problem.routes";
 app.use("/api/v1/problems", problemRouter);
 
 import judgeRouter from "../routes/judge.routes";
-app.use("/api/v1/submit", judgeRouter);
+app.use("/api/v1/judge", judgeRouter);
 
 export { app };

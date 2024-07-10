@@ -1,8 +1,10 @@
 import { getCookie } from "../lib/cookieUtility";
 export class CodeExecutionService {
     url;
+    serverUrl;
     constructor() {
         this.url = import.meta.env.VITE_RAPIDAPI_URL;
+        this.serverUrl = import.meta.env.VITE_SERVER_URL;
     }
     async executeCode(code: string, language: number, input: string, languageName: string) {
         const reqBody = JSON.stringify({ source_code: code, language_id: language, stdin: input });
@@ -33,7 +35,8 @@ export class CodeExecutionService {
             },
             body: reqBody,
         };
-        const response = await fetch(this.url, options);
+        const apiUrl = `${this.serverUrl}/api/v1/judge/submit`;
+        const response = await fetch(apiUrl, options);
         return response.json();
     }
 

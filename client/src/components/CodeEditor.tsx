@@ -94,19 +94,19 @@ const CodeEditor = ({ problemId }: CodeEditorProps) => {
 	const handleSubmit = async () => {
 		setSubmitProcessing(true);
 		console.log("submitting code...", code);
-		// const res = await codeExecutionService.submitCode(
-		// 	code,
-		// 	language.id,
-		// 	problemId,
-		// );
-		// console.log("res...", res);
-		// if (res.errors) {
-		// 	setSubmitProcessing(false);
-		// 	showErrorToast(res.errors);
-		// 	return;
-		// }
-		// const submissionDetails = res.data;
-		// setSubmissionDetails(submissionDetails);
+		const res = await codeExecutionService.submitCode(
+			code,
+			language.id,
+			problemId,
+		);
+		console.log("res...", res);
+		if (!res.ok) {
+			setSubmitProcessing(false);
+			showErrorToast(res.errors);
+			return;
+		}
+		const submissionDetails = res.data;
+		setSubmissionDetails(submissionDetails);
 		const dummySubmissionDetails: Submission = {
 			id: 1,
 			source_code: code,

@@ -20,15 +20,15 @@ const Problem = () => {
 	}, [currentStatus]);
 
 	useEffect(() => {
-		// const fetchSubmissions = async () => {
-		// 	const data = await codeExecutionService.getSubmissions();
-		// 	if (!data.ok) {
-		// 		console.log("Error fetching submissions", data);
-		// 		return;
-		// 	}
-		// 	setSubmissions(data.data);
-		// };
-		// fetchSubmissions();
+		const fetchSubmissions = async () => {
+			const data = await codeExecutionService.getSubmissions();
+			if (!data.ok) {
+				console.log("Error fetching submissions", data);
+				return;
+			}
+			setSubmissions(data.data);
+		};
+		fetchSubmissions();
 	}, []);
 
 	useEffect(() => {

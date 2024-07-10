@@ -4,7 +4,7 @@ import { ApiError } from '../utils/ApiError';
 import getTestCases from '../functions/judge/getTestCases';
 import getTokens from '../functions/judge/getTokens';
 import { SubmissionResponse, testcaseVerdict } from '../models/submissions.model';
-
+import { Submission } from '../models/submissions.model';
 class JudgeController {
 
     async submit(req: Request, res: Response) {
@@ -70,6 +70,21 @@ class JudgeController {
                     )
                 );
             }
+        } catch (Error) {
+            res.send(Error);
+        }
+    }
+
+    async getSubmissions(req: Request, res: Response) {
+        try {
+            const { user } = req.body;
+            const submissions = await Submission.find({ userId: user.rollNumber });
+            res.json(
+                new ApiResponse(
+                    200,
+                    submissions
+                )
+            );
         } catch (Error) {
             res.send(Error);
         }

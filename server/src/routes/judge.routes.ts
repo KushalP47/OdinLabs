@@ -1,8 +1,9 @@
 import Router from "express";
 import { judgeController } from "../controllers/judge.controller";
-
+import { verifyJWT } from "../middleware/auth.middleware";
 const router = Router();
 
-router.route('/judge').post(judgeController.submit);
+router.route('/submit').post(verifyJWT, judgeController.submit);
+router.route('/getSubmission').get(verifyJWT, judgeController.getSubmissions);
 
 export default router;
