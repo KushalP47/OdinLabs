@@ -24,15 +24,10 @@ const SubmissionPage = () => {
 				<h1 className="flex flex-row justify-center items-center w-full text-3xl text-secondary font-bold p-4">
 					Submissions
 				</h1>
-				{submissions.length === 0 && (
-					<p className="text-xl text-basecolor">No submissions yet.</p>
-				)}
-				{/* Submissions component */}
-				{submissions.length > 0 && (
-					<div className="border-4 border-secondary">
-						<Submissions submissions={submissions} />
-					</div>
-				)}
+
+				<div className="border-4 border-secondary">
+					<Submissions submissions={submissions} />
+				</div>
 			</div>
 		</>
 	);

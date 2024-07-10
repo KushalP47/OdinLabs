@@ -1,20 +1,32 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Submission } from "../types/submissions";
-import { Link } from "react-router-dom";
+import SubmissionDetails from "./SubmissionDetails";
 
 type SubmissionsProps = {
 	submissions: Submission[];
 	problemId?: string | null;
 };
 const Submissions = ({ submissions, problemId = null }: SubmissionsProps) => {
+	const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+	const [submissionDetails, setSubmissionDetails] = useState<Submission | null>(
+		null,
+	);
 	useEffect(() => {
 		console.log("submissions...", submissions);
 	}, [submissions]);
 
+	const handleClick = (submission: Submission) => {
+		setIsModalVisible(true);
+		setSubmissionDetails(submission);
+	};
+
+	const closeModal = () => {
+		setIsModalVisible(false);
+	};
 	return (
 		<>
 			{problemId && (
-				<table className="w-full rounded-xl text-basecolor text-lg border-collapse">
+				<table className="w-full rounded-xl text-basecolor border-collapse">
 					<thead>
 						<tr>
 							<th className="px-4 py-2 border rounded-tl-xl">Problem ID</th>
@@ -25,15 +37,12 @@ const Submissions = ({ submissions, problemId = null }: SubmissionsProps) => {
 					</thead>
 					<tbody>
 						{submissions.map((submission) => (
-							<tr key={submission.id}>
+							<tr
+								key={submission.id}
+								className="cursor-pointer hover:bg-gray-100 p-2 rounded"
+								onClick={() => handleClick(submission)}>
 								<td className="px-4 py-2 border">{problemId}</td>
-								<td className="px-4 py-2 border">
-									<Link
-										to={`/submissions/${submission.id}`}
-										className="text-secondary font-semibold text-center">
-										{submission.id}
-									</Link>
-								</td>
+								<td className="px-4 py-2 border">{submission.id}</td>
 								<td className="px-4 py-2 border">{submission.status}</td>
 								<td className="px-4 py-2 border">{submission.created_at}</td>
 							</tr>
@@ -42,23 +51,33 @@ const Submissions = ({ submissions, problemId = null }: SubmissionsProps) => {
 				</table>
 			)}
 
+			{isModalVisible && (
+				<SubmissionDetails
+					submissionDetails={submissionDetails}
+					closeModal={closeModal}
+				/>
+			)}
+
 			{!problemId && (
-				<table>
+				<table className="w-full">
 					<thead>
-						<tr>
-							<th>Submission ID</th>
-							<th>Problem ID</th>
-							<th>Status</th>
-							<th>Submitted At</th>
+						<tr className="text-basecolor font-bold">
+							<th className="px-4 py-2 border rounded-tl-xl">Submission ID</th>
+							<th className="px-4 py-2 border">Problem ID</th>
+							<th className="px-4 py-2 border">Status</th>
+							<th className="px-4 py-2 border rounded-tr-xl">Submitted At</th>
 						</tr>
 					</thead>
 					<tbody>
 						{submissions.map((submission) => (
-							<tr key={submission.id}>
-								<td>{submission.id}</td>
-								<td>{submission.problem_id}</td>
-								<td>{submission.status}</td>
-								<td>{submission.created_at}</td>
+							<tr
+								key={submission.id}
+								className="cursor-pointer hover:bg-gray-100 p-2 rounded"
+								onClick={() => handleClick(submission)}>
+								<td className="px-4 py-2 border">{submission.id}</td>
+								<td className="px-4 py-2 border">{submission.problem_id}</td>
+								<td className="px-4 py-2 border">{submission.status}</td>
+								<td className="px-4 py-2 border">{submission.created_at}</td>
 							</tr>
 						))}
 					</tbody>

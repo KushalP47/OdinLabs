@@ -155,17 +155,13 @@ const Problem = () => {
 									<h1 className="text-2xl text-secondary font-bold">
 										Submissions
 									</h1>
-									{submissions.length === 0 && (
-										<p className="text-xl text-basecolor">
-											No submissions yet.
-										</p>
-									)}
 
-									{submissions.length > 0 && (
-										<div className="border-4 border-secondary">
-											<Submissions submissions={submissions} />
-										</div>
-									)}
+									<div className="w-full text-basecolor">
+										<Submissions
+											submissions={submissions}
+											problemId={problemId}
+										/>
+									</div>
 								</div>
 							</div>
 						</div>

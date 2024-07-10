@@ -14,6 +14,7 @@ import ThemeDropdown from "./Editor/ThemeDropdown";
 import { LanguageOption } from "../constants/languageOptions";
 import { themeOption } from "../constants/themeOptions";
 import { Submission } from "../types/submissions";
+import SubmissionDetails from "./SubmissionDetails";
 
 type CodeEditorProps = {
 	problemId: number;
@@ -93,6 +94,19 @@ const CodeEditor = ({ problemId }: CodeEditorProps) => {
 	const handleSubmit = async () => {
 		setSubmitProcessing(true);
 		console.log("submitting code...", code);
+		// const res = await codeExecutionService.submitCode(
+		// 	code,
+		// 	language.id,
+		// 	problemId,
+		// );
+		// console.log("res...", res);
+		// if (res.errors) {
+		// 	setSubmitProcessing(false);
+		// 	showErrorToast(res.errors);
+		// 	return;
+		// }
+		// const submissionDetails = res.data;
+		// setSubmissionDetails(submissionDetails);
 		const dummySubmissionDetails: Submission = {
 			id: 1,
 			source_code: code,
@@ -213,94 +227,10 @@ const CodeEditor = ({ problemId }: CodeEditorProps) => {
 					</div>
 				</div>
 				{isModalVisible && (
-					<div className="modal modal-open" role="dialog" id="verdict">
-						<div className="modal-box bg-white rounded-lg shadow-lg w-3/4 mx-auto">
-							<div className="modal-header w-full border-b border-gray-200 pb-2 mb-4">
-								<h2 className="text-2xl w-full text-center text-secondary font-bold">
-									Submission
-								</h2>
-							</div>
-							{submissionDetails && (
-								<div className="flex flex-col w-full space-y-6">
-									<div className="w-full">
-										<h2 className="text-secondary font-bold text-left w-full text-lg">
-											Code
-										</h2>
-										<pre className="bg-gray-900 text-white p-4 rounded-lg w-full overflow-auto">
-											<code>{submissionDetails?.source_code}</code>
-										</pre>
-									</div>
-									<div className="flex flex-col w-full justify-start items-center space-y-4">
-										<table className="table-auto w-full bg-gray-50 rounded-lg overflow-hidden">
-											<thead className="bg-secondary text-white">
-												<tr>
-													<th className="px-4 py-2 text-left">Submission ID</th>
-													<th className="px-4 py-2 text-left">Language</th>
-													<th className="px-4 py-2 text-left">Problem ID</th>
-													<th className="px-4 py-2 text-left">Status</th>
-												</tr>
-											</thead>
-											<tbody className="text-basecolor">
-												<tr className="bg-white border-b border-gray-200">
-													<td className="px-4 py-2">{submissionDetails?.id}</td>
-													<td className="px-4 py-2">
-														{submissionDetails?.language_id}
-													</td>
-													<td className="px-4 py-2">
-														{submissionDetails?.problem_id}
-													</td>
-													<td className="px-4 py-2">
-														{submissionDetails?.status}
-													</td>
-												</tr>
-											</tbody>
-										</table>
-									</div>
-									<div className="mt-4 w-full">
-										<h2 className="text-lg text-secondary font-semibold">
-											Testcases Verdict
-										</h2>
-										<table className="table-auto w-full bg-gray-50 rounded-lg overflow-hidden">
-											<thead className="bg-secondary text-white">
-												<tr>
-													<th className="px-4 py-2 text-left">Testcase</th>
-													<th className="px-4 py-2 text-left">Status</th>
-													<th className="px-4 py-2 text-left">Time</th>
-													<th className="px-4 py-2 text-left">Memory</th>
-												</tr>
-											</thead>
-											<tbody className="text-basecolor">
-												{submissionDetails?.testcasesVerdict.map(
-													(testcase, index) => (
-														<tr
-															key={index}
-															className="bg-white border-b border-gray-200">
-															<td className="px-4 py-2">{index + 1}</td>
-															<td
-																className={`px-4 py-2 font-bold ${
-																	testcase.status === "Accepted"
-																		? "text-success"
-																		: "text-error"
-																}`}>
-																{testcase.status}
-															</td>
-															<td className="px-4 py-2">{testcase.time}</td>
-															<td className="px-4 py-2">{testcase.memory}</td>
-														</tr>
-													),
-												)}
-											</tbody>
-										</table>
-									</div>
-								</div>
-							)}
-							<div className="modal-action mt-6 w-full flex justify-end">
-								<button onClick={closeModal} className="btn btn-primary">
-									Close
-								</button>
-							</div>
-						</div>
-					</div>
+					<SubmissionDetails
+						submissionDetails={submissionDetails}
+						closeModal={closeModal}
+					/>
 				)}
 				<div className="flex flex-shrink-0 w-full flex-col">
 					<div className="flex flex-col items-end"></div>
