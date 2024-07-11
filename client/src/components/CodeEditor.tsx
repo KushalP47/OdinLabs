@@ -15,6 +15,7 @@ import { LanguageOption } from "../constants/languageOptions";
 import { themeOption } from "../constants/themeOptions";
 import { Submission } from "../types/submissions";
 import SubmissionDetails from "./SubmissionDetails";
+import { testcaseVerdict } from "../types/submissions";
 
 type CodeEditorProps = {
 	problemId: number;
@@ -66,7 +67,7 @@ const CodeEditor = ({ problemId }: CodeEditorProps) => {
 		await checkStatus(token);
 	};
 
-	const checkStatus = async (token: string) => {
+	const checkStatus = async (token: string, isSubmission: boolean = false) => {
 		// We will come to the implementation later in the code
 		const res = await codeExecutionService.checkStatus(token);
 		if (res.errors) {
@@ -81,11 +82,21 @@ const CodeEditor = ({ problemId }: CodeEditorProps) => {
 			}, 2000);
 			return;
 		} else {
-			setRunProcessing(false);
-			setOutputDetails(res);
-			showSuccessToast(`Compiled Successfully!`);
-			console.log("response.data", res);
-			return;
+			if (isSubmission) {
+				const TestCaseVeridict: testcaseVerdict = {
+					status: res.status?.description || "",
+					time: res.time || 0,
+					memory: res.memory || 0,
+				};
+				console.log("TestCaseVeridict...", TestCaseVeridict);
+				return TestCaseVeridict;
+			} else {
+				setRunProcessing(false);
+				setOutputDetails(res);
+				showSuccessToast(`Compiled Successfully!`);
+				console.log("response.data", res);
+				return;
+			}
 		}
 	};
 
@@ -103,7 +114,33 @@ const CodeEditor = ({ problemId }: CodeEditorProps) => {
 			showErrorToast(res.errors);
 			return;
 		}
-		const submissionDetails = res.data;
+		const tokens = res.data as Array<string>;
+		console.log("tokens...", tokens);
+		let i = 0;
+		const testcasesVerdict: Array<testcaseVerdict> = [];
+		while (i < tokens.length) {
+			const currentTestcaseVerdict = await checkStatus(tokens[i], true);
+			console.log("for token...", tokens[i]);
+			console.log("currentTestcaseVerdict...", currentTestcaseVerdict);
+			if (currentTestcaseVerdict !== undefined) {
+				testcasesVerdict.push(currentTestcaseVerdict);
+			}
+			i++;
+		}
+		console.log("Testcases Verdict...", testcasesVerdict);
+		const submissionResp = await codeExecutionService.storeSubmission({
+			sourceCode: code,
+			languageId: language.id,
+			problemId: problemId,
+			testcasesVerdict: testcasesVerdict,
+		});
+		console.log("submissionResp...", submissionResp);
+		if (submissionResp.statusCode !== 200) {
+			setSubmitProcessing(false);
+			showErrorToast(submissionResp.errors);
+			return;
+		}
+		const submissionDetails = submissionResp.data as Submission;
 		setSubmissionDetails(submissionDetails);
 		setIsModalVisible(true);
 		console.log("Modal visibility should be true now: ", isModalVisible);
