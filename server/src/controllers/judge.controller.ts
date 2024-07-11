@@ -7,6 +7,8 @@ import { Submission, SubmissionResponse, testcaseVerdict } from '../models/submi
 import { generateRandomLargeInteger } from '../utils/randomGenerator';
 class JudgeController {
 
+    // send the source code, language id and problem id to the judge0 api
+    // get the tokens and send it to client
     async submit(req: Request, res: Response) {
         try {
 
@@ -35,65 +37,46 @@ class JudgeController {
 
             console.log("Tokens: ", tokens);
 
-            const tokenUrl = `${process.env.VITE_RAPIDAPI_URL}/batch?tokens=${tokens.join(',')}&base64_encoded=true`;
-
-            console.log("before det")
-
-            console.log("TokenUrl: " + tokenUrl)
-            const options = {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-RapidAPI-Host": process.env.VITE_RAPIDAPI_HOST || "",
-                    "X-RapidAPI-Key": process.env.VITE_RAPIDAPI_KEY || "",
-                },
-            };
-
-            const response = await fetch(tokenUrl, options);
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            } else {
-                const resp = await response.json() as SubmissionResponse;
-
-                let acceptedCount = 0;
-
-                const transformedSubmissions: testcaseVerdict[] = resp.submissions.map(submission => {
-                    if (submission.status.description === 'Accepted') {
-                        acceptedCount += 1;
-                    }
-
-                    return ({
-                        time: submission.time,
-                        memory: submission.memory,
-                        status: submission.status.description
-                    })
-                });
-
-                const newSubmission = new Submission({
-                    submissionId: generateRandomLargeInteger(),
-                    sourceCode: sourceCode,
-                    languageId: languageId,
-                    problemId: problemId,
-                    userId: userId,
-                    status: `${acceptedCount}/${transformedSubmissions.length}`,
-                    testcasesVerdict: transformedSubmissions,
-                })
-
-                const savedSubmission = await newSubmission.save();
-                if (!savedSubmission) {
-                    throw new Error("Error saving submission");
-                }
-                res.json(
-                    new ApiResponse(
-                        200,
-                        savedSubmission
-                    )
-                );
-            }
+            res.json(
+                new ApiResponse(
+                    200,
+                    tokens
+                )
+            );
         } catch (Error) {
             res.send(Error);
         }
+    }
+
+    // get the verdict of the submission
+    // and store the submission in the database
+    async storeSubmission(req: Request, res: Response) {
+        const { testcasesVerdict } = req.body;
+        const { user } = req.body;
+        const userId = user.rollNumber;
+        let cnt = 0;
+        testcasesVerdict.forEach((verdict: testcaseVerdict) => {
+            if (verdict.status === "Accepted") {
+                cnt++;
+            }
+        });
+        console.log(testcasesVerdict);
+        const newSubmission = new Submission({
+            submissionId: generateRandomLargeInteger(),
+            sourceCode: req.body.sourceCode,
+            languageId: req.body.languageId,
+            problemId: req.body.problemId,
+            status: `${cnt}/${testcasesVerdict.length}`,
+            userId: userId,
+            testcasesVerdict: req.body.testcasesVerdict
+        });
+        newSubmission.save();
+        res.json(
+            new ApiResponse(
+                200,
+                newSubmission
+            )
+        );
     }
 
     async getSubmissions(req: Request, res: Response) {

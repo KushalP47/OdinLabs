@@ -36,6 +36,23 @@ export class CodeExecutionService {
             body: reqBody,
         };
         const apiUrl = `${this.serverUrl}/api/v1/judge/submit`;
+        // will get array of tokens
+        const response = await fetch(apiUrl, options);
+        return response.json();
+    }
+
+    async storeSubmission(submission: any) {
+        const userCookie = getCookie("accessToken");
+        const reqBody = JSON.stringify(submission);
+        const options = {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${userCookie}`,
+            },
+            body: reqBody,
+        };
+        const apiUrl = `${this.serverUrl}/api/v1/judge/storeSubmission`;
         const response = await fetch(apiUrl, options);
         return response.json();
     }
