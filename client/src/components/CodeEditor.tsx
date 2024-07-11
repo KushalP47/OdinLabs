@@ -78,7 +78,7 @@ const CodeEditor = ({ problemId }: CodeEditorProps) => {
 		if (statusId === 1 || statusId === 2) {
 			// still processing
 			setTimeout(() => {
-				checkStatus(token);
+				checkStatus(token, isSubmission);
 			}, 2000);
 			return;
 		} else {
@@ -118,14 +118,14 @@ const CodeEditor = ({ problemId }: CodeEditorProps) => {
 		console.log("tokens...", tokens);
 		let i = 0;
 		const testcasesVerdict: Array<testcaseVerdict> = [];
-		while (i < tokens.length) {
+		while (testcasesVerdict.length < tokens.length) {
 			const currentTestcaseVerdict = await checkStatus(tokens[i], true);
 			console.log("for token...", tokens[i]);
 			console.log("currentTestcaseVerdict...", currentTestcaseVerdict);
 			if (currentTestcaseVerdict !== undefined) {
 				testcasesVerdict.push(currentTestcaseVerdict);
 			}
-			i++;
+			i = (i + 1) % tokens.length;
 		}
 		console.log("Testcases Verdict...", testcasesVerdict);
 		const submissionResp = await codeExecutionService.storeSubmission({
