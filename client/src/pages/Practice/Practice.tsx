@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import Navbar from "../components/Navbar";
+import Navbar from "../../components/Navbar";
 import { Link } from "react-router-dom";
-import { Problem } from "../types/problems";
-import { problemService } from "../api/problemService";
+import { Problem } from "../../types/problems";
+import { problemService } from "../../api/problemService";
 
 const PAGE_SIZE = 10; // Adjust this value based on how many problems you want to display per page
 
@@ -127,7 +127,7 @@ const Practice = () => {
 												{problem.problemTags.join(", ")}
 											</td>
 											<td
-												className={`px-4 py-2 border text-center ${getDifficultyClassName(
+												className={`px-4 py-2 border font-bold text-center ${getDifficultyClassName(
 													problem.problemDifficulty,
 												)} ${
 													index === paginatedProblems.length - 1

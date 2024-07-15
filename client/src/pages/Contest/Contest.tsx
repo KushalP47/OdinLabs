@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import Navbar from "../components/Navbar";
-import FullscreenModal from "../components/FullscreenModal";
+import Navbar from "../../components/Navbar";
+import FullscreenModal from "../../components/FullscreenModal";
 import { useSelector } from "react-redux";
 
 const Contest: React.FC = () => {

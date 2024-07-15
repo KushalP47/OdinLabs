@@ -1,11 +1,11 @@
-import Navbar from "../components/Navbar";
+import Navbar from "../../components/Navbar";
 import { useState, useCallback, useEffect, useMemo, useRef } from "react";
 import { io } from "socket.io-client";
 import { useSelector, useDispatch } from "react-redux";
 import {
 	startStream as startStreamAction,
 	stopStream as stopStreamAction,
-} from "../store/streamSlice";
+} from "../../store/streamSlice";
 interface AdminConnectionParams {
 	answer: RTCSessionDescriptionInit;
 	emailId: string;
