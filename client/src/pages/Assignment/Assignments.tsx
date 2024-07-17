@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import Navbar from "../../components/Navbar";
+import { useNavigate } from "react-router-dom";
 const Assignments = () => {
-	const [status, setStatus] = useState(false);
+	const navigate = useNavigate();
 	const currentStatus = useSelector((state: any) => state.auth.status);
-	useEffect(() => {
-		setStatus(currentStatus);
-	}, []);
 	const user = useSelector((state: any) => state.auth.userData);
 	const isAdmin = user?.isAdmin;
 	const assignments = [
@@ -39,6 +37,9 @@ const Assignments = () => {
 			deadline: "2021-10-25",
 		},
 	];
+	const handleAssignmentClick = (id: number) => {
+		navigate(`/assignment/${id}`);
+	};
 	return (
 		<div className="flex flex-col min-h-screen">
 			{/* Navbar */}
@@ -54,7 +55,7 @@ const Assignments = () => {
 							</button>
 						)}
 					</div>
-					{status && (
+					{currentStatus && (
 						<div className="flex flex-col">
 							<div className="collapse collapse-arrow bg-gray-100 mb-4">
 								<input type="checkbox" defaultChecked />
@@ -79,7 +80,11 @@ const Assignments = () => {
 														</div>
 														<div className="divider divider-horizontal py-4"></div>
 														<div className="flex w-1/4 justify-center items-center">
-															<button className="btn btn-primary w-1/2 text-white px-2">
+															<button
+																className="btn btn-primary w-1/2 text-white px-2"
+																onClick={() =>
+																	handleAssignmentClick(assignment.id)
+																}>
 																Solve
 															</button>
 														</div>
@@ -162,7 +167,7 @@ const Assignments = () => {
 							</div>
 						</div>
 					)}
-					{!status && (
+					{!currentStatus && (
 						<h2 className="text-2xl text-basecolor">
 							Please login to view this page
 						</h2>

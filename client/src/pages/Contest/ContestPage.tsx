@@ -1,7 +1,6 @@
-interface ContestPageProps {
-	contestId: string;
-}
-const ContestPage = ({ contestId }: ContestPageProps) => {
+import { useParams } from "react-router-dom";
+const ContestPage = () => {
+	const { contestId } = useParams();
 	return <div>{contestId}</div>;
 };
 
