@@ -5,20 +5,20 @@ import cookieParser from "cookie-parser"; // middleware used in parsing cookies
 const app = express();
 
 const corsOptions = {
-    // origin: function (origin: string | undefined, callback: (error?: any, allow?: boolean) => void) {
-    //     // Check if origin is defined before proceeding
-    //     if (!origin) {
-    //         callback(new Error('Invalid origin'), false);
-    //         return;
-    //     }
-    //     // Allow specific origins, replace 'http://example.com' with your actual origin
-    //     if (origin === "http://localhost:5173") {
-    //         callback(null, true);
-    //     } else {
-    //         callback(new Error('Not allowed by CORS'));
-    //     }
-    // },
-    origin: process.env.CORS_ORIGIN, // Reflect the request origin
+    origin: function (origin: string | undefined, callback: (error?: any, allow?: boolean) => void) {
+        // Check if origin is defined before proceeding
+        if (!origin) {
+            callback(new Error('Invalid origin'), false);
+            return;
+        }
+        // Allow specific origins, replace 'http://example.com' with your actual origin
+        if (origin === "http://localhost:5173") {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    // origin: process.env.CORS_ORIGIN, // Reflect the request origin
     credentials: true, // Reflect (pass through) the request's credentials
 };
 

@@ -8,11 +8,12 @@ interface ProblemsTableProps {
 		problemTags: string[];
 		problemDifficulty: string;
 	}[];
+	deadline: Date | null;
 }
 
 const PAGE_SIZE = 10;
 
-const ProblemsTable = ({ problems }: ProblemsTableProps) => {
+const ProblemsTable = ({ problems, deadline = null }: ProblemsTableProps) => {
 	const [searchTerm, setSearchTerm] = useState("");
 	const [currentPage, setCurrentPage] = useState(1);
 	const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,16 +49,25 @@ const ProblemsTable = ({ problems }: ProblemsTableProps) => {
 	};
 	return (
 		<div>
-			<div className="flex flex-row justify-end items-center m-4">
-				{/* Search Bar */}
-				<input
-					type="text"
-					placeholder="Search problems"
-					value={searchTerm}
-					onChange={handleSearch}
-					className="input input-primary bg-gray-50 w-full max-w-md"
-				/>
-			</div>
+			{deadline && (
+				<div className="flex justify-center mt-4">
+					<p className="text-lg text-basecolor">
+						Deadline: {deadline.toDateString()}
+					</p>
+				</div>
+			)}
+			{!deadline && (
+				<div className="flex flex-row justify-end items-center m-4">
+					{/* Search Bar */}
+					<input
+						type="text"
+						placeholder="Search problems"
+						value={searchTerm}
+						onChange={handleSearch}
+						className="input input-primary bg-gray-50 w-full max-w-md"
+					/>
+				</div>
+			)}
 
 			<table className="w-full rounded-xl text-basecolor text-lg border-collapse">
 				<thead>

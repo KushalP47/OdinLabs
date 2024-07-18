@@ -73,6 +73,22 @@ class ProblemController {
         }
     };
 
+    async getProblemsByIds(req: Request, res: Response) {
+        const problemIds: number[] = req.body.problemIds;
+        try {
+            const problems: IProblem[] = await Problem
+                .find({ problemId: { $in: problemIds } });
+            const response: IProblemFunctionResponse = {
+                ok: true,
+                message: "Problems fetched successfully",
+                problems: problems,
+            };
+            return res.status(200).json(new ApiResponse(200, response, "Problems fetched successfully"));
+        } catch (error: any) {
+            return res.status(400).json(new ApiError(400, error.message));
+        }
+    }
+
     async getProblemById(req: Request, res: Response) {
         const problemId = req.params.problemId;
         try {

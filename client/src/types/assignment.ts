@@ -1,15 +1,26 @@
-import { Problem } from "./problems";
 import { User } from "./user";
 
 export interface Assignment {
     assignmentId: number;
     assignmentName: string;
-    assignmentProblems: Problem[];
+    assignmentProblems: number[];
     assignmentStartTime: string;
     assignmentEndTime: string;
     assignmentDescription: string;
-    assignmentUsers: User[];
+    assignmentUsers: AssignmentUser[];
     assignmentTeamLeaderboard: Teams[]
+}
+
+export interface AssignmentUser {
+    assignmentUserRollNumber: string;
+    assignmentUserCurrentMarks: number;
+    assigmentUserProblemStatus: ProblemStatus[];
+    assignmentUserTeamName: string;
+}
+
+export interface ProblemStatus {
+    problemId: number;
+    problemScore: number;
 }
 
 export interface Teams {

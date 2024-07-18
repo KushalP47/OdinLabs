@@ -66,7 +66,7 @@ const userSchema = new Schema({
 }, { timestamps: true });
 
 userSchema.pre<IUser>('save', function (next) {
-    if (this.isModified('password')) {
+    if (this.isModified('userPassword')) {
         this.userPassword = this.encryptPassword(this.userPassword);
     }
     next();
