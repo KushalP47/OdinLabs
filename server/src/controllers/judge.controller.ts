@@ -65,12 +65,12 @@ class JudgeController {
         console.log(testcasesVerdict);
         const newSubmission = new Submission({
             submissionId: generateRandomLargeInteger(),
-            sourceCode: req.body.sourceCode,
-            languageId: req.body.languageId,
-            problemId: req.body.problemId,
-            status: `${cnt}/${testcasesVerdict.length}`,
-            userId: userId,
-            testcasesVerdict: req.body.testcasesVerdict
+            submissionSourceCode: req.body.sourceCode,
+            submissionLanguageId: req.body.languageId,
+            submissionProblemId: req.body.problemId,
+            submissionStatus: `${cnt}/${testcasesVerdict.length}`,
+            submissionUserRollNumber: userId,
+            submissionTestcasesVerdict: req.body.testcasesVerdict
         });
         newSubmission.save();
 
