@@ -3,12 +3,13 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
 export interface IUser extends Document {
-    email: string;
-    password: string;
-    name: string;
-    rollNumber: string;
-    section: string;
-    isAdmin: boolean;
+    userEmail: string;
+    userPassword: string;
+    userName: string;
+    userRollNumber: string;
+    userSection: string;
+    userIsAdmin: boolean;
+    userTeamName?: string;
     createdAt: Date;
     updatedAt: Date;
     encryptPassword: (password: string) => string;
@@ -33,28 +34,32 @@ export interface IUserFunctionResponse {
 interface IUserModel extends Model<IUser> { }
 
 const userSchema = new Schema({
-    email: {
+    userEmail: {
         type: String,
         required: true,
         unique: true
     },
-    password: {
+    userPassword: {
         type: String,
         required: true
     },
-    name: {
+    userName: {
         type: String,
         required: true
     },
-    rollNumber: {
+    userRollNumber: {
         type: String,
         required: true
     },
-    section: {
+    userSection: {
         type: String,
         required: true
     },
-    isAdmin: {
+    userTeamName: {
+        type: String,
+        default: ""
+    },
+    userIsAdmin: {
         type: Boolean,
         default: false
     },
@@ -62,7 +67,7 @@ const userSchema = new Schema({
 
 userSchema.pre<IUser>('save', function (next) {
     if (this.isModified('password')) {
-        this.password = this.encryptPassword(this.password);
+        this.userPassword = this.encryptPassword(this.userPassword);
     }
     next();
 });

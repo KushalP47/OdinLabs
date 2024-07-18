@@ -1,8 +1,10 @@
 import { Request, Response } from 'express';
 import { ApiResponse } from '../utils/ApiResponse';
 import { ApiError } from '../utils/ApiError';
+import { updateAssignmentScore } from '../functions/assignment/updateAssignmentScore';
 import getTestCases from '../functions/judge/getTestCases';
 import getTokens from '../functions/judge/getTokens';
+import { IAssignmentFunctionResponse } from '../models/assignment.model';
 import { Submission, SubmissionResponse, testcaseVerdict } from '../models/submissions.model';
 import { generateRandomLargeInteger } from '../utils/randomGenerator';
 class JudgeController {
@@ -51,7 +53,7 @@ class JudgeController {
     // get the verdict of the submission
     // and store the submission in the database
     async storeSubmission(req: Request, res: Response) {
-        const { testcasesVerdict } = req.body;
+        const { testcasesVerdict, assignmentId, contestId } = req.body;
         const { user } = req.body;
         const userId = user.rollNumber;
         let cnt = 0;
@@ -71,6 +73,22 @@ class JudgeController {
             testcasesVerdict: req.body.testcasesVerdict
         });
         newSubmission.save();
+
+        // if submission is related to assignment than update the score in assignment
+        if (assignmentId) {
+            // updateAssignmentScore(assignmentId, userId, problemId, cnt);
+            const marks = (cnt / testcasesVerdict.length) * 100;
+            const response: IAssignmentFunctionResponse = await updateAssignmentScore(assignmentId, userId, req.body.problemId, marks);
+            if (!response.ok) {
+                return res.status(400).json(new ApiError(400, response.message));
+            }
+        }
+
+        // if submission is related to contest than update the score in contest
+        if (contestId) {
+            // updateContestScore(contestId, userId, problemId, cnt);
+            const marks = (cnt / testcasesVerdict.length) * 100;
+        }
         res.json(
             new ApiResponse(
                 200,
