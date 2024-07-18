@@ -31,7 +31,7 @@ export const verifyIsAdmin = asyncHandler(async (req: Request, res: Response, ne
                 .json(new ApiError(401, "User is not registered!!"));
         }
 
-        if (!user.isAdmin) {
+        if (!user.userIsAdmin) {
             return res
                 .status(401)
                 .json(new ApiError(401, "User is not an admin!!"));

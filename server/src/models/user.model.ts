@@ -77,17 +77,17 @@ userSchema.methods.encryptPassword = function (password: string) {
 };
 
 userSchema.methods.validPassword = function (password: string) {
-    return bcrypt.compareSync(password, this.password);
+    return bcrypt.compareSync(password, this.userPassword);
 };
 
 userSchema.methods.generateAccessToken = function () {
     const jwtSecret = process.env.ACCESS_TOKEN_SECRET || "";
     const payload: JwtPayload = {
         _id: this._id,
-        name: this.name,
-        email: this.email,
-        isAdmin: this.isAdmin,
-        rollNumber: this.rollNumber,
+        name: this.userName,
+        email: this.userEmail,
+        isAdmin: this.userIsAdmin,
+        rollNumber: this.userRollNumber,
     };
     const res = jwt.sign(payload, jwtSecret, { expiresIn: process.env.ACCESS_TOKEN_EXPIRY });
     return res;

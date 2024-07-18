@@ -11,7 +11,7 @@ export const userExists = async (email: string, password: string): Promise<IUser
         return data;
     }
 
-    const emailExists = await User.findOne({ email });
+    const emailExists = await User.findOne({ userEmail: email });
     if (!emailExists) {
         data.message = 'Email does not exist';
         return data;

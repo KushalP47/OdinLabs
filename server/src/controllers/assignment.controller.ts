@@ -3,7 +3,7 @@ import { Assignment } from "../models/assignment.model";
 import { ApiResponse } from "../utils/ApiResponse";
 import { Request, Response } from 'express';
 import { getUserFromSection } from "../functions/user/getUserFromSection";
-
+import { updateAssignmentDeadlines } from "../functions/assignment/updateAssignmentDeadline";
 class AssignmentController {
     async createAssignment(req: Request, res: Response) {
         const {
@@ -58,7 +58,8 @@ class AssignmentController {
     async getAssignment(req: Request, res: Response) {
         const { assignmentId } = req.params;
         try {
-            const assignment = await Assignment.findOne({ assignmentId });
+            const intAssignmentId = parseInt(assignmentId, 10);
+            const assignment = await Assignment.findOne({ assignmentId: intAssignmentId });
             if (!assignment) {
                 return res.status(401).json(new ApiError(404, "Assignment not found"));
             }
@@ -87,6 +88,22 @@ class AssignmentController {
         }
     }
 
+    async updateAssignmentDeadline(req: Request, res: Response) {
+        const { assignmentId } = req.params;
+        const { assignmentStartTime, assignmentEndTime } = req.body;
+
+        try {
+            const intAssignmentId = parseInt(assignmentId, 10);
+            const response = await updateAssignmentDeadlines(intAssignmentId, assignmentStartTime, assignmentEndTime);
+            if (!response.ok) {
+                return res.status(400).json(new ApiError(400, response.message));
+            }
+            return res.status(200).json(new ApiResponse(200, response, "Assignment deadlines updated successfully"));
+        } catch (error: any) {
+            return res.status(400).json(new ApiError(400, error?.message));
+        }
+    }
+
     async updateAssignment(req: Request, res: Response) {
         const { assignmentId } = req.params;
         const {
@@ -99,7 +116,8 @@ class AssignmentController {
         } = req.body;
 
         try {
-            const assignment = await Assignment.findOne({ assignmentId });
+            const intAssignmentId = parseInt(assignmentId, 10);
+            const assignment = await Assignment.findOne({ assignmentId: intAssignmentId });
             if (!assignment) {
                 return res.status(402).json(new ApiError(404, "Assignment not found"));
             }
