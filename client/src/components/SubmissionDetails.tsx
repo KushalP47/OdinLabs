@@ -29,7 +29,7 @@ const SubmissionDetails = ({
 								Code
 							</h2>
 							<pre className="bg-gray-900 text-white p-4 rounded-lg min-w-max overflow-auto h-96">
-								<code>{submissionDetails?.sourceCode}</code>
+								<code>{submissionDetails?.submissionSourceCode}</code>
 							</pre>
 						</div>
 						<div className="flex flex-col w-full justify-start items-center space-y-4">
@@ -48,12 +48,14 @@ const SubmissionDetails = ({
 											{submissionDetails?.submissionId}
 										</td>
 										<td className="px-4 py-2">
-											{submissionDetails?.languageId}
+											{submissionDetails?.submissionLanguageId}
 										</td>
 										<td className="px-4 py-2">
-											{submissionDetails?.problemId}
+											{submissionDetails?.submissionProblemId}
 										</td>
-										<td className="px-4 py-2">{submissionDetails?.status}</td>
+										<td className="px-4 py-2">
+											{submissionDetails?.submissionStatus}
+										</td>
 									</tr>
 								</tbody>
 							</table>
@@ -72,7 +74,7 @@ const SubmissionDetails = ({
 									</tr>
 								</thead>
 								<tbody className="text-basecolor">
-									{submissionDetails?.testcasesVerdict.map(
+									{submissionDetails?.submissionTestcasesVerdict.map(
 										(testcase, index) => (
 											<tr
 												key={index}

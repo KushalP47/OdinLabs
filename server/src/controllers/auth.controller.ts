@@ -8,17 +8,17 @@ import { ApiError } from '../utils/ApiError';
 class AuthController {
 
     async register(req: Request, res: Response) {
-        const { email, password, name, rollNumber, section} = req.body;
+        const { userEmail, userPassword, userName, userRollNumber, userSection } = req.body;
 
         console.log(req.body)
         // create a new user
-        const data = await createUser(email, password, name, rollNumber, section);
+        const data = await createUser(userEmail, userPassword, userName, userRollNumber, userSection);
 
         if (!data.ok) {
             return res
 
-            .status(400)
-            .json(new ApiError(400, data.message));
+                .status(400)
+                .json(new ApiError(400, data.message));
 
         }
 
@@ -49,10 +49,10 @@ class AuthController {
     }
 
     async login(req: Request, res: Response) {
-        const { email, password } = req.body;
+        const { userEmail, userPassword } = req.body;
         console.log("api post request received")
         // check if user exixts
-        const data: IUserFunctionResponse = await userExists(email, password);
+        const data: IUserFunctionResponse = await userExists(userEmail, userPassword);
         if (!data.ok) {
             return res
                 .status(401)

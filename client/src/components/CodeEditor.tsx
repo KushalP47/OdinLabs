@@ -129,10 +129,10 @@ const CodeEditor = ({ problemId }: CodeEditorProps) => {
 		}
 		console.log("Testcases Verdict...", testcasesVerdict);
 		const submissionResp = await codeExecutionService.storeSubmission({
-			sourceCode: code,
-			languageId: language.id,
-			problemId: problemId,
-			testcasesVerdict: testcasesVerdict,
+			submissionSourceCode: code,
+			submissionLanguageId: language.id,
+			submissionProblemId: problemId,
+			submissionTestcasesVerdict: testcasesVerdict,
 		});
 		console.log("submissionResp...", submissionResp);
 		if (submissionResp.statusCode !== 200) {

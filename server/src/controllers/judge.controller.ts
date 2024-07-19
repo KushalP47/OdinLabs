@@ -53,31 +53,31 @@ class JudgeController {
     // get the verdict of the submission
     // and store the submission in the database
     async storeSubmission(req: Request, res: Response) {
-        const { testcasesVerdict, assignmentId, contestId } = req.body;
+        const { submissionTestcasesVerdict, assignmentId, contestId } = req.body;
         const { user } = req.body;
-        const userId = user.rollNumber;
+        const userId = user.userRollNumber;
         let cnt = 0;
-        testcasesVerdict.forEach((verdict: testcaseVerdict) => {
+        submissionTestcasesVerdict.forEach((verdict: testcaseVerdict) => {
             if (verdict.status === "Accepted") {
                 cnt++;
             }
         });
-        console.log(testcasesVerdict);
+        console.log(submissionTestcasesVerdict);
         const newSubmission = new Submission({
             submissionId: generateRandomLargeInteger(),
-            submissionSourceCode: req.body.sourceCode,
-            submissionLanguageId: req.body.languageId,
-            submissionProblemId: req.body.problemId,
-            submissionStatus: `${cnt}/${testcasesVerdict.length}`,
+            submissionSourceCode: req.body.submissionSourceCode,
+            submissionLanguageId: req.body.submissionLanguageId,
+            submissionProblemId: req.body.submissionProblemId,
+            submissionStatus: `${cnt}/${submissionTestcasesVerdict.length}`,
             submissionUserRollNumber: userId,
-            submissionTestcasesVerdict: req.body.testcasesVerdict
+            submissionTestcasesVerdict: req.body.submissionTestcasesVerdict
         });
         newSubmission.save();
 
         // if submission is related to assignment than update the score in assignment
         if (assignmentId) {
             // updateAssignmentScore(assignmentId, userId, problemId, cnt);
-            const marks = (cnt / testcasesVerdict.length) * 100;
+            const marks = (cnt / submissionTestcasesVerdict.length) * 100;
             const response: IAssignmentFunctionResponse = await updateAssignmentScore(assignmentId, userId, req.body.problemId, marks);
             if (!response.ok) {
                 return res.status(400).json(new ApiError(400, response.message));
@@ -87,7 +87,7 @@ class JudgeController {
         // if submission is related to contest than update the score in contest
         if (contestId) {
             // updateContestScore(contestId, userId, problemId, cnt);
-            const marks = (cnt / testcasesVerdict.length) * 100;
+            const marks = (cnt / submissionTestcasesVerdict.length) * 100;
         }
         res.json(
             new ApiResponse(

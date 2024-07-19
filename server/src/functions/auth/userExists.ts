@@ -1,24 +1,24 @@
 import { User, IUser, IUserFunctionResponse } from '../../models/user.model';
 
-export const userExists = async (email: string, password: string): Promise<IUserFunctionResponse> => {
+export const userExists = async (userEmail: string, userPassword: string): Promise<IUserFunctionResponse> => {
     const data: IUserFunctionResponse = {
         ok: false,
         message: '',
     };
 
-    if (!email || !password) {
+    if (!userEmail || !userPassword) {
         data.message = 'Email and password are required';
         return data;
     }
 
-    const emailExists = await User.findOne({ userEmail: email });
+    const emailExists = await User.findOne({ userEmail });
     if (!emailExists) {
         data.message = 'Email does not exist';
         return data;
     }
 
     const user: IUser = emailExists;
-    const passwordMatch = user.validPassword(password);
+    const passwordMatch = user.validPassword(userPassword);
     if (!passwordMatch) {
         data.message = 'Password is incorrect';
         return data;

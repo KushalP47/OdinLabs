@@ -1,11 +1,11 @@
 export interface Submission {
-    submissionId: number;
-    sourceCode: string;
-    languageId: number;
-    problemId: number;
-    userId: string;
-    status: string;
-    testcasesVerdict: Array<testcaseVerdict>;
+    submissionId?: number;
+    submissionSourceCode: string;
+    submissionLanguageId: number;
+    submissionProblemId: number;
+    submissionUserRollNumber: string;
+    submissionStatus: string;
+    submissionTestcasesVerdict: Array<testcaseVerdict>;
     createdAt: string;
     updatedAt: string;
 }

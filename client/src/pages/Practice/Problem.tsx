@@ -27,7 +27,8 @@ const Problem = () => {
 			return;
 		}
 		const problemSubmissions: Array<Submission> = data.data.filter(
-			(submission: Submission) => submission.problemId === Number(problemId),
+			(submission: Submission) =>
+				submission.submissionProblemId === Number(problemId),
 		);
 		setSubmissions(problemSubmissions);
 	};
