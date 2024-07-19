@@ -46,7 +46,7 @@ const AssignmentPage = () => {
 	return (
 		<div>
 			<Navbar currentPage="Assignment" />
-			<div className="bg-white min-h-screen w-full">
+			<div className="bg-white w-full min-h-screen border-4 border-secondary shadow-xl flex flex-col p-8">
 				{assignment && (
 					<h1 className="text-3xl text-basecolor text-center">
 						{assignment.assignmentName}
