@@ -47,5 +47,8 @@ app.use("/api/v1/judge", judgeRouter);
 import assignmentRouter from "../routes/assignment.routes";
 app.use("/api/v1/assignments", assignmentRouter);
 
+import contestRouter from "../routes/contest.routes";
+app.use("/api/v1/users", contestRouter);
+
 
 export { app };

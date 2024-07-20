@@ -9,7 +9,7 @@ const Practice = () => {
 	const [status, setStatus] = useState(false);
 	const [problems, setProblems] = useState<Array<Problem>>([]);
 	const currentStatus = useSelector((state: any) => state.auth.status);
-	const isAdmin = useSelector((state: any) => state.auth.userData?.isAdmin);
+	const isAdmin = useSelector((state: any) => state.auth.userData?.userIsAdmin);
 
 	useEffect(() => {
 		setStatus(currentStatus);
