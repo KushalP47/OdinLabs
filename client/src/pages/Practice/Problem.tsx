@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import Navbar from "../components/Navbar";
-import { Problem as IProblem } from "../types/problems";
-import { problemService } from "../api/problemService";
-import CodeEditor from "../components/CodeEditor";
-import Submissions from "../components/Submissions";
-import { codeExecutionService } from "../api/codeExecutionService";
-import { Submission } from "../types/submissions";
+import Navbar from "../../components/Navbar";
+import { Problem as IProblem } from "../../types/problems";
+import { problemService } from "../../api/problemService";
+import CodeEditor from "../../components/CodeEditor";
+import Submissions from "../../components/Submissions";
+import { codeExecutionService } from "../../api/codeExecutionService";
+import { Submission } from "../../types/submissions";
 
 const Problem = () => {
 	const [status, setStatus] = useState(false);
@@ -27,7 +27,8 @@ const Problem = () => {
 			return;
 		}
 		const problemSubmissions: Array<Submission> = data.data.filter(
-			(submission: Submission) => submission.problemId === Number(problemId),
+			(submission: Submission) =>
+				submission.submissionProblemId === Number(problemId),
 		);
 		setSubmissions(problemSubmissions);
 	};

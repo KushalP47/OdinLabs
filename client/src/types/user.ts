@@ -1,8 +1,8 @@
 export interface User {
-    rollNumber: string;
-    name: string;
-    email: string;
-    section: string;
-    password: string;
-    isAdmin: boolean;
+    userRollNumber: string;
+    userName: string;
+    userEmail: string;
+    userSection: string;
+    userPassword: string;
+    userIsAdmin: boolean;
 }

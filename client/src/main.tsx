@@ -14,6 +14,8 @@ import {
 	Register,
 	Problem,
 	SubmissionPage,
+	AssignmentPage,
+	ContestPage,
 } from "./pages/index.ts";
 import Logout from "./components/Logout.tsx";
 import App from "./App.tsx";
@@ -45,6 +47,14 @@ const router = createBrowserRouter([
 				element: <Assignments />,
 			},
 			{
+				path: "/assignment/:assignmentId",
+				element: <AssignmentPage />,
+			},
+			{
+				path: "/assignment/:assignmentId/problem/:problemId",
+				element: <Problem />,
+			},
+			{
 				path: "/practice",
 				element: <Practice />,
 			},
@@ -55,6 +65,10 @@ const router = createBrowserRouter([
 			{
 				path: "/contest",
 				element: <Contest />,
+			},
+			{
+				path: "/contest/:contestId",
+				element: <ContestPage />,
 			},
 			{
 				path: "/auth/login",

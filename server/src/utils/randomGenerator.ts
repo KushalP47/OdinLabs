@@ -1,4 +1,5 @@
 
 export function generateRandomLargeInteger(): number {
-    return Math.floor(Math.random() * 1000000000000);
+    const id = Date.now();
+    return id;
 }

@@ -5,7 +5,7 @@ import cookieParser from "cookie-parser"; // middleware used in parsing cookies
 const app = express();
 
 const corsOptions = {
-    origin: function(origin: string | undefined, callback: (error?: any, allow?: boolean) => void){
+    origin: function (origin: string | undefined, callback: (error?: any, allow?: boolean) => void) {
         // Check if origin is defined before proceeding
         if (!origin) {
             callback(new Error('Invalid origin'), false);
@@ -18,6 +18,7 @@ const corsOptions = {
             callback(new Error('Not allowed by CORS'));
         }
     },
+    // origin: process.env.CORS_ORIGIN, // Reflect the request origin
     credentials: true, // Reflect (pass through) the request's credentials
 };
 
@@ -42,5 +43,12 @@ app.use("/api/v1/problems", problemRouter);
 
 import judgeRouter from "../routes/judge.routes";
 app.use("/api/v1/judge", judgeRouter);
+
+import assignmentRouter from "../routes/assignment.routes";
+app.use("/api/v1/assignments", assignmentRouter);
+
+import contestRouter from "../routes/contest.routes";
+app.use("/api/v1/users", contestRouter);
+
 
 export { app };

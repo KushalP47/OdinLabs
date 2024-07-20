@@ -3,12 +3,13 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
 export interface IUser extends Document {
-    email: string;
-    password: string;
-    name: string;
-    rollNumber: string;
-    section: string;
-    isAdmin: boolean;
+    userEmail: string;
+    userPassword: string;
+    userName: string;
+    userRollNumber: string;
+    userSection: string;
+    userIsAdmin: boolean;
+    userTeamName?: string;
     createdAt: Date;
     updatedAt: Date;
     encryptPassword: (password: string) => string;
@@ -33,36 +34,39 @@ export interface IUserFunctionResponse {
 interface IUserModel extends Model<IUser> { }
 
 const userSchema = new Schema({
-    email: {
+    userEmail: {
         type: String,
         required: true,
-        unique: true
     },
-    password: {
+    userPassword: {
         type: String,
         required: true
     },
-    name: {
+    userName: {
         type: String,
         required: true
     },
-    rollNumber: {
+    userRollNumber: {
         type: String,
         required: true
     },
-    section: {
+    userSection: {
         type: String,
         required: true
     },
-    isAdmin: {
+    userTeamName: {
+        type: String,
+        default: ""
+    },
+    userIsAdmin: {
         type: Boolean,
         default: false
     },
 }, { timestamps: true });
 
 userSchema.pre<IUser>('save', function (next) {
-    if (this.isModified('password')) {
-        this.password = this.encryptPassword(this.password);
+    if (this.isModified('userPassword')) {
+        this.userPassword = this.encryptPassword(this.userPassword);
     }
     next();
 });
@@ -72,17 +76,17 @@ userSchema.methods.encryptPassword = function (password: string) {
 };
 
 userSchema.methods.validPassword = function (password: string) {
-    return bcrypt.compareSync(password, this.password);
+    return bcrypt.compareSync(password, this.userPassword);
 };
 
 userSchema.methods.generateAccessToken = function () {
     const jwtSecret = process.env.ACCESS_TOKEN_SECRET || "";
     const payload: JwtPayload = {
         _id: this._id,
-        name: this.name,
-        email: this.email,
-        isAdmin: this.isAdmin,
-        rollNumber: this.rollNumber,
+        name: this.userName,
+        email: this.userEmail,
+        isAdmin: this.userIsAdmin,
+        rollNumber: this.userRollNumber,
     };
     const res = jwt.sign(payload, jwtSecret, { expiresIn: process.env.ACCESS_TOKEN_EXPIRY });
     return res;

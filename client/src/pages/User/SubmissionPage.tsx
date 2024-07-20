@@ -1,7 +1,7 @@
-import Navbar from "../components/Navbar";
-import Submissions from "../components/Submissions";
+import Navbar from "../../components/Navbar";
+import Submissions from "../../components/Submissions";
 import { useState, useEffect } from "react";
-import { codeExecutionService } from "../api/codeExecutionService";
+import { codeExecutionService } from "../../api/codeExecutionService";
 const SubmissionPage = () => {
 	const [submissions, setSubmissions] = useState([]);
 

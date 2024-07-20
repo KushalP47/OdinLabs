@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback, useMemo, useRef } from "react";
 import { io } from "socket.io-client";
-import Navbar from "../components/Navbar";
+import Navbar from "../../components/Navbar";
 interface studentSocket {
 	emailId: string;
 	socketId: string;

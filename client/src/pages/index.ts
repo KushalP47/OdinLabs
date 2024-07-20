@@ -1,14 +1,16 @@
 import Dashboard from "./Dashboard.tsx";
-import Students from "./Students.tsx";
-import Assignments from "./Assignments.tsx";
-import Practice from "./Practice.tsx";
-import Problem from "./Problem.tsx";
-import Room from "./Room.tsx";
-import Login from "./Login.tsx";
-import Register from "./Register.tsx";
-import Contest from "./Contest.tsx";
-import SubmissionPage from "./SubmissionPage.tsx";
+import Students from "./User/Students";
+import Assignments from "./Assignment/Assignments";
+import AssignmentPage from "./Assignment/AssignmentPage";
+import Practice from "./Practice/Practice";
+import Problem from "./Practice/Problem.tsx";
+import Room from "./User/Room.tsx";
+import Login from "./Auth/Login.tsx";
+import Register from "./Auth/Register.tsx";
+import Contest from "./Contest/Contest.tsx";
+import ContestPage from "./Contest/ContestPage.tsx";
+import SubmissionPage from "./User/SubmissionPage.tsx";
 
-export { Dashboard, Students, Contest, Problem, SubmissionPage, Assignments, Practice, Room, Login, Register }
+export { Dashboard, Students, Contest, Problem, SubmissionPage, ContestPage, Assignments, AssignmentPage, Practice, Room, Login, Register }
 
 

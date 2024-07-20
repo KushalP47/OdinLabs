@@ -43,6 +43,7 @@ export class CodeExecutionService {
 
     async storeSubmission(submission: any) {
         const userCookie = getCookie("accessToken");
+        console.log("sending submission", submission);
         const reqBody = JSON.stringify(submission);
         const options = {
             method: "POST",

@@ -41,9 +41,13 @@ const Submissions = ({ submissions, problemId = null }: SubmissionsProps) => {
 								key={submission.submissionId}
 								className="cursor-pointer hover:bg-gray-100 p-2 rounded"
 								onClick={() => handleClick(submission)}>
-								<td className="px-4 py-2 border">{submission.problemId}</td>
+								<td className="px-4 py-2 border">
+									{submission.submissionProblemId}
+								</td>
 								<td className="px-4 py-2 border">{submission.submissionId}</td>
-								<td className="px-4 py-2 border">{submission.status}</td>
+								<td className="px-4 py-2 border">
+									{submission.submissionStatus}
+								</td>
 								<td className="px-4 py-2 border">{submission.createdAt}</td>
 							</tr>
 						))}
@@ -75,8 +79,12 @@ const Submissions = ({ submissions, problemId = null }: SubmissionsProps) => {
 								className="text-basecolor text-center cursor-pointer hover:bg-gray-100 p-2 rounded"
 								onClick={() => handleClick(submission)}>
 								<td className="px-4 py-2 border">{submission.submissionId}</td>
-								<td className="px-4 py-2 border">{submission.problemId}</td>
-								<td className="px-4 py-2 border">{submission.status}</td>
+								<td className="px-4 py-2 border">
+									{submission.submissionProblemId}
+								</td>
+								<td className="px-4 py-2 border">
+									{submission.submissionStatus}
+								</td>
 								<td className="px-4 py-2 border">{submission.createdAt}</td>
 							</tr>
 						))}

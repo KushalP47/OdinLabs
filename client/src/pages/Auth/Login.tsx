@@ -1,9 +1,9 @@
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
-import { login } from "../store/authSlice";
-import { authService } from "../api/authService";
+import { login } from "../../store/authSlice";
+import { authService } from "../../api/authService";
 import { useNavigate } from "react-router-dom";
-import {getCookie} from "../lib/cookieUtility";
+import { getCookie } from "../../lib/cookieUtility";
 
 const Login = () => {
 	const dispatch = useDispatch();

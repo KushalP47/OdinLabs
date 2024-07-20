@@ -3,12 +3,12 @@ import { Document, model, Model, Schema } from "mongoose";
 // Original ISubmission interface remains unchanged
 export interface ISubmission extends Document {
     submissionId: number;
-    sourceCode: string;
-    languageId: number;
-    problemId: number;
-    userId: string;
-    status: string;
-    testcasesVerdict: Array<testcaseVerdict>;
+    submissionSourceCode: string;
+    submissionLanguageId: number;
+    submissionProblemId: number;
+    submissionUserRollNumber: string;
+    submissionStatus: string;
+    submissionTestcasesVerdict: Array<testcaseVerdict>;
     createdAt: string;
     updatedAt: string;
 }
@@ -38,27 +38,27 @@ const submissionSchema = new Schema({
         required: true,
         unique: true
     },
-    sourceCode: {
+    submissionSourceCode: {
         type: String,
         required: true
     },
-    languageId: {
+    submissionLanguageId: {
         type: Number,
         required: true
     },
-    problemId: {
+    submissionProblemId: {
         type: Number,
         required: true
     },
-    userId: {
+    submissionUserRollNumber: {
         type: String,
         required: true
     },
-    status: {
+    submissionStatus: {
         type: String,
         required: true
     },
-    testcasesVerdict: {
+    submissionTestcasesVerdict: {
         type: Array,
         required: true
     }
