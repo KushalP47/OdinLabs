@@ -5,7 +5,7 @@ import { Request, Response } from 'express';
 import { getUserFromSection } from "../functions/user/getUserFromSection";
 
 class ContestController {
-    
+
     async createContest(req: Request, res: Response) {
         const {
             contestId,
@@ -92,6 +92,9 @@ class ContestController {
     }
 
     async updateContestDeadline(req: Request, res: Response) {
+    }
+
+    async retainContestUser(req: Request, res: Response) {
     }
 
 };
