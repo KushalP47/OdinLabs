@@ -5,7 +5,7 @@ export class AssignmentService {
     }
 
     async getAllAssignments() {
-        const response = await fetch(`${this.url}/api/v1/assignments`, {
+        const response = await fetch(`${this.url}/api/v1/assignments/getAllAssignments`, {
             method: "GET",
             credentials: "include",
             headers: {
@@ -28,7 +28,7 @@ export class AssignmentService {
 
     async getAssignmentProblems(problemsIds: number[]) {
         const response = await fetch(`${this.url}/api/v1/problems/getProblemByIds`, {
-            method: "GET",
+            method: "POST",
             credentials: "include",
             headers: {
                 "Content-Type": "application/json",
@@ -39,13 +39,24 @@ export class AssignmentService {
     }
 
     async createAssignment(assignment: any) {
-        const response = await fetch(`${this.url}/api/v1/assignments`, {
+        const response = await fetch(`${this.url}/api/v1/assignments/create`, {
             method: "POST",
             credentials: "include",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(assignment),
+        });
+        return response.json();
+    }
+
+    async getAssignmentDeadline(assignmentId: string) {
+        const response = await fetch(`${this.url}/api/v1/assignments/getAssignmentDeadline/${assignmentId}`, {
+            method: "GET",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+            },
         });
         return response.json();
     }

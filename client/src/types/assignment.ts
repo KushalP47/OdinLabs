@@ -8,7 +8,6 @@ export interface Assignment {
     assignmentEndTime: string;
     assignmentDescription: string;
     assignmentUsers: AssignmentUser[];
-    assignmentTeamLeaderboard: Teams[]
 }
 
 export interface AssignmentUser {

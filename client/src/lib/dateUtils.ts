@@ -14,15 +14,18 @@ export const formatDate = (dateString: string) => {
 };
 
 export const isOngoing = (assignment: Assignment) => {
-    const now = Date.now();
-    return new Date(assignment.assignmentStartTime).getTime() <= now && new Date(assignment.assignmentEndTime).getTime() >= now;
+    const now = new Date().toISOString();
+    return assignment.assignmentStartTime <= now && assignment.assignmentEndTime >= now;
 };
 
 export const isUpcoming = (assignment: Assignment) => {
-    return new Date(assignment.assignmentStartTime).getTime() > Date.now();
+    const now = new Date().toISOString();
+    return assignment.assignmentStartTime > now;
 };
 
 export const isCompleted = (assignment: Assignment) => {
-    return new Date(assignment.assignmentEndTime).getTime() < Date.now();
+    const now = new Date().toISOString();
+    return assignment.assignmentEndTime < now;
 };
+
 

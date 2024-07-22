@@ -21,7 +21,7 @@ class ContestController {
             const usersInfo = await getUserFromSection(contestSection);
             const contestUsers = usersInfo.map((user) => {
                 return {
-                    contestUserRollNumber: user.rollNumber,
+                    contestUserRollNumber: user.userRollNumber,
                     contestUserCurrentMarks: 0,
                     contestUserProblemStatus: contestProblems.map((problemId: number) => {
                         return {

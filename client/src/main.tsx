@@ -14,7 +14,7 @@ import {
 	Register,
 	Problem,
 	SubmissionPage,
-	AssignmentPage,
+	AssignmentDetail,
 	ContestPage,
 } from "./pages/index.ts";
 import Logout from "./components/Logout.tsx";
@@ -48,7 +48,7 @@ const router = createBrowserRouter([
 			},
 			{
 				path: "/assignment/:assignmentId",
-				element: <AssignmentPage />,
+				element: <AssignmentDetail />,
 			},
 			{
 				path: "/assignment/:assignmentId/problem/:problemId",
