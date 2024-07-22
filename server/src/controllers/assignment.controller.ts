@@ -17,9 +17,10 @@ class AssignmentController {
         } = req.body;
 
         const usersInfo = await getUserFromSection(assignmentSection);
+        console.log(usersInfo);
         const assignmentUsers = usersInfo.map((user) => {
             return {
-                assignmentUserRollNumber: user.rollNumber,
+                assignmentUserRollNumber: user.userRollNumber,
                 assignmentUserCurrentMarks: 0,
                 assigmentUserProblemStatus: assignmentProblems.map((problemId: number) => {
                     return {
@@ -27,7 +28,7 @@ class AssignmentController {
                         problemScore: 0,
                     };
                 }),
-                assignmentUserTeamName: user.teamName,
+                assignmentUserTeamName: user.userTeamName,
             };
         });
 

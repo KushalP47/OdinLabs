@@ -71,7 +71,7 @@ const AssignmentDetail = () => {
 										assignmentUser?.assigmentUserProblemStatus.find(
 											(status) => status.problemId === problem.problemId,
 										);
-
+									console.log(problemStatus);
 									return problem ? (
 										<ProblemCard
 											key={problem.problemId}
@@ -85,8 +85,10 @@ const AssignmentDetail = () => {
 						</div>
 					)}
 					{tab === "problems" && (
-						<div className="w-1/4 bg-gray-100 p-4">
-							<h3 className="text-lg font-semibold mb-4">User Details</h3>
+						<div className="w-1/4 h-full rounded-lg bg-gray-100 p-4 text-basecolor text-lg">
+							<h3 className="text-lg font-semibold mb-4 text-secondary">
+								User Details
+							</h3>
 							{assignmentUser && (
 								<div>
 									<p>
@@ -107,7 +109,7 @@ const AssignmentDetail = () => {
 					)}
 					{tab === "leaderboard" && (
 						<div className="w-full">
-							<TeamLeaderboard teams={assignment.assignmentTeamLeaderboard} />
+							<TeamLeaderboard assignmentUsers={assignment.assignmentUsers} />
 						</div>
 					)}
 				</div>

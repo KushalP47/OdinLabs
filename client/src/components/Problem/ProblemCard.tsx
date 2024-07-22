@@ -44,8 +44,7 @@ const ProblemCard: React.FC<ProblemCardProps> = ({
 				</div>
 				<div className="divider divider-horizontol"></div>
 				<div>
-					<Link
-						to={`/assignment/${assignmentId}/problem/:problemId${problem.problemId}`}>
+					<Link to={`/assignment/${assignmentId}/problem/${problem.problemId}`}>
 						<button className="btn btn-primary text-white">
 							Solve Problem
 						</button>

@@ -9,7 +9,7 @@ export interface IUser extends Document {
     userRollNumber: string;
     userSection: string;
     userIsAdmin: boolean;
-    userTeamName?: string;
+    userTeamName: string;
     createdAt: Date;
     updatedAt: Date;
     encryptPassword: (password: string) => string;

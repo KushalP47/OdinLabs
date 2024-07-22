@@ -6,7 +6,7 @@ export class AuthService {
         this.url = import.meta.env.VITE_SERVER_URL;
     }
     async register(user: User) {
-        const reqBody = { userEmail: user.email, userPassword: user.password, userName: user.name, userRollNumber: user.rollNumber, userSection: user.section };
+        const reqBody = { userEmail: user.userEmail, userPassword: user.userPassword, userName: user.userName, userRollNumber: user.userRollNumber, userSection: user.userSection };
         const response = await fetch(`http://localhost:8000/api/v1/auth/register`, {
             method: "POST",
             credentials: "include",
@@ -22,7 +22,7 @@ export class AuthService {
     async login(data: any) {
         console.log("from authService: ", data);
         console.log(this.url);
-        const reqBody = { userEmail: data.email, userPassword: data.password };
+        const reqBody = { userEmail: data.userEmail, userPassword: data.userPassword };
         const response = await fetch(`http://localhost:8000/api/v1/auth/login`, {
             method: "POST",
             credentials: "include",

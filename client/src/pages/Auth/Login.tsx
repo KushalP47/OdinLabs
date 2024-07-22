@@ -44,7 +44,7 @@ const Login = () => {
 								<span className="label-text text-black text-lg">Email</span>
 							</label>
 							<input
-								{...register("email", { required: true })}
+								{...register("userEmail", { required: true })}
 								type="email"
 								id="useremail"
 								placeholder="email"
@@ -57,7 +57,7 @@ const Login = () => {
 								<span className="label-text text-black text-lg">Password</span>
 							</label>
 							<input
-								{...register("password", { required: true })}
+								{...register("userPassword", { required: true })}
 								type="password"
 								id="userpassword"
 								placeholder="password"

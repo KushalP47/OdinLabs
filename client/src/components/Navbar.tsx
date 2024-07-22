@@ -23,7 +23,7 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage }) => {
 		{ item: "Contest", url: "contest" },
 		// { item: "Room", url: "room" },
 	];
-	const pages = user?.isAdmin === true ? adminPages : studentPages;
+	const pages = user?.userIsAdmin === true ? adminPages : studentPages;
 	const getNavItemClass = (path: string) => {
 		return currentPage === path
 			? "block py-2 px-4 text-xl rounded font-bold bg-secondary text-white transition duration-300"
@@ -56,6 +56,9 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage }) => {
 				<div className="navbar-end">
 					{status ? (
 						<div className="dropdown dropdown-end">
+							{/* <span className="text-2xl font-bold text-secondary">
+								{user?.userName}
+							</span> */}
 							<div
 								tabIndex={0}
 								role="button"
@@ -75,7 +78,7 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage }) => {
 								<li>
 									<a className="justify-between">Profile</a>
 								</li>
-								{user?.isAdmin ? (
+								{user?.userIsAdmin ? (
 									<li>
 										<Link to="/students">Watch</Link>
 									</li>

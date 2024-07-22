@@ -16,6 +16,7 @@ import { themeOption } from "../constants/themeOptions";
 import { Submission } from "../types/submissions";
 import SubmissionDetails from "./SubmissionDetails";
 import { testcaseVerdict } from "../types/submissions";
+import { useParams } from "react-router-dom";
 
 type CodeEditorProps = {
 	problemId: number;
@@ -33,6 +34,8 @@ const CodeEditor = ({ problemId }: CodeEditorProps) => {
 	const [submissionDetails, setSubmissionDetails] = useState<Submission | null>(
 		null,
 	);
+	const assignmentId = useParams().assignmentId;
+	const contestId = useParams().contestId;
 	const onSelectChange = (sl: LanguageOption | null) => {
 		if (!sl) return;
 		console.log("selected Option...", sl);
@@ -128,12 +131,16 @@ const CodeEditor = ({ problemId }: CodeEditorProps) => {
 			i = (i + 1) % tokens.length;
 		}
 		console.log("Testcases Verdict...", testcasesVerdict);
-		const submissionResp = await codeExecutionService.storeSubmission({
-			submissionSourceCode: code,
-			submissionLanguageId: language.id,
-			submissionProblemId: problemId,
-			submissionTestcasesVerdict: testcasesVerdict,
-		});
+		const submissionResp = await codeExecutionService.storeSubmission(
+			{
+				submissionSourceCode: code,
+				submissionLanguageId: language.id,
+				submissionProblemId: problemId,
+				submissionTestcasesVerdict: testcasesVerdict,
+			},
+			assignmentId,
+			contestId,
+		);
 		console.log("submissionResp...", submissionResp);
 		if (submissionResp.statusCode !== 200) {
 			setSubmitProcessing(false);
