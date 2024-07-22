@@ -9,7 +9,7 @@ import { problemController } from '../controllers/problem.controller';
 // Create the routes
 router.route('/all').get(verifyJWT, problemController.getAllProblems);
 router.route('/:problemId').get(verifyJWT, problemController.getProblemById);
-router.route('/getProblemByIds').get(verifyJWT, problemController.getProblemsByIds);
+router.route('/getProblemByIds').post(verifyJWT, problemController.getProblemsByIds);
 router.route('/create').post(verifyJWT, verifyIsAdmin, problemController.createProblem);
 router.route('/update/:problemId').put(verifyJWT, verifyIsAdmin, problemController.updateProblem);
 router.route('/delete/:problemId').delete(verifyJWT, verifyIsAdmin, problemController.deleteProblem);
