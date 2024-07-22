@@ -11,5 +11,6 @@ router.route('/:assignmentId').get(verifyJWT, assignmentController.getAssignment
 router.route('/:assignmentId').put(verifyJWT, verifyIsAdmin, assignmentController.updateAssignment);
 router.route('/:assignmentId').delete(verifyJWT, verifyIsAdmin, assignmentController.deleteAssignment);
 router.route('/updateDeadline/:assignmentId').put(verifyJWT, verifyIsAdmin, assignmentController.updateAssignmentDeadline);
+router.route('/getAssignmentDeadline/:assignmentId').get(verifyJWT, assignmentController.getAssignmentDeadline);
 
 export default router;

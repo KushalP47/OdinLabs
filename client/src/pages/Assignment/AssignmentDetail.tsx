@@ -42,7 +42,11 @@ const AssignmentDetail = () => {
 
 	return (
 		<div className="flex flex-col min-h-screen">
-			<Navbar currentPage="Assignment" />
+			<Navbar
+				currentPage=""
+				deadline={assignment.assignmentEndTime}
+				assignmentId={String(assignment.assignmentId)}
+			/>
 			<div className="bg-white w-full min-h-screen border-4 border-secondary shadow-xl flex flex-col p-8">
 				<div className="tabs tabs-boxed mb-4 bg-gray-100 font-bold text-lg">
 					<a

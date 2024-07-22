@@ -143,6 +143,27 @@ class AssignmentController {
 
     async deleteAssignment(req: Request, res: Response) {
     };
+
+    async getAssignmentDeadline(req: Request, res: Response) {
+        const assignmentId = req.params.assignmentId;
+        try {
+            const intAssignmentId = Number(assignmentId);
+            const assignment = await Assignment.findOne({ assignmentId: intAssignmentId });
+            if (!assignment) {
+                return res.status(404).json(new ApiError(404, "Assignment not found"));
+            }
+            const response = {
+                ok: true,
+                message: "Assignment deadline fetched successfully",
+                assignmentStartTime: assignment.assignmentStartTime,
+                assignmentEndTime: assignment.assignmentEndTime,
+            };
+            return res.status(200).json(new ApiResponse(200, response, "Assignment deadline fetched successfully"));
+        } catch (error: any) {
+            return res.status(400).json(new ApiError(400, error?.message));
+
+        }
+    }
 };
 
 export const assignmentController = new AssignmentController();

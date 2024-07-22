@@ -8,6 +8,7 @@ import CodeEditor from "../../components/CodeEditor";
 import Submissions from "../../components/Submissions";
 import { codeExecutionService } from "../../api/codeExecutionService";
 import { Submission } from "../../types/submissions";
+import { assignmentService } from "../../api/assignmentService";
 
 const Problem = () => {
 	const [status, setStatus] = useState(false);
@@ -15,10 +16,35 @@ const Problem = () => {
 	const { problemId } = useParams();
 	const [problem, setProblem] = useState<IProblem>();
 	const [submissions, setSubmissions] = useState<Array<Submission>>([]);
-
+	const assignmentId = useParams<{ assignmentId: string }>().assignmentId;
+	const contestId = useParams<{ contestId: string }>().contestId;
+	const [assignmentDeadline, setAssignmentDeadline] = useState<string>("");
+	const [contestDeadline, setContestDeadline] = useState<string>("");
 	useEffect(() => {
 		setStatus(currentStatus);
 	}, [currentStatus]);
+
+	const getAssignmentDeadline = async (assignmentId: string) => {
+		if (assignmentId) {
+			console.log("getting: assignmentId");
+			await assignmentService
+				.getAssignmentDeadline(assignmentId)
+				.then((data) => {
+					console.log(data);
+					if (data.data.ok) {
+						console.log(data.data.assignmentEndTime);
+						setAssignmentDeadline(data.data.assignmentEndTime);
+					}
+				});
+		}
+	};
+	// const getContestDeadline = async () => {
+	// 	await contestService.getContestDeadline(contestId).then((data) => {
+	// 		if (data.ok) {
+	// 			setContestDeadline(data.data.contestEndTime);
+	// 		}
+	// 	});
+	// };
 
 	const fetchSubmissions = async () => {
 		const data = await codeExecutionService.getSubmissions();
@@ -34,6 +60,13 @@ const Problem = () => {
 	};
 	useEffect(() => {
 		fetchSubmissions();
+		console.log(assignmentId);
+		if (assignmentId) {
+			getAssignmentDeadline(assignmentId);
+		}
+		if (contestId) {
+			setContestDeadline(contestId);
+		}
 	}, []);
 
 	useEffect(() => {
@@ -54,7 +87,21 @@ const Problem = () => {
 
 	return (
 		<div className="flex flex-col min-h-screen">
-			<Navbar currentPage="Problem" />
+			{assignmentId && (
+				<Navbar
+					currentPage=""
+					deadline={assignmentDeadline}
+					assignmentId={String(assignmentId)}
+				/>
+			)}
+			{contestId && (
+				<Navbar
+					currentPage=""
+					deadline={contestDeadline}
+					assignmentId={String(contestId)}
+				/>
+			)}
+			{!assignmentId && !contestId && <Navbar currentPage="Problem" />}
 			<div className="bg-white w-full min-h-screen shadow-xl flex">
 				{status ? (
 					<>

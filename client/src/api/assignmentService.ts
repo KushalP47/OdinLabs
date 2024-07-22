@@ -49,6 +49,17 @@ export class AssignmentService {
         });
         return response.json();
     }
+
+    async getAssignmentDeadline(assignmentId: string) {
+        const response = await fetch(`${this.url}/api/v1/assignments/getAssignmentDeadline/${assignmentId}`, {
+            method: "GET",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        return response.json();
+    }
 }
 
 export const assignmentService = new AssignmentService();
