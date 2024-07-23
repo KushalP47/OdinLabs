@@ -16,6 +16,7 @@ import {
 	SubmissionPage,
 	AssignmentDetail,
 	ContestPage,
+	ForgotPassword
 } from "./pages/index.ts";
 import Logout from "./components/Logout.tsx";
 import App from "./App.tsx";
@@ -77,6 +78,10 @@ const router = createBrowserRouter([
 			{
 				path: "/auth/register",
 				element: <Register />,
+			},
+			{
+				path: "/auth/forgot-password",
+				element: <ForgotPassword />,
 			},
 			{
 				path: "/auth/logout",
