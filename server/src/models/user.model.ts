@@ -77,7 +77,10 @@ userSchema.pre<IUser>('save', function (next) {
     if (this.isModified('userPassword')) {
         this.userPassword = this.encryptPassword(this.userPassword);
     }
-    this.userSecret = this.generateSecret();
+
+    if(this.userSecret == "") {
+        this.userSecret = this.generateSecret();
+    }
     next();
 });
 

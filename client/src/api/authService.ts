@@ -35,6 +35,22 @@ export class AuthService {
         console.log(document.cookie)
         return response.json();
     }
+
+    async forgotPassword(data: any) {
+        console.log("from authService: ", data);
+        console.log(this.url);
+        const reqBody = { userEmail: data.userEmail, userSecret: data.userSecret, newPassword: data.newPassword};
+        const response = await fetch(`http://localhost:8000/api/v1/auth/forgot-password`, {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(reqBody),
+        });
+        return response.json();
+    }
+
     async logout() {
         const response = await fetch(`${this.url}/api/v1/auth/logout`, {
             method: "POST",
