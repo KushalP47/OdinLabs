@@ -6,6 +6,7 @@ import { getUserFromSection } from "../functions/user/getUserFromSection";
 
 class ContestController {
 
+    // Admin Functions
     async createContest(req: Request, res: Response) {
         const {
             contestId,
@@ -54,6 +55,12 @@ class ContestController {
         }
     }
 
+    async updateContest(req: Request, res: Response) {
+    }
+
+    async deleteContest(req: Request, res: Response) {
+    }
+
     async getContest(req: Request, res: Response) {
         const { contestId } = req.params;
         try {
@@ -72,29 +79,20 @@ class ContestController {
         }
     }
 
-    async signInContest(req: Request, res: Response) {
+
+    async getAllContests(req: Request, res: Response) {
     }
 
-    async signOutContest(req: Request, res: Response) {
+    async signInContest(req: Request, res: Response) {
     }
 
     async logContestUserActivity(req: Request, res: Response) {
     }
 
-    async updateContest(req: Request, res: Response) {
-
-    }
-
-    async deleteContest(req: Request, res: Response) {
-    }
-
-    async getAllContests(req: Request, res: Response) {
-    }
-
     async updateContestDeadline(req: Request, res: Response) {
     }
 
-    async retainContestUser(req: Request, res: Response) {
+    async clearUserContestCustomCookie(req: Request, res: Response) {
     }
 
 };
