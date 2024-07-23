@@ -26,15 +26,19 @@ const Login = () => {
 			alert(response.message);
 		}
 	};
+
+	const handleForgotPasswordClick = () => {
+		console.log('Navigating to forgot password...');
+		navigate('/auth/forgot-password');
+	};
+
 	return (
 		<div className="hero bg-white min-h-screen">
 			<div className="hero-content w-1/2 flex-col lg:flex-row-reverse">
 				<div className="text-center lg:text-left">
 					<h1 className="text-5xl text-secondary font-bold">Login now!</h1>
 					<p className="py-6 text-basecolor">
-						Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda
-						excepturi exercitationem quasi. In deleniti eaque aut repudiandae et
-						a id nisi.
+						Welcome to the login page
 					</p>
 				</div>
 				<div className="card bg-white border-4 border-secondary w-full max-w-sm shrink-0 shadow-2xl">
@@ -68,7 +72,7 @@ const Login = () => {
 							)}
 							<label className="label">
 								<a
-									href="#"
+									onClick={handleForgotPasswordClick}
 									className="label-text-alt text-black link link-hover">
 									Forgot password?
 								</a>
