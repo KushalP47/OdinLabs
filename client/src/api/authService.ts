@@ -19,7 +19,8 @@ export class AuthService {
             return this.login(user);
         return response.json();
     }
-    async login(data: any) {
+
+    async login(data: User) {
         console.log("from authService: ", data);
         console.log(this.url);
         const reqBody = { userEmail: data.userEmail, userPassword: data.userPassword };

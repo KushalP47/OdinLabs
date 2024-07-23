@@ -1,6 +1,9 @@
 import { Document, Model, Schema, model } from 'mongoose';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import { generateRandomString } from '../utils/randomGenerator';
+
+const lengthOfUserSecret = 10;
 
 export interface IUser extends Document {
     userEmail: string;
@@ -10,8 +13,10 @@ export interface IUser extends Document {
     userSection: string;
     userIsAdmin: boolean;
     userTeamName: string;
+    userSecret: string;
     createdAt: Date;
     updatedAt: Date;
+    generateSecret: () => string;
     encryptPassword: (password: string) => string;
     validPassword: (password: string) => boolean;
     generateAccessToken: () => string;
@@ -54,6 +59,10 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
+    userSecret: {
+        type: String,
+        default: ""
+    },
     userTeamName: {
         type: String,
         default: ""
@@ -68,6 +77,7 @@ userSchema.pre<IUser>('save', function (next) {
     if (this.isModified('userPassword')) {
         this.userPassword = this.encryptPassword(this.userPassword);
     }
+    this.userSecret = this.generateSecret();
     next();
 });
 
@@ -77,6 +87,10 @@ userSchema.methods.encryptPassword = function (password: string) {
 
 userSchema.methods.validPassword = function (password: string) {
     return bcrypt.compareSync(password, this.userPassword);
+};
+
+userSchema.methods.generateSecret = function () {
+    return generateRandomString(lengthOfUserSecret);
 };
 
 userSchema.methods.generateAccessToken = function () {
