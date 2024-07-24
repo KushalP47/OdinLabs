@@ -16,7 +16,7 @@ import {
 	SubmissionPage,
 	AssignmentDetail,
 	ContestPage,
-	ForgotPassword
+	ForgotPassword,
 } from "./pages/index.ts";
 import Logout from "./components/Logout.tsx";
 import App from "./App.tsx";
@@ -70,6 +70,10 @@ const router = createBrowserRouter([
 			{
 				path: "/contest/:contestId",
 				element: <ContestPage />,
+			},
+			{
+				path: "/contest/:contestId/problem/:problemId",
+				element: <Problem />,
 			},
 			{
 				path: "/auth/login",

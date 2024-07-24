@@ -9,6 +9,7 @@ import Submissions from "../../components/Submissions";
 import { codeExecutionService } from "../../api/codeExecutionService";
 import { Submission } from "../../types/submissions";
 import { assignmentService } from "../../api/assignmentService";
+import { contestService } from "../../api/contestService";
 
 const Problem = () => {
 	const [status, setStatus] = useState(false);
@@ -34,23 +35,34 @@ const Problem = () => {
 					if (data.data.ok) {
 						console.log(data.data.assignmentEndTime);
 						setAssignmentDeadline(data.data.assignmentEndTime);
+					} else {
+						console.error("Error fetching assignment deadline");
 					}
 				});
+		} else {
+			console.error("Error fetching assignment deadline");
 		}
 	};
-	// const getContestDeadline = async () => {
-	// 	await contestService.getContestDeadline(contestId).then((data) => {
-	// 		if (data.ok) {
-	// 			setContestDeadline(data.data.contestEndTime);
-	// 		}
-	// 	});
-	// };
+
+	const getContestDeadline = async (contestId: string) => {
+		if (contestId) {
+			console.log("getting: contestId");
+			await contestService.getContestDeadline(contestId).then((data) => {
+				if (data.data.ok) {
+					setContestDeadline(data.data.contestEndTime);
+				} else {
+					console.error("Error fetching contest deadline", data);
+				}
+			});
+		} else {
+			console.error("Error fetching contest deadline");
+		}
+	};
 
 	const fetchSubmissions = async () => {
 		const data = await codeExecutionService.getSubmissions();
 		if (data.statusCode !== 200) {
-			console.log("Error fetching submissions", data);
-			return;
+			console.error("Error fetching submissions");
 		}
 		const problemSubmissions: Array<Submission> = data.data.filter(
 			(submission: Submission) =>
@@ -65,7 +77,7 @@ const Problem = () => {
 			getAssignmentDeadline(assignmentId);
 		}
 		if (contestId) {
-			setContestDeadline(contestId);
+			getContestDeadline(contestId);
 		}
 	}, []);
 
@@ -80,6 +92,8 @@ const Problem = () => {
 					.catch((error) => {
 						console.error(error);
 					});
+			} else {
+				console.error("Error fetching problem");
 			}
 		}
 		getProblem();
@@ -98,7 +112,7 @@ const Problem = () => {
 				<Navbar
 					currentPage=""
 					deadline={contestDeadline}
-					assignmentId={String(contestId)}
+					contestId={String(contestId)}
 				/>
 			)}
 			{!assignmentId && !contestId && <Navbar currentPage="Problem" />}
