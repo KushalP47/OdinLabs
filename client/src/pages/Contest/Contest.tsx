@@ -1,6 +1,6 @@
 // src/pages/Contests.tsx
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar";
 import { useSelector } from "react-redux";
 import { contestService } from "../../api/contestService";
@@ -13,7 +13,7 @@ import {
 	isCompletedContest,
 } from "../../lib/dateUtils";
 
-const Contests: React.FC = () => {
+const Contests = () => {
 	const [status, setStatus] = useState(false);
 	const currentStatus = useSelector((state: any) => state.auth.status);
 	const user = useSelector((state: any) => state.auth.userData);
@@ -37,6 +37,7 @@ const Contests: React.FC = () => {
 	}, [currentStatus]);
 
 	const handleContestClick = (contestId: number) => {
+		
 		navigate(`/contest/${contestId}`);
 	};
 

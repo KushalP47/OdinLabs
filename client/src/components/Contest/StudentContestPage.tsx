@@ -23,12 +23,14 @@ const StudentContestPage = () => {
 			try {
 				if (!contestId) return;
 				const { data } = await contestService.getContest(contestId);
+				console.log(data);
 				if (data.ok) setContest(data.contest);
 
 				// Fetch problems related to the contest
 				const problems = await contestService.getContestProblems(
 					data.contest.contestProblems,
 				);
+				console.log(problems);
 				if (problems.data.ok) setContestProblems(problems.data.problems);
 
 				// Set leaderboard

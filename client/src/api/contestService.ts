@@ -84,6 +84,17 @@ export class ContestService {
         return response.json();
     }
 
+    async signInContest(contestId: string) {
+        const response = await fetch(`${this.url}/api/v1/contests/signIn/${contestId}`, {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        return response.json();
+    }
+
     async logContestActivity(contestId: string, activity: string) {
         const response = await fetch(`${this.url}/api/v1/contests/logActivity/${contestId}`, {
             method: "POST",

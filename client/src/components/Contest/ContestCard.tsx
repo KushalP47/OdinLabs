@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { Contest } from "../../types/contest";
 import { formatDate, isOngoingContest } from "../../lib/dateUtils";
 import ConfirmationModal from "./ConfirmationModal";
-
+import { contestService } from "../../api/contestService";
 interface ContestCardProps {
 	contest: Contest;
 	user: any;
@@ -41,8 +41,25 @@ const ContestCard: React.FC<ContestCardProps> = ({
 
 	// Function to confirm join
 	const confirmJoin = () => {
-		setIsModalOpen(false);
-		handleClick(contest.contestId);
+		try {
+			setIsModalOpen(false);
+			const res = async () => {
+				await contestService
+					.signInContest(String(contest.contestId))
+					.then((response) => {
+						console.log(response);
+						if (response.data) {
+							handleClick(contest.contestId);
+						} else {
+							console.error("Failed has already joined the contest once");
+						}
+					});
+			};
+			res();
+			// handleClick(contest.contestId);
+		} catch (error) {
+			console.error("Failed to join contest", error);
+		}
 	};
 
 	return (
