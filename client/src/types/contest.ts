@@ -13,7 +13,7 @@ export interface Contest {
 export interface ContestUser {
     contestUserRollNumber: string;
     contestUserCurrentMarks: number;
-    contestUsername: string;
+    contestUserName: string;
     contestUserProblemStatus: ProblemStatus[];
     contestCustomCookie: string;
 }

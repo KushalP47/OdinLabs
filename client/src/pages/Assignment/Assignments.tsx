@@ -13,7 +13,7 @@ const Assignments = () => {
 	const [status, setStatus] = useState(false);
 	const currentStatus = useSelector((state: any) => state.auth.status);
 	const user = useSelector((state: any) => state.auth.userData);
-	const isAdmin = user?.isAdmin;
+	const isAdmin = user?.userIsAdmin;
 	const [assignments, setAssignments] = useState<Assignment[]>([]);
 	const navigate = useNavigate();
 

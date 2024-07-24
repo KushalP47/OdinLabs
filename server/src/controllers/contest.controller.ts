@@ -24,7 +24,7 @@ class ContestController {
                 return {
                     contestUserRollNumber: user.userRollNumber,
                     contestUserCurrentMarks: 0,
-                    contestuserName: user.userName,
+                    contestUserName: user.userName,
                     contestUserProblemStatus: contestProblems.map((problemId: number) => {
                         return {
                             problemId,

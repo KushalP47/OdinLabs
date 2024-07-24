@@ -4,7 +4,7 @@ import { Document, Model, Schema, model } from 'mongoose';
 export interface IContestUser {
     contestUserRollNumber: string;
     contestUserCurrentMarks: number;
-    contestUsername: string;
+    contestUserName: string;
     contestUserProblemStatus: IProblemStatus[];
     contestCustomCookie: string;
 }
@@ -73,6 +73,10 @@ const contestSchema = new Schema({
                         required: true
                     }
                 }],
+                required: true
+            },
+            contestUserName: {
+                type: String,
                 required: true
             },
             contestCustomCookie: {
