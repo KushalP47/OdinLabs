@@ -32,7 +32,7 @@ const StudentContestPage = () => {
 				if (problems.data.ok) setContestProblems(problems.data.problems);
 
 				// Set leaderboard
-				setLeaderboard(data.data.contest.contestUsers);
+				setLeaderboard(data.contest.contestUsers);
 			} catch (error) {
 				console.error("Failed to fetch contest", error);
 			}
