@@ -40,7 +40,7 @@ const Register = () => {
 								<span className="label-text text-black text-lg">Name</span>
 							</label>
 							<input
-								{...register("name", { required: true })}
+								{...register("userName", { required: true })}
 								type="string"
 								id="username"
 								placeholder="name"
@@ -53,7 +53,7 @@ const Register = () => {
 								<span className="label-text text-black text-lg">Roll No.</span>
 							</label>
 							<input
-								{...register("rollNumber", { required: true })}
+								{...register("userRollNumber", { required: true })}
 								type="string"
 								id="rollNumber"
 								placeholder="Roll No (AU..)"
@@ -70,7 +70,7 @@ const Register = () => {
 								</span>
 							</label>
 							<select
-								{...register("section", { required: true })}
+								{...register("userSection", { required: true })}
 								id="sectionSelect"
 								className="mt-1 block w-full px-3 py-2 border border-secondary bg-white text-basecolor rounded-md shadow-sm sm:text-sm">
 								<option value="">Select Section</option>
@@ -86,7 +86,7 @@ const Register = () => {
 								<span className="label-text text-black text-lg">Email</span>
 							</label>
 							<input
-								{...register("email", { required: true })}
+								{...register("userEmail", { required: true })}
 								type="email"
 								id="useremail"
 								placeholder="email"
@@ -99,7 +99,7 @@ const Register = () => {
 								<span className="label-text text-black text-lg">Password</span>
 							</label>
 							<input
-								{...register("password", { required: true })}
+								{...register("userPassword", { required: true })}
 								type="password"
 								id="userpassword"
 								placeholder="password"

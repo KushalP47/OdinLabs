@@ -1,3 +1,4 @@
-import { userExists } from './userExists';
+import { userExists, userFromEmail } from './userExists';
 import { createUser } from './createUser';
-export { userExists, createUser };
+import { updateUserPassword } from './editUser';
+export { userExists, createUser, userFromEmail, updateUserPassword};

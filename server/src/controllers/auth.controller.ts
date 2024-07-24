@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { IUserFunctionResponse } from '../models/user.model';
-import { userExists, createUser } from '../functions/auth';
+import { userExists, createUser, userFromEmail, updateUserPassword } from '../functions/auth';
 import { ApiResponse } from '../utils/ApiResponse';
 import { ApiError } from '../utils/ApiError';
 
@@ -79,6 +79,34 @@ class AuthController {
                     "User logged in successfully!!"
                 )
             );
+    }
+
+    async forgotPassword(req: Request, res: Response) {
+        const { userEmail, userSecret, newPassword } = req.body;
+
+        const userData: IUserFunctionResponse = await userFromEmail(userEmail);
+
+        if (!userData.ok || !userData.user) {
+            return res.status(404).json(new ApiError(404, "User not found"));
+        }
+
+        if (userData.user.userSecret !== userSecret) {
+            return res.status(403).json(new ApiError(403, "Invalid secret"));
+        }
+
+        const result = await updateUserPassword(userData.user._id, newPassword);
+
+        if (!result.ok) {
+            return res.status(500).json(new ApiError(500, "Failed to update password"));
+        }
+
+        return res.json(
+            new ApiResponse(
+                200,
+                {},
+                "Your password has been updated successfully!"
+            )
+        );
     }
 
     async logout(req: Request, res: Response) {
