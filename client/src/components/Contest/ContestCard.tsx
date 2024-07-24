@@ -1,10 +1,10 @@
-// src/components/Contest/ContestCard.tsx
-
 import React, { useState } from "react";
 import { Contest } from "../../types/contest";
 import { formatDate, isOngoingContest } from "../../lib/dateUtils";
 import ConfirmationModal from "./ConfirmationModal";
 import { contestService } from "../../api/contestService";
+import ErrorModal from "../ErrorModal";
+
 interface ContestCardProps {
 	contest: Contest;
 	user: any;
@@ -25,8 +25,12 @@ const ContestCard: React.FC<ContestCardProps> = ({
 	// Check if the contest is ongoing
 	const ongoing = isOngoingContest(contest);
 
-	// State for modal
+	// State for confirmation modal
 	const [isModalOpen, setIsModalOpen] = useState(false);
+
+	// State for error modal
+	const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+	const [errorMessage, setErrorMessage] = useState("");
 
 	// Function to handle join button click
 	const handleJoinClick = () => {
@@ -51,14 +55,17 @@ const ContestCard: React.FC<ContestCardProps> = ({
 						if (response.data) {
 							handleClick(contest.contestId);
 						} else {
-							console.error("Failed has already joined the contest once");
+							// Set error message and open error modal
+							setErrorMessage("User has already joined the contest once.");
+							setIsErrorModalOpen(true);
 						}
 					});
 			};
 			res();
-			// handleClick(contest.contestId);
 		} catch (error) {
-			console.error("Failed to join contest", error);
+			// Handle error and show error modal
+			setErrorMessage("Failed to join contest. Please try again later.");
+			setIsErrorModalOpen(true);
 		}
 	};
 
@@ -99,6 +106,13 @@ const ContestCard: React.FC<ContestCardProps> = ({
 				isOpen={isModalOpen}
 				onClose={() => setIsModalOpen(false)}
 				onConfirm={confirmJoin}
+			/>
+
+			{/* Error Modal */}
+			<ErrorModal
+				isOpen={isErrorModalOpen}
+				onClose={() => setIsErrorModalOpen(false)}
+				message={errorMessage}
 			/>
 		</div>
 	);

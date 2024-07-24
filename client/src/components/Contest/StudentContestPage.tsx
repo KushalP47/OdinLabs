@@ -7,6 +7,7 @@ import { Contest, ContestUser } from "../../types/contest";
 import ProblemCard from "../../components/Problem/ProblemCard";
 import Leaderboard from "../../components/Contest/Leaderboard";
 import { Problem } from "../../types/problems";
+import ErrorModal from "../../components/ErrorModal";
 
 const StudentContestPage = () => {
 	const { contestId } = useParams<{ contestId: string }>();
@@ -18,25 +19,38 @@ const StudentContestPage = () => {
 	const [contestProblems, setContestProblems] = useState<Problem[]>([]);
 	const [leaderboard, setLeaderboard] = useState<ContestUser[]>([]);
 
+	// Error modal state
+	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+	const [errorMessage, setErrorMessage] = useState<string>("");
+
 	useEffect(() => {
 		async function fetchContest() {
 			try {
 				if (!contestId) return;
 				const { data } = await contestService.getContest(contestId);
 				console.log(data);
-				if (data.ok) setContest(data.contest);
-
-				// Fetch problems related to the contest
-				const problems = await contestService.getContestProblems(
-					data.contest.contestProblems,
-				);
-				console.log(problems);
-				if (problems.data.ok) setContestProblems(problems.data.problems);
-
-				// Set leaderboard
-				setLeaderboard(data.contest.contestUsers);
-			} catch (error) {
-				console.error("Failed to fetch contest", error);
+				if (data.ok) {
+					setContest(data.contest);
+					// Fetch problems related to the contest
+					const problems = await contestService.getContestProblems(
+						data.contest.contestProblems,
+					);
+					console.log(problems);
+					if (problems.data.ok) {
+						setContestProblems(problems.data.problems);
+						// Set leaderboard
+						setLeaderboard(data.contest.contestUsers);
+					} else {
+						setErrorMessage(problems.data.error || "Failed to fetch problems."); // Set error message
+						setIsModalOpen(true); // Open modal on error
+					}
+				} else {
+					setErrorMessage(data.error || "Failed to fetch contest."); // Set error message
+					setIsModalOpen(true); // Open modal on error
+				}
+			} catch (error: any) {
+				setErrorMessage(error.message || "Failed to fetch contest."); // Set error message
+				setIsModalOpen(true); // Open modal on error
 			}
 		}
 		fetchContest();
@@ -124,6 +138,13 @@ const StudentContestPage = () => {
 					)}
 				</div>
 			</div>
+
+			{/* Error Modal */}
+			<ErrorModal
+				isOpen={isModalOpen}
+				onClose={() => setIsModalOpen(false)}
+				message={errorMessage}
+			/>
 		</div>
 	);
 };

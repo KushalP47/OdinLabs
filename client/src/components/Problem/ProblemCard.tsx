@@ -39,7 +39,7 @@ const ProblemCard: React.FC<ProblemCardProps> = ({
 	return (
 		<div className="card bg-white shadow-xl p-4">
 			<div className="flex flex-row justify-between items-center">
-				<div className="flex flex-col">
+				<div className="w-2/3 flex flex-col">
 					<h2 className="card-title text-xl font-semibold text-basecolor">
 						{problem.problemTitle}
 					</h2>
@@ -53,7 +53,7 @@ const ProblemCard: React.FC<ProblemCardProps> = ({
 					</div>
 				</div>
 				<div className="divider divider-horizontal"></div>
-				<div>
+				<div className="w-1/3 flex justify-center items-center">
 					<Link to={problemLink}>
 						<button className="btn btn-primary text-white">
 							Solve Problem

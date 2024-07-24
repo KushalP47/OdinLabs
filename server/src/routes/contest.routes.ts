@@ -14,5 +14,5 @@ router.route('/:contestId').delete(verifyJWT, verifyIsAdmin, contestController.d
 router.route('/updateDeadline/:contestId').put(verifyJWT, verifyIsAdmin, contestController.updateContestDeadline);
 router.route('/signIn/:contestId').post(verifyJWT, contestController.signInContest);
 router.route('/logActivity/:contestId').post(verifyJWT, contestController.logContestUserActivity);
-
+router.route('/getContestDeadline/:contestId').get(verifyJWT, contestController.getContestDeadline);
 export default router;

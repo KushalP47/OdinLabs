@@ -164,6 +164,28 @@ class ContestController {
         }
     }
 
+    async getContestDeadline(req: Request, res: Response) {
+        const { contestId } = req.params;
+        try {
+            const intContestId = Number(contestId);
+            const contest = await Contest
+                .findOne({ contestId: intContestId })
+                .select("contestStartTime contestEndTime");
+            if (!contest) {
+                return res.status(404).json(new ApiError(404, "Contest not found"));
+            }
+            const response = {
+                ok: true,
+                message: "Contest deadline fetched successfully",
+                contestStartTime: contest.contestStartTime,
+                contestEndTime: contest.contestEndTime,
+            };
+            return res.status(200).json(new ApiResponse(200, response, "Contest deadline fetched successfully"));
+        } catch (error: any) {
+            return res.status(400).json(new ApiError(400, error?.message));
+        }
+    }
+
 };
 
 export const contestController = new ContestController();
