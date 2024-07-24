@@ -1,33 +1,39 @@
+// src/pages/Assignments.tsx
+
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import Navbar from "../../components/Navbar";
-import { useNavigate } from "react-router-dom";
 import { assignmentService } from "../../api/assignmentService";
-import { Assignment } from "../../types/assignment";
+import Navbar from "../../components/Navbar";
 import AssignmentCard from "../../components/Assignment/AssignmentCard";
+import { Assignment } from "../../types/assignment";
+import { useNavigate } from "react-router-dom";
 import { isOngoing, isUpcoming, isCompleted } from "../../lib/dateUtils";
 
 const Assignments = () => {
-	const navigate = useNavigate();
+	const [status, setStatus] = useState(false);
 	const currentStatus = useSelector((state: any) => state.auth.status);
 	const user = useSelector((state: any) => state.auth.userData);
 	const isAdmin = user?.isAdmin;
 	const [assignments, setAssignments] = useState<Assignment[]>([]);
+	const navigate = useNavigate();
 
 	useEffect(() => {
-		async function getAssignments() {
-			try {
-				const { data } = await assignmentService.getAllAssignments();
-				setAssignments(data.assignments);
-			} catch (error) {
-				console.error("Failed to fetch assignments", error);
-			}
+		setStatus(currentStatus);
+		if (currentStatus) {
+			assignmentService
+				.getAllAssignments()
+				.then((data) => {
+					if (data.data.ok) setAssignments(data.data.assignments);
+					else console.error(data.data.message);
+				})
+				.catch((err) => {
+					console.error(err);
+				});
 		}
-		getAssignments();
 	}, [currentStatus]);
 
-	const handleAssignmentClick = (id: number) => {
-		navigate(`/assignment/${id}`);
+	const handleAssignmentClick = (assignmentId: number) => {
+		navigate(`/assignment/${assignmentId}`);
 	};
 
 	return (
@@ -42,28 +48,32 @@ const Assignments = () => {
 							</button>
 						</div>
 					)}
-					{currentStatus ? (
+					{status ? (
 						<div className="flex flex-col">
-							{["Ongoing", "Upcoming", "Completed"].map((status) => (
+							{["Ongoing", "Upcoming", "Completed"].map((assignmentStatus) => (
 								<div
-									key={status}
+									key={assignmentStatus}
 									className="collapse collapse-arrow bg-gray-100 mb-4">
 									<input
 										type="checkbox"
-										defaultChecked={status === "Ongoing"}
+										defaultChecked={assignmentStatus === "Ongoing"}
 									/>
 									<div className="collapse-title text-2xl font-bold text-secondary">
-										{status} Assignments
+										{assignmentStatus} Assignments
 									</div>
 									<div className="collapse-content">
 										<div className="flex flex-col">
 											{assignments.map((assignment) => {
 												const isCurrentAssignment =
-													status === "Ongoing" && isOngoing(assignment);
+													assignmentStatus === "Ongoing" &&
+													isOngoing(assignment);
 												const isFutureAssignment =
-													status === "Upcoming" && isUpcoming(assignment);
+													assignmentStatus === "Upcoming" &&
+													isUpcoming(assignment);
 												const isPastAssignment =
-													status === "Completed" && isCompleted(assignment);
+													assignmentStatus === "Completed" &&
+													isCompleted(assignment);
+
 												if (
 													isCurrentAssignment ||
 													isFutureAssignment ||
@@ -75,7 +85,7 @@ const Assignments = () => {
 															assignment={assignment}
 															user={user}
 															handleClick={handleAssignmentClick}
-															isUpcoming={status === "Upcoming"}
+															isAdmin={isAdmin} // Pass admin status
 														/>
 													);
 												}

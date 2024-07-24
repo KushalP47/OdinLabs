@@ -4,6 +4,17 @@ export class ContestService {
         this.url = import.meta.env.VITE_SERVER_URL;
     }
 
+    async getAllContests() {
+        const response = await fetch(`${this.url}/api/v1/contests/getAllContests`, {
+            method: "GET",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        return response.json();
+    }
+
     async getContest(contestId: string) {
         const response = await fetch(`${this.url}/api/v1/contests/${contestId}`, {
             method: "GET",

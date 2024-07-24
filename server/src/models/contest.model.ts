@@ -4,6 +4,7 @@ import { Document, Model, Schema, model } from 'mongoose';
 export interface IContestUser {
     contestUserRollNumber: string;
     contestUserCurrentMarks: number;
+    contestUsername: string;
     contestUserProblemStatus: IProblemStatus[];
     contestCustomCookie: string;
 }

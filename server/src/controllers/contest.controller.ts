@@ -24,6 +24,7 @@ class ContestController {
                 return {
                     contestUserRollNumber: user.userRollNumber,
                     contestUserCurrentMarks: 0,
+                    contestuserName: user.userName,
                     contestUserProblemStatus: contestProblems.map((problemId: number) => {
                         return {
                             problemId,
@@ -33,6 +34,7 @@ class ContestController {
                     contestCustomCookie: "",
                 };
             });
+
             const contest = new Contest({
                 contestId,
                 contestName,
@@ -64,7 +66,8 @@ class ContestController {
     async getContest(req: Request, res: Response) {
         const { contestId } = req.params;
         try {
-            const contest = await Contest.findOne({ contestId });
+            const intContestId = Number(contestId);
+            const contest = await Contest.findOne({ contestId: intContestId });
             if (!contest) {
                 return res.status(404).json(new ApiError(404, "Contest not found"));
             }
@@ -81,6 +84,17 @@ class ContestController {
 
 
     async getAllContests(req: Request, res: Response) {
+        try {
+            const contests = await Contest.find();
+            const response = {
+                ok: true,
+                message: "Contests fetched successfully",
+                contests,
+            };
+            return res.status(200).json(new ApiResponse(200, response, "Contests fetched successfully"));
+        } catch (error: any) {
+            return res.status(400).json(new ApiError(400, error?.message));
+        }
     }
 
     async signInContest(req: Request, res: Response) {
