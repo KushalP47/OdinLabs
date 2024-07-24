@@ -1,20 +1,15 @@
-import { useParams } from "react-router-dom";
+import React from "react";
 import { useSelector } from "react-redux";
-import AdminContestPage from "../../components/Contest/AdminContestPage";
+import { useParams } from "react-router-dom";
 import StudentContestPage from "../../components/Contest/StudentContestPage";
-const ContestPage = () => {
-	const { contestId } = useParams();
-	if (!contestId) return <div>Contest ID not provided</div>;
-	const isAdmin = useSelector((state: any) => state.auth.userIsAdmin);
+import AdminContestPage from "../../components/Contest/AdminContestPage";
+
+const ContestPage: React.FC = () => {
+	const user = useSelector((state: any) => state.auth.userData);
+	const { contestId } = useParams<{ contestId: string }>();
 
 	return (
-		<div>
-			{isAdmin ? (
-				<AdminContestPage contestId={contestId} />
-			) : (
-				<StudentContestPage contestId={contestId} />
-			)}
-		</div>
+		<div>{user?.isAdmin ? <AdminContestPage /> : <StudentContestPage />}</div>
 	);
 };
 

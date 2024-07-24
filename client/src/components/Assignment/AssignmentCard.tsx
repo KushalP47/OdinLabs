@@ -1,24 +1,35 @@
+// src/components/Assignment/AssignmentCard.tsx
+
 import React from "react";
 import { Assignment } from "../../types/assignment";
-import { formatDate } from "../../lib/dateUtils";
+import { formatDate, isOngoing } from "../../lib/dateUtils";
 
 interface AssignmentCardProps {
 	assignment: Assignment;
 	user: any;
 	handleClick: (id: number) => void;
-	isUpcoming?: boolean;
+	isAdmin: boolean; // Pass admin status as a prop
 }
 
 const AssignmentCard: React.FC<AssignmentCardProps> = ({
 	assignment,
 	user,
 	handleClick,
-	isUpcoming,
+	isAdmin,
 }) => {
 	const userMarks = assignment.assignmentUsers.find(
 		(assignmentUser) =>
 			assignmentUser.assignmentUserRollNumber === user?.rollNumber,
 	)?.assignmentUserCurrentMarks;
+
+	// Check if the assignment is ongoing
+	const ongoing = isOngoing(assignment);
+
+	// Function to handle solve button click
+	const handleSolveClick = () => {
+		// Direct navigation for admin or ongoing assignment
+		handleClick(assignment.assignmentId);
+	};
 
 	return (
 		<div key={assignment.assignmentId} className="mb-4">
@@ -37,11 +48,11 @@ const AssignmentCard: React.FC<AssignmentCardProps> = ({
 				<div className="flex w-1/4 justify-center items-center">
 					<button
 						className={`btn btn-primary w-1/2 text-white px-2 ${
-							isUpcoming ? "disabled" : ""
+							!isAdmin && !ongoing ? "disabled" : ""
 						}`}
-						onClick={() => !isUpcoming && handleClick(assignment.assignmentId)}
-						disabled={isUpcoming}>
-						{isUpcoming ? "Not Available" : "Solve"}
+						onClick={handleSolveClick}
+						disabled={!isAdmin && !ongoing}>
+						{!isAdmin && !ongoing ? "Not Available" : "Solve"}
 					</button>
 				</div>
 			</div>

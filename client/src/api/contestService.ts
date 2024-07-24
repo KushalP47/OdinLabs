@@ -4,6 +4,17 @@ export class ContestService {
         this.url = import.meta.env.VITE_SERVER_URL;
     }
 
+    async getAllContests() {
+        const response = await fetch(`${this.url}/api/v1/contests/getAllContests`, {
+            method: "GET",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        return response.json();
+    }
+
     async getContest(contestId: string) {
         const response = await fetch(`${this.url}/api/v1/contests/${contestId}`, {
             method: "GET",
@@ -65,6 +76,17 @@ export class ContestService {
     async deleteContest(contestId: string) {
         const response = await fetch(`${this.url}/api/v1/contests/delete/${contestId}`, {
             method: "DELETE",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        return response.json();
+    }
+
+    async signInContest(contestId: string) {
+        const response = await fetch(`${this.url}/api/v1/contests/signIn/${contestId}`, {
+            method: "POST",
             credentials: "include",
             headers: {
                 "Content-Type": "application/json",

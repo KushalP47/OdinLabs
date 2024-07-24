@@ -18,6 +18,7 @@ export const isOngoing = (assignment: Assignment) => {
     return assignment.assignmentStartTime <= now && assignment.assignmentEndTime >= now;
 };
 
+
 export const isUpcoming = (assignment: Assignment) => {
     const now = new Date().toISOString();
     return assignment.assignmentStartTime > now;
@@ -26,6 +27,23 @@ export const isUpcoming = (assignment: Assignment) => {
 export const isCompleted = (assignment: Assignment) => {
     const now = new Date().toISOString();
     return assignment.assignmentEndTime < now;
+};
+
+import { Contest } from "../types/contest";
+
+export const isOngoingContest = (contest: Contest): boolean => {
+    const now = new Date();
+    return now >= new Date(contest.contestStartTime) && now <= new Date(contest.contestEndTime);
+};
+
+export const isUpcomingContest = (contest: Contest): boolean => {
+    const now = new Date();
+    return now < new Date(contest.contestStartTime);
+};
+
+export const isCompletedContest = (contest: Contest): boolean => {
+    const now = new Date();
+    return now > new Date(contest.contestEndTime);
 };
 
 

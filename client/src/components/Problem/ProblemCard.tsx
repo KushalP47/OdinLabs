@@ -2,16 +2,19 @@ import React from "react";
 import { ProblemStatus } from "../../types/assignment";
 import { Problem } from "../../types/problems";
 import { Link } from "react-router-dom";
+
 interface ProblemCardProps {
 	problem: Problem;
 	problemStatus?: ProblemStatus;
-	assignmentId: number;
+	assignmentId?: number;
+	contestId?: number;
 }
 
 const ProblemCard: React.FC<ProblemCardProps> = ({
 	problem,
 	problemStatus,
 	assignmentId,
+	contestId,
 }) => {
 	const getDifficultyClass = (difficulty: string) => {
 		switch (difficulty) {
@@ -25,6 +28,13 @@ const ProblemCard: React.FC<ProblemCardProps> = ({
 				return "font-bold text-gray-500"; // Default class if difficulty is not matched
 		}
 	};
+
+	// Determine URL based on whether it is an assignment or contest
+	const problemLink = assignmentId
+		? `/assignment/${assignmentId}/problem/${problem.problemId}`
+		: contestId
+		? `/contest/${contestId}/problem/${problem.problemId}`
+		: "#";
 
 	return (
 		<div className="card bg-white shadow-xl p-4">
@@ -42,9 +52,9 @@ const ProblemCard: React.FC<ProblemCardProps> = ({
 						<span>Score: {problemStatus?.problemScore ?? "Not Attempted"}</span>
 					</div>
 				</div>
-				<div className="divider divider-horizontol"></div>
+				<div className="divider divider-horizontal"></div>
 				<div>
-					<Link to={`/assignment/${assignmentId}/problem/${problem.problemId}`}>
+					<Link to={problemLink}>
 						<button className="btn btn-primary text-white">
 							Solve Problem
 						</button>
