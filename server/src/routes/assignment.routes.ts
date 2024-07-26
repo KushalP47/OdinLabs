@@ -2,7 +2,7 @@ import Router from 'express';
 import { assignmentController } from '../controllers/assignment.controller';
 import { verifyJWT } from '../middleware/auth.middleware';
 import { verifyIsAdmin } from '../middleware/admin.middleware';
-
+import { verifyNoCustomContestCookie } from '../middleware/customContestCokkie.middleware';
 const router = Router();
 
 router.route('/getAllAssignments').get(verifyJWT, assignmentController.getAllAssignments);

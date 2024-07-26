@@ -11,13 +11,15 @@ import {
 	Room,
 	Login,
 	Contest,
-	Register,
+	ContestProblem,
+	AssignmentProblem,
 	Problem,
 	SubmissionPage,
 	AssignmentDetail,
 	ContestPage,
 	ForgotPassword,
 } from "./pages/index.ts";
+import Protected from "./components/Protected.tsx";
 import Logout from "./components/Logout.tsx";
 import App from "./App.tsx";
 import "./index.css";
@@ -27,69 +29,179 @@ const router = createBrowserRouter([
 		path: "/",
 		element: <App />,
 		children: [
+			// General routes
 			{
 				path: "/dashboard",
-				element: <Dashboard />,
+				element: (
+					<Protected
+						onlyAdminAllowed={false}
+						allowDuringContest={false}
+						isLoggedIn={true}>
+						<Dashboard />
+					</Protected>
+				),
 			},
 			{
 				path: "/students",
-				element: <Students />,
+				element: (
+					<Protected
+						onlyAdminAllowed={true}
+						allowDuringContest={false}
+						isLoggedIn={true}>
+						<Students />
+					</Protected>
+				),
 			},
 			{
 				path: "/room",
-				element: <Room />,
+				element: (
+					<Protected
+						onlyAdminAllowed={false}
+						allowDuringContest={false}
+						isLoggedIn={true}>
+						<Room />
+					</Protected>
+				),
 			},
 			{
 				path: "/submissions",
-				element: <SubmissionPage />,
+				element: (
+					<Protected
+						onlyAdminAllowed={false}
+						allowDuringContest={false}
+						isLoggedIn={true}>
+						<SubmissionPage />
+					</Protected>
+				),
 			},
+			// Assignment Routes
 			{
 				path: "/assignment",
-				element: <Assignments />,
+				element: (
+					<Protected
+						onlyAdminAllowed={false}
+						allowDuringContest={false}
+						isLoggedIn={true}>
+						<Assignments />
+					</Protected>
+				),
 			},
 			{
 				path: "/assignment/:assignmentId",
-				element: <AssignmentDetail />,
+				element: (
+					<Protected
+						onlyAdminAllowed={false}
+						allowDuringContest={false}
+						isLoggedIn={true}>
+						<AssignmentDetail />
+					</Protected>
+				),
+				children: [
+					{
+						path: "/assignment/:assignmentId/problem/:problemId",
+						element: (
+							<Protected
+								onlyAdminAllowed={false}
+								allowDuringContest={false}
+								isLoggedIn={true}>
+								<AssignmentProblem />
+							</Protected>
+						),
+					},
+				],
 			},
-			{
-				path: "/assignment/:assignmentId/problem/:problemId",
-				element: <Problem />,
-			},
+			// Practice Routes
 			{
 				path: "/practice",
-				element: <Practice />,
+				element: (
+					<Protected
+						onlyAdminAllowed={false}
+						allowDuringContest={false}
+						isLoggedIn={true}>
+						<Practice />
+					</Protected>
+				),
 			},
 			{
-				path: "/problem/:problemId",
-				element: <Problem />,
+				path: "/practice/problem/:problemId",
+				element: (
+					<Protected
+						onlyAdminAllowed={false}
+						allowDuringContest={false}
+						isLoggedIn={true}>
+						<Problem />
+					</Protected>
+				),
 			},
+
+			// Contest Routes
 			{
 				path: "/contest",
-				element: <Contest />,
+				element: (
+					<Protected
+						onlyAdminAllowed={false}
+						allowDuringContest={false}
+						isLoggedIn={true}>
+						<Contest />
+					</Protected>
+				),
 			},
 			{
 				path: "/contest/:contestId",
-				element: <ContestPage />,
+				element: (
+					<Protected
+						onlyAdminAllowed={false}
+						allowDuringContest={true}
+						isLoggedIn={true}>
+						<ContestPage />
+					</Protected>
+				),
 			},
 			{
 				path: "/contest/:contestId/problem/:problemId",
-				element: <Problem />,
+				element: (
+					<Protected
+						onlyAdminAllowed={false}
+						allowDuringContest={true}
+						isLoggedIn={true}>
+						<ContestProblem />
+					</Protected>
+				),
 			},
+
+			// Auth routes
 			{
 				path: "/auth/login",
-				element: <Login />,
-			},
-			{
-				path: "/auth/register",
-				element: <Register />,
+				element: (
+					<Protected
+						onlyAdminAllowed={false}
+						allowDuringContest={false}
+						isLoggedIn={false}>
+						<Login />
+					</Protected>
+				),
 			},
 			{
 				path: "/auth/forgot-password",
-				element: <ForgotPassword />,
+				element: (
+					<Protected
+						onlyAdminAllowed={false}
+						allowDuringContest={false}
+						isLoggedIn={false}>
+						<ForgotPassword />
+					</Protected>
+				),
 			},
 			{
 				path: "/auth/logout",
-				element: <Logout />,
+				element: (
+					<Protected
+						onlyAdminAllowed={false}
+						allowDuringContest={false}
+						isLoggedIn={true}>
+						<Logout />
+					</Protected>
+				),
 			},
 		],
 	},

@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { verifyJWT } from '../middleware/auth.middleware';
 import { verifyIsAdmin } from '../middleware/admin.middleware';
+import { verifyNoCustomContestCookie } from '../middleware/customContestCokkie.middleware';
 const router = Router();
 
 // Import the controller

@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { delete_cookie } from "../lib/cookieUtility";
+import { useDispatch } from "react-redux";
+import { setContestData } from "../store/contestSlice";
 interface NavbarProps {
 	currentPage: string;
 	deadline?: string;
@@ -17,6 +20,8 @@ const Navbar: React.FC<NavbarProps> = ({
 }) => {
 	const user = useSelector((state: any) => state.auth.userData);
 	const status = useSelector((state: any) => state.auth.status);
+	const navigate = useNavigate();
+	const dispatch = useDispatch();
 	const pages = [
 		{ item: "Practice", url: "practice" },
 		{ item: "Assignment", url: "assignment" },
@@ -68,8 +73,16 @@ const Navbar: React.FC<NavbarProps> = ({
 		);
 	};
 
+	const handleEndContest = () => {
+		console.log("Ending contest...");
+		delete_cookie("customContestCookie");
+		dispatch(setContestData({ customContestCookie: null, contestId: null }));
+		navigate("/dashboard");
+	};
+
 	return (
 		<>
+			{/* Normal Navbar */}
 			{!deadline && (
 				<div className="navbar bg-base-100">
 					<div className="navbar-start">
@@ -151,14 +164,8 @@ const Navbar: React.FC<NavbarProps> = ({
 							<>
 								<Link
 									to="/auth/login"
-									className="btn btn-primary text-white text-md">
+									className="btn btn-primary text-white text-lg">
 									Login
-								</Link>
-								<div className="divider divider-horizontal">OR</div>
-								<Link
-									to="/auth/register"
-									className="btn btn-primary text-white text-md">
-									Register
 								</Link>
 							</>
 						)}
@@ -166,6 +173,7 @@ const Navbar: React.FC<NavbarProps> = ({
 				</div>
 			)}
 
+			{/* Navbar for Assignments */}
 			{deadline && assignmentId && (
 				<div className="navbar bg-base-100">
 					<div className="navbar-start">
@@ -246,14 +254,8 @@ const Navbar: React.FC<NavbarProps> = ({
 							<>
 								<Link
 									to="/auth/login"
-									className="btn btn-primary text-white text-md">
+									className="btn btn-primary text-white text-lg">
 									Login
-								</Link>
-								<div className="divider divider-horizontal">OR</div>
-								<Link
-									to="/auth/register"
-									className="btn btn-primary text-white text-md">
-									Register
 								</Link>
 							</>
 						)}
@@ -261,6 +263,7 @@ const Navbar: React.FC<NavbarProps> = ({
 				</div>
 			)}
 
+			{/* Navbar for Contests */}
 			{deadline && contestId && (
 				<div className="navbar bg-base-100">
 					<div className="navbar-start">
@@ -288,15 +291,16 @@ const Navbar: React.FC<NavbarProps> = ({
 							<>
 								<Link
 									to="/auth/login"
-									className="btn btn-primary text-white text-md">
+									className="btn btn-primary text-white text-lg">
 									Login
 								</Link>
-								<div className="divider divider-horizontal">OR</div>
-								<Link
-									to="/auth/register"
-									className="btn btn-primary text-white text-md">
-									Register
-								</Link>
+							</>
+						)}
+						{status && (
+							<>
+								<button className="btn btn-error" onClick={handleEndContest}>
+									End Contest
+								</button>
 							</>
 						)}
 					</div>

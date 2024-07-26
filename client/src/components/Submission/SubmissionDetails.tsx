@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
-import { Submission } from "../types/submissions";
+import { Submission } from "../../types/submissions";
 interface SubmissionDetailsProps {
 	submissionDetails: Submission | null;
 	closeModal: () => void;

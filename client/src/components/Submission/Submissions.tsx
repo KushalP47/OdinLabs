@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Submission } from "../types/submissions";
+import { Submission } from "../../types/submissions";
 import SubmissionDetails from "./SubmissionDetails";
 
 type SubmissionsProps = {
