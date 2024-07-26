@@ -5,10 +5,12 @@ const contestSlice = createSlice({
     initialState: {
         customContestCookie: null as string | null,
         isOngoingContest: false,
+        contestId: null as number | null
     },
     reducers: {
         setContestData: (state, action) => {
             state.customContestCookie = action.payload.customContestCookie;
+            state.contestId = action.payload.contestId;
             if (action.payload.customContestCookie) {
                 state.isOngoingContest = true;
             } else {

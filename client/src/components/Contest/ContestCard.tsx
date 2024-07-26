@@ -4,7 +4,9 @@ import { formatDate, isOngoingContest } from "../../lib/dateUtils";
 import ConfirmationModal from "./ConfirmationModal";
 import { contestService } from "../../api/contestService";
 import ErrorModal from "../ErrorModal";
-
+import { setContestData } from "../../store/contestSlice";
+import { getCookie } from "../../lib/cookieUtility";
+import { useDispatch } from "react-redux";
 interface ContestCardProps {
 	contest: Contest;
 	user: any;
@@ -18,6 +20,7 @@ const ContestCard: React.FC<ContestCardProps> = ({
 	handleClick,
 	isAdmin,
 }) => {
+	const dispatch = useDispatch();
 	const userMarks = contest.contestUsers.find(
 		(contestUser) => contestUser.contestUserRollNumber === user?.rollNumber,
 	)?.contestUserCurrentMarks;
@@ -53,6 +56,14 @@ const ContestCard: React.FC<ContestCardProps> = ({
 					.then((response) => {
 						console.log(response);
 						if (response.data) {
+							// Dispatch the updated contest data
+							const customContestCookie = getCookie("customContestCookie");
+							dispatch(
+								setContestData({
+									customContestCookie,
+									contestId: contest.contestId,
+								}),
+							);
 							handleClick(contest.contestId);
 						} else {
 							// Set error message and open error modal

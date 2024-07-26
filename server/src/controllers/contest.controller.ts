@@ -118,6 +118,7 @@ class ContestController {
             const response = {
                 ok: true,
                 message: "User signed in successfully",
+                contestId: contest.contestId,
             };
             return res
                 .status(200)

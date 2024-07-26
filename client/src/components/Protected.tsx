@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import ErrorModal from "./ErrorModal"; // Import the ErrorModal component
 
 interface ProtectedProps {
 	children: React.ReactNode;
@@ -8,6 +9,7 @@ interface ProtectedProps {
 	allowDuringContest: boolean;
 	isLoggedIn: boolean;
 }
+
 const Protected = ({
 	children,
 	onlyAdminAllowed,
@@ -17,47 +19,82 @@ const Protected = ({
 	const navigate = useNavigate();
 	const user = useSelector((state: any) => state.auth.userData);
 	const status = useSelector((state: any) => state.auth.status);
-	const userIsAdmin = user?.userIsAdmin;
-	const [loader, setLoader] = useState(true);
 	const isOngoingContest = useSelector(
 		(state: any) => state.contest.isOngoingContest,
 	);
+	const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+	const [errorMessage, setErrorMessage] = useState("");
+
+	const showErrorModal = (message: string) => {
+		setErrorMessage(message);
+		setIsErrorModalOpen(true);
+	};
+
+	// Check if the user state and status are defined
+	const isStorePopulated = user !== undefined && status !== undefined;
 
 	useEffect(() => {
-		if (isLoggedIn) {
-			if (status === false) {
-				// toast of react-toastify is used to show a custom message to the user
-				navigate("/login");
-			} else {
-				if (onlyAdminAllowed) {
-					if (!userIsAdmin) {
-						// toast of react-toastify is used to show a custom message to the user
-						navigate(-1);
-					}
+		if (isStorePopulated) {
+			if (isLoggedIn) {
+				if (status === false) {
+					showErrorModal("You need to be logged in to access this page.");
+					navigate("/auth/login");
 				} else {
-					if (!userIsAdmin) {
-						if (!allowDuringContest) {
-							if (isOngoingContest) {
-								// toast of react-toastify is used to show a custom message to the user
-								navigate(-1);
-							}
-						} else {
-							if (!isOngoingContest) {
-								// toast of react-toastify is used to show a custom message to the user
-								navigate(-1);
+					if (onlyAdminAllowed) {
+						if (user && user.userIsAdmin === false) {
+							showErrorModal("You do not have permission to access this page.");
+							navigate(-1);
+						}
+					} else {
+						if (user && user.userIsAdmin === false) {
+							if (!allowDuringContest) {
+								if (isOngoingContest) {
+									showErrorModal(
+										"This page cannot be accessed during an ongoing contest.",
+									);
+									navigate(-1);
+								}
+							} else {
+								if (!isOngoingContest) {
+									showErrorModal(
+										"This page can only be accessed during an ongoing contest.",
+									);
+									navigate(-1);
+								}
 							}
 						}
 					}
 				}
 			}
-		} else {
-			// toast of react-toastify is used to show a custom message to the user
-			navigate("/login");
 		}
-		setLoader(false);
-	}, [status, user]);
+	}, [
+		isStorePopulated, // Add the new condition to the dependencies array
+		user,
+		status,
+		isLoggedIn,
+		onlyAdminAllowed,
+		allowDuringContest,
+		isOngoingContest,
+		navigate,
+	]);
 
-	return loader ? <>Loading...</> : <>{children}</>;
+	const handleCloseErrorModal = () => {
+		setIsErrorModalOpen(false);
+	};
+
+	// Render a loading message until the Redux store is populated
+	return !isStorePopulated ? (
+		<>Loading...</>
+	) : (
+		<>
+			{children}
+			<ErrorModal
+				isOpen={isErrorModalOpen}
+				onClose={handleCloseErrorModal}
+				message={errorMessage}
+			/>
+		</>
+	);
 };
 
 export default Protected;

@@ -37,7 +37,6 @@ const Contests = () => {
 	}, [currentStatus]);
 
 	const handleContestClick = (contestId: number) => {
-		
 		navigate(`/contest/${contestId}`);
 	};
 
