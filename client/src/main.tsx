@@ -11,13 +11,15 @@ import {
 	Room,
 	Login,
 	Contest,
-	Register,
+	ContestProblem,
+	AssignmentProblem,
 	Problem,
 	SubmissionPage,
 	AssignmentDetail,
 	ContestPage,
 	ForgotPassword,
 } from "./pages/index.ts";
+
 import Logout from "./components/Logout.tsx";
 import App from "./App.tsx";
 import "./index.css";
@@ -27,6 +29,7 @@ const router = createBrowserRouter([
 		path: "/",
 		element: <App />,
 		children: [
+			// General routes
 			{
 				path: "/dashboard",
 				element: <Dashboard />,
@@ -43,6 +46,7 @@ const router = createBrowserRouter([
 				path: "/submissions",
 				element: <SubmissionPage />,
 			},
+			// Assignment Routes
 			{
 				path: "/assignment",
 				element: <Assignments />,
@@ -50,19 +54,25 @@ const router = createBrowserRouter([
 			{
 				path: "/assignment/:assignmentId",
 				element: <AssignmentDetail />,
+				children: [
+					{
+						path: "/problem/:problemId",
+						element: <AssignmentProblem />,
+					},
+				],
 			},
-			{
-				path: "/assignment/:assignmentId/problem/:problemId",
-				element: <Problem />,
-			},
+			// Practice Routes
 			{
 				path: "/practice",
 				element: <Practice />,
+				children: [
+					{
+						path: "/problem/:problemId",
+						element: <Problem />,
+					},
+				],
 			},
-			{
-				path: "/problem/:problemId",
-				element: <Problem />,
-			},
+			// Contest Routes
 			{
 				path: "/contest",
 				element: <Contest />,
@@ -70,18 +80,17 @@ const router = createBrowserRouter([
 			{
 				path: "/contest/:contestId",
 				element: <ContestPage />,
+				children: [
+					{
+						path: "/problem/:problemId",
+						element: <ContestProblem />,
+					},
+				],
 			},
-			{
-				path: "/contest/:contestId/problem/:problemId",
-				element: <Problem />,
-			},
+			// Auth routes
 			{
 				path: "/auth/login",
 				element: <Login />,
-			},
-			{
-				path: "/auth/register",
-				element: <Register />,
 			},
 			{
 				path: "/auth/forgot-password",

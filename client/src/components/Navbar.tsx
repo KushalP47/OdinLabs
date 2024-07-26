@@ -70,6 +70,7 @@ const Navbar: React.FC<NavbarProps> = ({
 
 	return (
 		<>
+			{/* Normal Navbar */}
 			{!deadline && (
 				<div className="navbar bg-base-100">
 					<div className="navbar-start">
@@ -151,14 +152,8 @@ const Navbar: React.FC<NavbarProps> = ({
 							<>
 								<Link
 									to="/auth/login"
-									className="btn btn-primary text-white text-md">
+									className="btn btn-primary text-white text-lg">
 									Login
-								</Link>
-								<div className="divider divider-horizontal">OR</div>
-								<Link
-									to="/auth/register"
-									className="btn btn-primary text-white text-md">
-									Register
 								</Link>
 							</>
 						)}
@@ -166,6 +161,7 @@ const Navbar: React.FC<NavbarProps> = ({
 				</div>
 			)}
 
+			{/* Navbar for Assignments */}
 			{deadline && assignmentId && (
 				<div className="navbar bg-base-100">
 					<div className="navbar-start">
@@ -246,14 +242,8 @@ const Navbar: React.FC<NavbarProps> = ({
 							<>
 								<Link
 									to="/auth/login"
-									className="btn btn-primary text-white text-md">
+									className="btn btn-primary text-white text-lg">
 									Login
-								</Link>
-								<div className="divider divider-horizontal">OR</div>
-								<Link
-									to="/auth/register"
-									className="btn btn-primary text-white text-md">
-									Register
 								</Link>
 							</>
 						)}
@@ -261,6 +251,7 @@ const Navbar: React.FC<NavbarProps> = ({
 				</div>
 			)}
 
+			{/* Navbar for Contests */}
 			{deadline && contestId && (
 				<div className="navbar bg-base-100">
 					<div className="navbar-start">
@@ -288,14 +279,8 @@ const Navbar: React.FC<NavbarProps> = ({
 							<>
 								<Link
 									to="/auth/login"
-									className="btn btn-primary text-white text-md">
+									className="btn btn-primary text-white text-lg">
 									Login
-								</Link>
-								<div className="divider divider-horizontal">OR</div>
-								<Link
-									to="/auth/register"
-									className="btn btn-primary text-white text-md">
-									Register
 								</Link>
 							</>
 						)}
