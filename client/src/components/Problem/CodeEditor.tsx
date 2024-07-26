@@ -1,21 +1,21 @@
 import { useEffect, useState } from "react";
-import CodeEditorWindow from "./Editor/CodeEditorWindow";
-import { languageOptions } from "../constants/languageOptions";
-import { themeOptions } from "../constants/themeOptions";
+import CodeEditorWindow from "../Editor/CodeEditorWindow";
+import { languageOptions } from "../../constants/languageOptions";
+import { themeOptions } from "../../constants/themeOptions";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { codeExecutionService } from "../api/codeExecutionService";
-import { defineTheme } from "../lib/defineThemes";
-import OutputWindow from "./Editor/OutputWindow";
-import CustomInput from "./Editor/CustomInput";
-import OutputDetails from "./Editor/OutputDetails";
-import LanguagesDropdown from "./Editor/LanguageDropdown";
-import ThemeDropdown from "./Editor/ThemeDropdown";
-import { LanguageOption } from "../constants/languageOptions";
-import { themeOption } from "../constants/themeOptions";
-import { Submission } from "../types/submissions";
-import SubmissionDetails from "./SubmissionDetails";
-import { testcaseVerdict } from "../types/submissions";
+import { codeExecutionService } from "../../api/codeExecutionService";
+import { defineTheme } from "../../lib/defineThemes";
+import OutputWindow from "../Editor/OutputWindow";
+import CustomInput from "../Editor/CustomInput";
+import OutputDetails from "../Editor/OutputDetails";
+import LanguagesDropdown from "../Editor/LanguageDropdown";
+import ThemeDropdown from "../Editor/ThemeDropdown";
+import { LanguageOption } from "../../constants/languageOptions";
+import { themeOption } from "../../constants/themeOptions";
+import { Submission } from "../../types/submissions";
+import SubmissionDetails from "../Submission/SubmissionDetails";
+import { testcaseVerdict } from "../../types/submissions";
 import { useParams } from "react-router-dom";
 
 type CodeEditorProps = {
