@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import Navbar from "../../components/Navbar";
 import { Problem } from "../../types/problems";
 import { problemService } from "../../api/problemService";
-import ProblemsTable from "../../components/ProblemsTable";
+import ProblemsTable from "../../components/Problem/ProblemsTable";
 
 const Practice = () => {
 	const [status, setStatus] = useState(false);
