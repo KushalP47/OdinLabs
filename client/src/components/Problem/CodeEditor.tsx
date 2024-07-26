@@ -239,8 +239,8 @@ const CodeEditor = ({ problemId }: CodeEditorProps) => {
 				</div>
 				{/* Code Editor Component */}
 				{tab === "Editor" && (
-					<div className="flex flex-col">
-						<div className="flex flex-row justify-center items-center text-center m-2 w-full">
+					<div className="flex flex-col border-4 border-secondary rounded-xl">
+						<div className="flex flex-row justify-center  items-center text-center m-2 w-full">
 							<div className="w-1/2 px-4 mb-2">
 								<LanguagesDropdown onSelectChange={onSelectChange} />
 							</div>
@@ -249,10 +249,10 @@ const CodeEditor = ({ problemId }: CodeEditorProps) => {
 							</div>
 						</div>
 						<div
-							className={`w-full border-4 bg-basecolor ${
+							className={`w-full bg-basecolor ${
 								theme.label === "Light" ? "bg-gray-50" : "bg-editorbg"
-							} border-secondary p-2 rounded-xl`}>
-							<div className="flex flex-col w-full h-full justify-start items-end mt-2">
+							}  p-2 rounded-xl`}>
+							<div className="flex flex-col w-full h-full justify-start items-end p-2 m-2">
 								<CodeEditorWindow
 									code={code}
 									onChange={onChange}
