@@ -108,10 +108,10 @@ class ContestController {
             const user = req.body.user;
             const contestUser = contest.contestUsers.find((contestUser) => contestUser.contestUserRollNumber === user.userRollNumber);
             if (!contestUser) {
-                return res.status(404).json(new ApiError(404, "User not found in contest"));
+                return res.status(200).json(new ApiError(200, "User not found in contest"));
             }
             if (contestUser.contestCustomCookie !== "") {
-                return res.status(400).json(new ApiError(400, "User already signed in"));
+                return res.status(200).json(new ApiError(200, "User already signed in"));
             }
             contestUser.contestCustomCookie = await generateContestCustomCookie(contest.contestId.toString(), user);
             await contest.save();

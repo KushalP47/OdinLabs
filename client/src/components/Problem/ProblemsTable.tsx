@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 interface ProblemsTableProps {
@@ -8,48 +8,13 @@ interface ProblemsTableProps {
 		problemTags: string[];
 		problemDifficulty: string;
 	}[];
-	deadline: string | undefined;
 }
 
 const PAGE_SIZE = 10;
 
-const ProblemsTable = ({
-	problems,
-	deadline = "2024-07-20T12:00:00Z",
-}: ProblemsTableProps) => {
+const ProblemsTable = ({ problems }: ProblemsTableProps) => {
 	const [searchTerm, setSearchTerm] = useState("");
 	const [currentPage, setCurrentPage] = useState(1);
-	const [timeRemaining, setTimeRemaining] = useState({
-		hours: 0,
-		minutes: 0,
-		seconds: 0,
-	});
-
-	useEffect(() => {
-		if (deadline) {
-			const deadlineDate = new Date(deadline);
-
-			const updateTimer = () => {
-				const now = new Date();
-				const timeDiff = deadlineDate.getTime() - now.getTime();
-
-				if (timeDiff <= 0) {
-					setTimeRemaining({ hours: 0, minutes: 0, seconds: 0 });
-					return;
-				}
-
-				const hours = Math.floor(timeDiff / (1000 * 60 * 60));
-				const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
-				const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
-
-				setTimeRemaining({ hours, minutes, seconds });
-			};
-
-			const timerId = setInterval(updateTimer, 1000);
-
-			return () => clearInterval(timerId);
-		}
-	}, [deadline]);
 
 	const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setSearchTerm(event.target.value);
@@ -85,38 +50,16 @@ const ProblemsTable = ({
 
 	return (
 		<div>
-			{deadline && (
-				<div className="flex flex-row justify-between items-center m-2">
-					{/* Deadline */}
-					<div className="text-lg text-basecolor">
-						<div className="countdown font-mono text-2xl">
-							<span style={{ "--value": timeRemaining.hours } as any}></span>:{" "}
-							<span style={{ "--value": timeRemaining.minutes } as any}></span>:{" "}
-							<span style={{ "--value": timeRemaining.seconds } as any}></span>
-						</div>
-					</div>
-					{/* Search Bar */}
-					<input
-						type="text"
-						placeholder="Search problems"
-						value={searchTerm}
-						onChange={handleSearch}
-						className="input input-primary bg-gray-50 w-full max-w-md"
-					/>
-				</div>
-			)}
-			{!deadline && (
-				<div className="flex flex-row justify-end items-center m-2">
-					{/* Search Bar */}
-					<input
-						type="text"
-						placeholder="Search problems"
-						value={searchTerm}
-						onChange={handleSearch}
-						className="input input-primary bg-gray-50 w-full max-w-md"
-					/>
-				</div>
-			)}
+			<div className="flex flex-row justify-end items-center m-2">
+				{/* Search Bar */}
+				<input
+					type="text"
+					placeholder="Search problems"
+					value={searchTerm}
+					onChange={handleSearch}
+					className="input input-primary bg-gray-50 w-full max-w-md"
+				/>
+			</div>
 
 			<table className="w-full rounded-xl text-basecolor text-lg border-collapse">
 				<thead>
@@ -138,7 +81,7 @@ const ProblemsTable = ({
 							</td>
 							<td className="px-4 py-2 border hover:bg-slate-100 hover:link hover:link-primary">
 								<Link
-									to={`/problem/${problem.problemId}`}
+									to={`/practice/problem/${problem.problemId}`}
 									className="text-secondary font-semibold text-center">
 									{problem.problemTitle}
 								</Link>

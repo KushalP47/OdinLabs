@@ -55,7 +55,7 @@ const ContestCard: React.FC<ContestCardProps> = ({
 					.signInContest(String(contest.contestId))
 					.then((response) => {
 						console.log(response);
-						if (response.data) {
+						if (response.data.ok) {
 							// Dispatch the updated contest data
 							const customContestCookie = getCookie("customContestCookie");
 							dispatch(

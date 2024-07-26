@@ -121,20 +121,19 @@ const router = createBrowserRouter([
 						<Practice />
 					</Protected>
 				),
-				children: [
-					{
-						path: "/practice/problem/:problemId",
-						element: (
-							<Protected
-								onlyAdminAllowed={false}
-								allowDuringContest={false}
-								isLoggedIn={true}>
-								<Problem />
-							</Protected>
-						),
-					},
-				],
 			},
+			{
+				path: "/practice/problem/:problemId",
+				element: (
+					<Protected
+						onlyAdminAllowed={false}
+						allowDuringContest={false}
+						isLoggedIn={true}>
+						<Problem />
+					</Protected>
+				),
+			},
+
 			// Contest Routes
 			{
 				path: "/contest",
@@ -157,20 +156,19 @@ const router = createBrowserRouter([
 						<ContestPage />
 					</Protected>
 				),
-				children: [
-					{
-						path: "/contest/:contestId/problem/:problemId",
-						element: (
-							<Protected
-								onlyAdminAllowed={false}
-								allowDuringContest={true}
-								isLoggedIn={true}>
-								<ContestProblem />
-							</Protected>
-						),
-					},
-				],
 			},
+			{
+				path: "/contest/:contestId/problem/:problemId",
+				element: (
+					<Protected
+						onlyAdminAllowed={false}
+						allowDuringContest={true}
+						isLoggedIn={true}>
+						<ContestProblem />
+					</Protected>
+				),
+			},
+
 			// Auth routes
 			{
 				path: "/auth/login",
