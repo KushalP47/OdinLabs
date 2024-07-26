@@ -25,8 +25,8 @@ function App() {
 			if (customContestCookie) {
 				dispatch(setContestData({ customContestCookie }));
 			}
-			setIsStorePopulated(true); // Set store populated after dispatching
 		}
+		setIsStorePopulated(true); // Set store populated after dispatching
 	}, [dispatch, navigate]);
 
 	if (!isStorePopulated) {

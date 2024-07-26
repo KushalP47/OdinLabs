@@ -5,7 +5,7 @@ import { verifyNoCustomContestCookie } from "../middleware/customContestCokkie.m
 const router = Router();
 
 router.route('/submit').post(verifyJWT, judgeController.submit);
-router.route('/storeSubmission').post(verifyJWT, verifyNoCustomContestCookie, judgeController.storeSubmission);
-router.route('/getSubmission').get(verifyJWT, verifyNoCustomContestCookie, judgeController.getSubmissions);
+router.route('/storeSubmission').post(verifyJWT, judgeController.storeSubmission);
+router.route('/getSubmission').get(verifyJWT, judgeController.getSubmissions);
 
 export default router;

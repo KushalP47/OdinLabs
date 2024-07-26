@@ -47,17 +47,10 @@ const Protected = ({
 						}
 					} else {
 						if (user && user.userIsAdmin === false) {
-							if (!allowDuringContest) {
-								if (isOngoingContest) {
-									showErrorModal(
-										"This page cannot be accessed during an ongoing contest.",
-									);
-									navigate(-1);
-								}
-							} else {
+							if (allowDuringContest) {
 								if (!isOngoingContest) {
 									showErrorModal(
-										"This page can only be accessed during an ongoing contest.",
+										"This page can be accessed during an ongoing contest only.",
 									);
 									navigate(-1);
 								}
@@ -84,7 +77,7 @@ const Protected = ({
 
 	// Render a loading message until the Redux store is populated
 	return !isStorePopulated ? (
-		<>Loading...</>
+		<>Loading......</>
 	) : (
 		<>
 			{children}
