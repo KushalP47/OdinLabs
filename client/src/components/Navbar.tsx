@@ -127,9 +127,6 @@ const Navbar: React.FC<NavbarProps> = ({
 								<ul
 									tabIndex={0}
 									className="menu menu-lg text-primary dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-60 p-2 shadow">
-									<li>
-										<a className="justify-between">Profile</a>
-									</li>
 									{user?.userIsAdmin ? (
 										<li>
 											<Link to="/students">Watch</Link>
@@ -148,9 +145,6 @@ const Navbar: React.FC<NavbarProps> = ({
 												className="toggle theme-controller"
 											/>
 										</div>
-									</li>
-									<li>
-										<a className="justify-between">Marks</a>
 									</li>
 									<li>
 										<Link to="/submissions">Submissions</Link>

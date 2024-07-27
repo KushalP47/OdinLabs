@@ -27,8 +27,13 @@ const Contests = () => {
 			contestService
 				.getAllContests()
 				.then((data) => {
-					if (data.data.ok) setContests(data.data.contests);
-					else console.error(data.data.message);
+					if (data.data.ok) {
+						const userContests = data.data.contests.filter(
+							(contest: Contest) =>
+								contest.contestSection === user?.userSection,
+						);
+						setContests(userContests);
+					} else console.error(data.data.message);
 				})
 				.catch((err) => {
 					console.error(err);

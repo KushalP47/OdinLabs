@@ -67,7 +67,7 @@ const ContestCard: React.FC<ContestCardProps> = ({
 							handleClick(contest.contestId);
 						} else {
 							// Set error message and open error modal
-							setErrorMessage("User has already joined the contest once.");
+							setErrorMessage(response.message);
 							setIsErrorModalOpen(true);
 						}
 					});
