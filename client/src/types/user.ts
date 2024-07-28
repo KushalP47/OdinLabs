@@ -6,4 +6,5 @@ export interface User {
     userSection: string;
     userPassword: string;
     userIsAdmin: boolean;
+    userTeamName: string;
 }

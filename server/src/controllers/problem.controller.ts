@@ -61,7 +61,11 @@ class ProblemController {
     async getAllProblems(req: Request, res: Response) {
         try {
             console.log("Fetching problems")
-            const problems = await Problem.find();
+            let problems = await Problem.find();
+            if (req.body.user.userIsAdmin === false) {
+                problems = problems.filter(problem => !problem.problemIsHidden);
+
+            }
             const response: IProblemFunctionResponse = {
                 ok: true,
                 message: "Problems fetched successfully",

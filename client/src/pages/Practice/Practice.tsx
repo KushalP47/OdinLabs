@@ -49,10 +49,7 @@ const Practice = () => {
 							</div>
 
 							{/* Problems Table */}
-							<ProblemsTable
-								problems={problems}
-								deadline={`2024-07-20T12:00:00Z`}
-							/>
+							<ProblemsTable problems={problems} />
 						</div>
 					) : (
 						<h2 className="text-2xl text-basecolor">
