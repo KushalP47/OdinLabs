@@ -20,9 +20,10 @@ import { useParams } from "react-router-dom";
 
 type CodeEditorProps = {
 	problemId: number;
+	problemDifficulty: string;
 };
 
-const CodeEditor = ({ problemId }: CodeEditorProps) => {
+const CodeEditor = ({ problemId, problemDifficulty }: CodeEditorProps) => {
 	const [code, setCode] = useState("");
 	const [customInput, setCustomInput] = useState("");
 	const [outputDetails, setOutputDetails] = useState(null);
@@ -69,6 +70,7 @@ const CodeEditor = ({ problemId }: CodeEditorProps) => {
 		}
 		const token = res.token;
 		await checkStatus(token);
+		setTab("Output");
 	};
 
 	const checkStatus = async (token: string, isSubmission: boolean = false) => {
@@ -141,6 +143,7 @@ const CodeEditor = ({ problemId }: CodeEditorProps) => {
 			},
 			assignmentId,
 			contestId,
+			problemDifficulty,
 		);
 		console.log("submissionResp...", submissionResp);
 		if (submissionResp.statusCode !== 200) {
@@ -301,6 +304,13 @@ const CodeEditor = ({ problemId }: CodeEditorProps) => {
 								customInput={customInput}
 								setCustomInput={setCustomInput}
 							/>
+							<div className="divider divider-horizontal"></div>
+							<button
+								onClick={handleCompile}
+								disabled={!code}
+								className="btn btn-sm btn-primary text-white text-lg">
+								{runProcessing ? "Processing..." : "Compile"}
+							</button>
 						</div>
 					</div>
 				)}

@@ -9,7 +9,9 @@ const ContestPage: React.FC = () => {
 	const { contestId } = useParams<{ contestId: string }>();
 
 	return (
-		<div>{user?.isAdmin ? <AdminContestPage /> : <StudentContestPage />}</div>
+		<div>
+			{user?.userIsAdmin ? <AdminContestPage /> : <StudentContestPage />}
+		</div>
 	);
 };
 

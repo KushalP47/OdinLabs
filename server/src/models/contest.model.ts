@@ -22,6 +22,11 @@ export interface IContest extends Document {
     updatedAt: Date;
 }
 
+export interface IContestFunctionResponse {
+    ok: boolean;
+    message: string;
+}
+
 const contestSchema = new Schema({
     contestId: {
         type: Number,

@@ -83,7 +83,7 @@ const Navbar: React.FC<NavbarProps> = ({
 	return (
 		<>
 			{/* Normal Navbar */}
-			{!deadline && (
+			{!deadline && !contestId && !assignmentId && (
 				<div className="navbar bg-base-100">
 					<div className="navbar-start">
 						<Link

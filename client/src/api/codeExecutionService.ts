@@ -41,10 +41,10 @@ export class CodeExecutionService {
         return response.json();
     }
 
-    async storeSubmission(submission: any, assignmentId: string | undefined, contestId: string | undefined) {
+    async storeSubmission(submission: any, assignmentId: string | undefined, contestId: string | undefined, problemDifficulty: string) {
         const userCookie = getCookie("accessToken");
         console.log("sending submission", submission);
-        const reqBody = JSON.stringify({ submission: submission, assignmentId, contestId });
+        const reqBody = JSON.stringify({ submission: submission, assignmentId, contestId, problemDifficulty });
         const options = {
             method: "POST",
             headers: {

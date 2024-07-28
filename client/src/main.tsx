@@ -164,7 +164,7 @@ const router = createBrowserRouter([
 						onlyAdminAllowed={false}
 						allowDuringContest={true}
 						isLoggedIn={true}>
-						<ContestProblem />
+						<Problem />
 					</Protected>
 				),
 			},

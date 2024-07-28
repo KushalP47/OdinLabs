@@ -7,6 +7,8 @@ import getTokens from '../functions/judge/getTokens';
 import { IAssignmentFunctionResponse } from '../models/assignment.model';
 import { Submission, SubmissionResponse, testcaseVerdict } from '../models/submissions.model';
 import { generateRandomLargeInteger } from '../utils/randomGenerator';
+import { updateContestScore } from '../functions/contest/updateContestScore';
+import { IContestFunctionResponse } from '../models/contest.model';
 class JudgeController {
 
     // send the source code, language id and problem id to the judge0 api
@@ -53,7 +55,7 @@ class JudgeController {
     // get the verdict of the submission
     // and store the submission in the database
     async storeSubmission(req: Request, res: Response) {
-        const { submission, assignmentId, contestId } = req.body;
+        const { submission, assignmentId, contestId, problemDifficulty } = req.body;
         const { user } = req.body;
         const userRollNumber = user.userRollNumber;
         let cnt = 0;
@@ -76,11 +78,18 @@ class JudgeController {
             submissionTestcasesVerdict: submission.submissionTestcasesVerdict
         });
         newSubmission.save();
-
+        let maxMarks = 0;
+        if (problemDifficulty === "Easy") {
+            maxMarks = 20;
+        } else if (problemDifficulty === "Medium") {
+            maxMarks = 40;
+        } else if (problemDifficulty === "Hard") {
+            maxMarks = 80;
+        }
         // if submission is related to assignment than update the score in assignment
         if (assignmentId) {
             // updateAssignmentScore(assignmentId, userId, problemId, cnt);
-            const marks = (cnt / submissionTestcasesVerdict.length) * 100;
+            const marks = Math.round((cnt / submissionTestcasesVerdict.length) * maxMarks);
             const response: IAssignmentFunctionResponse = await updateAssignmentScore(Number(assignmentId), userRollNumber, Number(submission.submissionProblemId), marks);
             if (!response.ok) {
                 return res.status(400).json(new ApiError(400, response.message));
@@ -90,7 +99,11 @@ class JudgeController {
         // if submission is related to contest than update the score in contest
         if (contestId) {
             // updateContestScore(contestId, userId, problemId, cnt);
-            const marks = (cnt / submissionTestcasesVerdict.length) * 100;
+            const marks = Math.round((cnt / submissionTestcasesVerdict.length) * maxMarks);
+            const response: IContestFunctionResponse = await updateContestScore(Number(contestId), userRollNumber, Number(submission.submissionProblemId), marks);
+            if (!response.ok) {
+                return res.status(400).json(new ApiError(400, response.message));
+            }
         }
         res.json(
             new ApiResponse(
