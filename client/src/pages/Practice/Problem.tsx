@@ -8,6 +8,8 @@ import CodeEditor from "../../components/Problem/CodeEditor";
 import Submissions from "../../components/Submission/Submissions";
 import { codeExecutionService } from "../../api/codeExecutionService";
 import { Submission } from "../../types/submissions";
+import { contestService } from "../../api/contestService";
+import { assignmentService } from "../../api/assignmentService";
 
 const Problem = () => {
 	// State management
@@ -19,11 +21,26 @@ const Problem = () => {
 	const [tab, setTab] = useState<"Details" | "Submissions" | "Editorial">(
 		"Details",
 	);
-
+	const assignmentId = useParams().assignmentId;
+	const contestId = useParams().contestId;
+	const [deadline, setDeadline] = useState<string | undefined>(undefined);
 	// Update status based on currentStatus from Redux
 	useEffect(() => {
+		async function getDeadline() {
+			if (contestId) {
+				const response = await contestService.getContestDeadline(contestId);
+				console.log(response);
+				setDeadline(response.data.contestEndTime);
+			} else if (assignmentId) {
+				const response = await assignmentService.getAssignmentDeadline(
+					assignmentId,
+				);
+				setDeadline(response.data.assignmentEndTime);
+			}
+		}
+		getDeadline();
 		setStatus(currentStatus);
-	}, [currentStatus]);
+	}, []);
 
 	// Fetch problem data
 	const fetchProblem = async (id: string) => {
@@ -75,7 +92,21 @@ const Problem = () => {
 
 	return (
 		<div className="flex flex-col min-h-screen">
-			<Navbar currentPage="Practice" />
+			{contestId && !assignmentId && (
+				<Navbar
+					currentPage="Contest"
+					deadline={deadline}
+					contestId={contestId}
+				/>
+			)}
+			{!contestId && assignmentId && (
+				<Navbar
+					currentPage="Assignment"
+					deadline={deadline}
+					assignmentId={assignmentId}
+				/>
+			)}
+			{!contestId && !assignmentId && <Navbar currentPage="Practice" />}
 			<div className="bg-white w-full min-h-screen shadow-xl flex">
 				{status ? (
 					<>
@@ -208,7 +239,10 @@ const Problem = () => {
 						</div>
 						{/* Right Section: Code Editor */}
 						<div className="w-1/2 p-4 bg-gray-50">
-							<CodeEditor problemId={Number(problemId)} />
+							<CodeEditor
+								problemId={Number(problemId)}
+								problemDifficulty={problem.problemDifficulty}
+							/>
 						</div>
 					</>
 				) : (

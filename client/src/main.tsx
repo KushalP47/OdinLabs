@@ -11,8 +11,6 @@ import {
 	Room,
 	Login,
 	Contest,
-	ContestProblem,
-	AssignmentProblem,
 	Problem,
 	SubmissionPage,
 	AssignmentDetail,
@@ -96,20 +94,19 @@ const router = createBrowserRouter([
 						<AssignmentDetail />
 					</Protected>
 				),
-				children: [
-					{
-						path: "/assignment/:assignmentId/problem/:problemId",
-						element: (
-							<Protected
-								onlyAdminAllowed={false}
-								allowDuringContest={false}
-								isLoggedIn={true}>
-								<AssignmentProblem />
-							</Protected>
-						),
-					},
-				],
 			},
+			{
+				path: "/assignment/:assignmentId/problem/:problemId",
+				element: (
+					<Protected
+						onlyAdminAllowed={false}
+						allowDuringContest={false}
+						isLoggedIn={true}>
+						<Problem />
+					</Protected>
+				),
+			},
+
 			// Practice Routes
 			{
 				path: "/practice",
@@ -164,7 +161,7 @@ const router = createBrowserRouter([
 						onlyAdminAllowed={false}
 						allowDuringContest={true}
 						isLoggedIn={true}>
-						<ContestProblem />
+						<Problem />
 					</Protected>
 				),
 			},
