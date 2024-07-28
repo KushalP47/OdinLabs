@@ -55,10 +55,29 @@ const Navbar: React.FC<NavbarProps> = ({
 		const timer = setTimeout(() => {
 			setTimeLeft(calculateTimeLeft());
 		}, 1000);
-		return () => clearTimeout(timer);
-	});
+
+	const handleFullscreenChange = () => {
+		if (!document.fullscreenElement) {
+			handleEndContest();
+		}
+    };
+
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+
+    return () => {
+		clearTimeout(timer);
+		document.removeEventListener("fullscreenchange", handleFullscreenChange);
+	}});
+
+	const toFullscreen = () => {
+			document.documentElement.requestFullscreen().catch((err) => {
+			console.error("Error attempting to enable fullscreen:", err.message);
+		});
+	};
+
 
 	const renderCountdown = () => {
+		toFullscreen();
 		return (
 			<span className="countdown font-mono text-2xl">
 				<span
@@ -76,6 +95,7 @@ const Navbar: React.FC<NavbarProps> = ({
 	const handleEndContest = () => {
 		console.log("Ending contest...");
 		delete_cookie("customContestCookie");
+		document.exitFullscreen();
 		dispatch(setContestData({ customContestCookie: null, contestId: null }));
 		navigate("/dashboard");
 	};
@@ -261,12 +281,11 @@ const Navbar: React.FC<NavbarProps> = ({
 			{deadline && contestId && (
 				<div className="navbar bg-base-100">
 					<div className="navbar-start">
-						<Link
-							to="/dashboard"
+						<div
 							className="btn btn-ghost text-3xl font-bold text-secondary">
 							<img src={logo} className="w-16px h-16px" />
 							OdinLabs
-						</Link>
+						</div>
 					</div>
 					<div className="navbar-center hidden lg:flex">
 						<ul className="menu menu-horizontal px-4">
