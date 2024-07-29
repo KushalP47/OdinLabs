@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { problemService } from "../../api/problemService";
 import ErrorModal from "../ErrorModal";
+import SuccessModal from "../SuccessModal";
 interface ProblemsTableProps {
 	problems: {
 		problemId: number;
@@ -22,8 +23,9 @@ const ProblemsTable = ({ problems, userIsAdmin }: ProblemsTableProps) => {
 		setSearchTerm(event.target.value);
 		setCurrentPage(1); // Reset to first page when search term changes
 	};
-	const [errorMessage, setErrorMessage] = useState("");
+	const [message, setMessage] = useState("");
 	const [errorModalOpen, setErrorModalOpen] = useState(false);
+	const [successModalOpen, setSuccessModalOpen] = useState(false);
 
 	const handlePageChange = (newPage: number) => {
 		setCurrentPage(newPage);
@@ -64,14 +66,14 @@ const ProblemsTable = ({ problems, userIsAdmin }: ProblemsTableProps) => {
 			);
 			if (res.data.ok) {
 				console.log("Problem status changed successfully");
-				setErrorMessage(res.data.message);
-				setErrorModalOpen(true);
+				setMessage(res.data.message);
+				setSuccessModalOpen(true);
 			} else {
-				setErrorMessage(res.message || "Error changing problem status");
+				setMessage(res.message || "Error changing problem status");
 				setErrorModalOpen(true);
 			}
 		} catch (error: any) {
-			setErrorMessage(error.message || "Error changing problem status");
+			setMessage(error.message || "Error changing problem status");
 			setErrorModalOpen(true);
 		}
 	};
@@ -252,7 +254,15 @@ const ProblemsTable = ({ problems, userIsAdmin }: ProblemsTableProps) => {
 				<ErrorModal
 					isOpen={errorModalOpen}
 					onClose={() => setErrorModalOpen(false)}
-					message={errorMessage}
+					message={message}
+				/>
+			)}
+
+			{successModalOpen && (
+				<SuccessModal
+					isOpen={successModalOpen}
+					onClose={() => setSuccessModalOpen(false)}
+					message={message}
 				/>
 			)}
 		</>
