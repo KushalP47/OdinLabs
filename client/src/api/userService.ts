@@ -1,11 +1,11 @@
 export class UserService {
     url;
     constructor() {
-        this.url = import.meta.env.VITE_API_URL;
+        this.url = import.meta.env.VITE_SERVER_URL;
     }
 
     async getUsersFromSection(section: string) {
-        const response = await fetch(`${this.url}/users/getUsersFromSection`, {
+        const response = await fetch(`${this.url}/api/v1/users/getUsersFromSection`, {
             method: "POST",
             credentials: "include",
             headers: {

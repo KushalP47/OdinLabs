@@ -1,6 +1,9 @@
 import { useEffect, useState, useCallback, useMemo, useRef } from "react";
 import { io } from "socket.io-client";
 import Navbar from "../../components/Navbar";
+import { userService } from "../../api/userService";
+import { UserInfo } from "../../types/user";
+import ErrorModal from "../../components/ErrorModal";
 interface studentSocket {
 	emailId: string;
 	socketId: string;
@@ -21,34 +24,23 @@ const Students = () => {
 	const [selectedStudents, setSelectedStudents] = useState<
 		Array<studentSocket>
 	>([]);
+	const [errorMessage, setErrorMessage] = useState<string>("");
+	const [errorModalOpen, setErrorModalOpen] = useState(false);
 	const videoRef = useRef<HTMLVideoElement>(null);
 	const peerRef = useRef<RTCPeerConnection | null>(null);
-	const [totalUsers, setTotalUsers] = useState([
-		{
-			emailId: "harsh.b2@ahduni.edu.in",
-			rollNumber: "AU214080",
-			name: "Harsh Bhagat",
-			status: "offline",
-		},
-		{
-			emailId: "jeet.b2@ahduni.edu.in",
-			rollNumber: "AU214033",
-			name: "Jeet Bhadaniya",
-			status: "offline",
-		},
-		{
-			emailId: "neel.s2@ahduni.edu.in",
-			rollNumber: "AU2140005",
-			name: "Neel Sheth",
-			status: "offline",
-		},
-		{
-			emailId: "kushalp4774@gmail.com",
-			rollNumber: "AU2140105",
-			name: "Kushal Patel",
-			status: "offline",
-		},
-	]);
+	const [totalUsers, setTotalUsers] = useState<UserInfo[]>([]);
+	const [sectionTab, setSectionTab] = useState<string>("1");
+
+	const getStudents = useCallback(async () => {
+		const response = await userService.getUsersFromSection(sectionTab);
+		if (response.data.ok) {
+			console.log("Total users:", response.data.usersInfo);
+			setTotalUsers(response.data.usersInfo);
+		} else {
+			setErrorMessage(response.data.message);
+			setErrorModalOpen(true);
+		}
+	}, [setSectionTab]);
 
 	const createPeerConnection = useCallback(() => {
 		const peer = new RTCPeerConnection({
@@ -73,14 +65,15 @@ const Students = () => {
 	const handleConnectedStudents = useCallback(
 		({ connectedUsers }: ConnectedStudentsEvent) => {
 			setStudents(connectedUsers);
+			console.log("Connected Students:", connectedUsers);
 			for (let i = 0; i < totalUsers.length; i++) {
 				const student = connectedUsers.find(
-					(user) => user.emailId === totalUsers[i].emailId,
+					(user) => user.emailId === totalUsers[i].userEmail,
 				);
 				if (student) {
-					totalUsers[i].status = "online";
+					totalUsers[i].userStatus = "online";
 				} else {
-					totalUsers[i].status = "offline";
+					totalUsers[i].userStatus = "offline";
 				}
 			}
 			setTotalUsers([...totalUsers]);
@@ -180,27 +173,38 @@ const Students = () => {
 
 	useEffect(() => {
 		socket.emit("get-student-offers");
+		getStudents();
 	}, [socket]);
 
 	useEffect(() => {
 		socket.on("student-offers", handleConnectedStudents);
-
-		return () => {
-			socket.off("student-offers", handleConnectedStudents);
-		};
-	}, [socket, handleConnectedStudents]);
-
-	useEffect(() => {
 		socket.on("admin-disconnected", handleAdminDisconnected);
 		return () => {
+			socket.off("student-offers", handleConnectedStudents);
 			socket.off("admin-disconnected", handleAdminDisconnected);
 		};
-	}, [socket, handleAdminDisconnected]);
+	}, [socket, handleConnectedStudents]);
 
 	return (
 		<div className="flex flex-col min-h-screen">
 			<Navbar currentPage="Students" />
 			<div className="bg-white w-full min-h-screen border-4 border-blue shadow-xl flex flex-col p-8">
+				<div className="tabs tabs-boxed mb-4 bg-gray-100 font-bold text-lg">
+					<a
+						className={`tab ${
+							sectionTab === "1" ? "bg-white text-secondary text-xl" : "text-xl"
+						}`}
+						onClick={() => setSectionTab("1")}>
+						Section 1
+					</a>
+					<a
+						className={`tab ${
+							sectionTab === "2" ? "bg-white text-secondary text-xl" : "text-xl"
+						}`}
+						onClick={() => setSectionTab("2")}>
+						Section 2
+					</a>
+				</div>
 				<div className="overflow-x-auto">
 					<div className="flex flex-row">
 						<div className="flex flex-col">
@@ -227,17 +231,19 @@ const Students = () => {
 								<tbody>
 									{totalUsers.map((student, index) => (
 										<tr
-											key={student.emailId}
+											key={student.userEmail}
 											className="bg-white text-basecolor hover:bg-gray-50 text-md border-b"
 											onClick={() =>
-												handleStudentClick(student.name, student.emailId)
+												handleStudentClick(student.userName, student.userEmail)
 											}>
-											{student.status === "online" && (
+											{student.userStatus === "online" && (
 												<>
 													<td className="px-6 py-4">{index + 1}</td>
-													<td className="px-6 py-4">{student.name}</td>
-													<td className="px-6 py-4">{student.emailId}</td>
-													<td className="px-6 py-4">{student.rollNumber}</td>
+													<td className="px-6 py-4">{student.userName}</td>
+													<td className="px-6 py-4">{student.userEmail}</td>
+													<td className="px-6 py-4">
+														{student.userRollNumber}
+													</td>
 												</>
 											)}
 										</tr>
@@ -271,14 +277,16 @@ const Students = () => {
 									<tbody>
 										{totalUsers.map((student, index) => (
 											<tr
-												key={student.emailId}
+												key={student.userEmail}
 												className="bg-gray-100 select-none text-basecolor text-md border-b">
-												{student.status === "offline" && (
+												{student.userStatus === "offline" && (
 													<>
 														<td className="px-6 py-4">{index + 1}</td>
-														<td className="px-6 py-4">{student.name}</td>
-														<td className="px-6 py-4">{student.emailId}</td>
-														<td className="px-6 py-4">{student.rollNumber}</td>
+														<td className="px-6 py-4">{student.userName}</td>
+														<td className="px-6 py-4">{student.userEmail}</td>
+														<td className="px-6 py-4">
+															{student.userRollNumber}
+														</td>
 													</>
 												)}
 											</tr>
@@ -367,6 +375,11 @@ const Students = () => {
 							className="w-full h-full"></video>
 					</div>
 				</div>
+				<ErrorModal
+					message={errorMessage}
+					isOpen={errorModalOpen}
+					onClose={() => setErrorModalOpen(false)}
+				/>
 			</div>
 		</div>
 	);

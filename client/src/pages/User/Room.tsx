@@ -30,9 +30,9 @@ const Room = () => {
 	);
 
 	const userData = JSON.parse(localStorage.getItem("userData") || "{}");
-	const roomId = userData.rollNumber;
-	const emailId = userData.email;
-	const userName = userData.name;
+	const roomId = userData.userRollNumber;
+	const emailId = userData.userEmail;
+	const userName = userData.userName;
 
 	const startStream = useCallback(async () => {
 		setStatus(true);
