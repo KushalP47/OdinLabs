@@ -92,14 +92,14 @@ const Problem = () => {
 
 	return (
 		<div className="flex flex-col min-h-screen">
-			{contestId && !assignmentId && (
+			{contestId && (
 				<Navbar
 					currentPage="Contest"
 					deadline={deadline}
 					contestId={contestId}
 				/>
 			)}
-			{!contestId && assignmentId && (
+			{assignmentId && (
 				<Navbar
 					currentPage="Assignment"
 					deadline={deadline}

@@ -56,28 +56,28 @@ const Navbar: React.FC<NavbarProps> = ({
 			setTimeLeft(calculateTimeLeft());
 		}, 1000);
 
-	const handleFullscreenChange = () => {
-		if (!document.fullscreenElement) {
-			handleEndContest();
-		}
-    };
+		const handleFullscreenChange = () => {
+			if (!document.fullscreenElement) {
+				handleEndContest();
+			}
+		};
 
-    document.addEventListener("fullscreenchange", handleFullscreenChange);
+		document.addEventListener("fullscreenchange", handleFullscreenChange);
 
-    return () => {
-		clearTimeout(timer);
-		document.removeEventListener("fullscreenchange", handleFullscreenChange);
-	}});
+		return () => {
+			clearTimeout(timer);
+			document.removeEventListener("fullscreenchange", handleFullscreenChange);
+		};
+	});
 
 	const toFullscreen = () => {
-			document.documentElement.requestFullscreen().catch((err) => {
+		document.documentElement.requestFullscreen().catch((err) => {
 			console.error("Error attempting to enable fullscreen:", err.message);
 		});
 	};
 
-
 	const renderCountdown = () => {
-		toFullscreen();
+		if (contestId && user.isUserAdmin === false) toFullscreen();
 		return (
 			<span className="countdown font-mono text-2xl">
 				<span
@@ -281,8 +281,7 @@ const Navbar: React.FC<NavbarProps> = ({
 			{deadline && contestId && (
 				<div className="navbar bg-base-100">
 					<div className="navbar-start">
-						<div
-							className="btn btn-ghost text-3xl font-bold text-secondary">
+						<div className="btn btn-ghost text-3xl font-bold text-secondary">
 							<img src={logo} className="w-16px h-16px" />
 							OdinLabs
 						</div>
