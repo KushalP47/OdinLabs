@@ -118,14 +118,14 @@ export class ContestService {
         return response.json();
     }
 
-    async retainContestUser(contestUser: any) {
+    async retainContestUser(contestId: string, contestUserRollNumber: string) {
         const response = await fetch(`${this.url}/api/v1/contests/retainUser`, {
             method: "POST",
             credentials: "include",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(contestUser),
+            body: JSON.stringify({ contestId, userRollNumber: contestUserRollNumber }),
         });
         return response.json();
 

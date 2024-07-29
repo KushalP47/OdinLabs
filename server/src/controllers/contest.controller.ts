@@ -138,15 +138,23 @@ class ContestController {
 
     async clearUserContestCustomCookie(req: Request, res: Response) {
         try {
-            const { contestId, userRollNumber } = req.params;
+            const { contestId, userRollNumber } = req.body;
             const intContestId = Number(contestId);
             const contest = await Contest.findOne({ contestId: intContestId });
             if (!contest) {
-                return res.status(404).json(new ApiError(404, "Contest not found"));
+                return res.status(200).json(new ApiError(200, "Contest not found"));
             }
-            const contestUser = contest.contestUsers.find((contestUser) => contestUser.contestUserRollNumber === userRollNumber);
+            // console.log(contest);
+            let contestUser;
+            for (let i = 0; i < contest.contestUsers.length; i++) {
+                console.log(contest.contestUsers[i].contestUserRollNumber, userRollNumber);
+                if (contest.contestUsers[i].contestUserRollNumber === userRollNumber) {
+                    contestUser = contest.contestUsers[i];
+                    break;
+                }
+            }
             if (!contestUser) {
-                return res.status(404).json(new ApiError(404, "User not found in contest"));
+                return res.status(200).json(new ApiError(200, "User not found in contest"));
             }
             contestUser.contestCustomCookie = "";
             await contest.save();
