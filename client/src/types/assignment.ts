@@ -7,6 +7,7 @@ export interface Assignment {
     assignmentStartTime: string;
     assignmentEndTime: string;
     assignmentDescription: string;
+    assignmentSection: string;
     assignmentUsers: AssignmentUser[];
 }
 
