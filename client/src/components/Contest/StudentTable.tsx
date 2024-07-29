@@ -2,13 +2,15 @@ import { useState } from "react";
 import { ContestUser } from "../../types/contest";
 import { contestService } from "../../api/contestService";
 import ErrorModal from "../../components/ErrorModal";
+import SuccessModal from "../SuccessModal";
 import { useParams } from "react-router-dom";
 interface StudentTableProps {
 	students: ContestUser[];
 }
 const StudentTable = ({ students }: StudentTableProps) => {
-	const [errorMessage, setErrorMessage] = useState<string>("");
-	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+	const [message, setMessage] = useState<string>("");
+	const [isErrorModalOpen, setIsErrorModalOpen] = useState<boolean>(false);
+	const [isSuccessModalOpen, setIsSuccessModalOpen] = useState<boolean>(false);
 	const contestId = useParams<{ contestId: string }>().contestId;
 	const handleClick = async (student: ContestUser) => {
 		if (!contestId) return;
@@ -16,12 +18,12 @@ const StudentTable = ({ students }: StudentTableProps) => {
 			contestId,
 			student.contestUserRollNumber,
 		);
-		console.log(response);
-		if (response.ok) {
-			console.log("Student retained");
+		if (response.data.ok) {
+			setMessage("Student retained successfully.");
+			setIsSuccessModalOpen(true);
 		} else {
-			setErrorMessage(response.message || "Failed to retain student.");
-			setIsModalOpen(true);
+			setMessage(response.message || "Failed to retain student.");
+			setIsErrorModalOpen(true);
 		}
 	};
 	return (
@@ -76,11 +78,18 @@ const StudentTable = ({ students }: StudentTableProps) => {
 					No students available
 				</div>
 			)}
-			{isModalOpen && (
+			{isErrorModalOpen && (
 				<ErrorModal
-					message={errorMessage}
-					onClose={() => setIsModalOpen(false)}
-					isOpen={isModalOpen}
+					message={message}
+					onClose={() => setIsErrorModalOpen(false)}
+					isOpen={isErrorModalOpen}
+				/>
+			)}
+			{isSuccessModalOpen && (
+				<SuccessModal
+					message={message}
+					onClose={() => setIsSuccessModalOpen(false)}
+					isOpen={isSuccessModalOpen}
 				/>
 			)}
 		</div>
