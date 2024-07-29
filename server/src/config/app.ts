@@ -50,6 +50,7 @@ app.use("/api/v1/assignments", assignmentRouter);
 import contestRouter from "../routes/contest.routes";
 app.use("/api/v1/contests", contestRouter);
 
-
+import userRouter from "../routes/user.routes";
+app.use("/api/v1/users", userRouter);
 
 export { app };
