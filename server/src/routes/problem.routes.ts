@@ -14,6 +14,6 @@ router.route('/getProblemByIds').post(verifyJWT, problemController.getProblemsBy
 router.route('/create').post(verifyJWT, verifyIsAdmin, problemController.createProblem);
 router.route('/update/:problemId').put(verifyJWT, verifyIsAdmin, problemController.updateProblem);
 router.route('/delete/:problemId').delete(verifyJWT, verifyIsAdmin, problemController.deleteProblem);
-
+router.route('/:problemId/:problemIsHidden').put(verifyJWT, verifyIsAdmin, problemController.changeProblemStatus);
 // Export the router
 export default router;

@@ -112,6 +112,35 @@ class ProblemController {
         }
     };
 
+    async changeProblemStatus(req: Request, res: Response) {
+        const problemId = req.params.problemId;
+        const problemIsHidden = req.params.problemIsHidden;
+        if (problemIsHidden !== "true" && problemIsHidden !== "false") {
+            return res.status(200).json(new ApiError(400, "Invalid value for problemIsHidden"));
+        }
+        let newVal;
+        if (problemIsHidden === "true") {
+            newVal = true;
+        } else {
+            newVal = false;
+        }
+        try {
+            const problem: IProblem | null = await Problem
+                .findOneAndUpdate({ problemId }, { problemIsHidden: newVal }, { new: true });
+            if (!problem) {
+                return res.status(200).json(new ApiError(404, "Problem not found"));
+            }
+            const response: IProblemFunctionResponse = {
+                ok: true,
+                message: "Problem status updated successfully",
+                problem: problem,
+            };
+            return res.status(200).json(new ApiResponse(200, response, "Problem status updated successfully"));
+        } catch (error: any) {
+            return res.status(400).json(new ApiError(400, error.message));
+        }
+    }
+
 }
 
 export const problemController = new ProblemController();

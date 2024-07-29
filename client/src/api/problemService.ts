@@ -1,5 +1,4 @@
-import {getCookie} from '../lib/cookieUtility';
-import { Problem, Testcase } from '../types/problems';
+import { getCookie } from '../lib/cookieUtility';
 
 class ProblemService {
     url;
@@ -37,6 +36,22 @@ class ProblemService {
         );
         if (!response.ok) {
             throw new Error("Error fetching problem");
+        }
+        return response.json();
+    }
+
+    async changeProblemStatus(problemId: string, problemIsHidden: boolean) {
+        const response = await fetch(`${this.url}/api/v1/problems/${problemId}/${problemIsHidden}`,
+            {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + getCookie("accessToken"),
+                },
+            }
+        );
+        if (!response.ok) {
+            throw new Error("Error changing problem status");
         }
         return response.json();
     }

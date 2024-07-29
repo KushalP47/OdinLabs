@@ -49,7 +49,7 @@ const Practice = () => {
 							</div>
 
 							{/* Problems Table */}
-							<ProblemsTable problems={problems} />
+							<ProblemsTable problems={problems} userIsAdmin={isAdmin} />
 						</div>
 					) : (
 						<h2 className="text-2xl text-basecolor">
