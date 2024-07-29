@@ -9,6 +9,8 @@ import { Submission, SubmissionResponse, testcaseVerdict } from '../models/submi
 import { generateRandomLargeInteger } from '../utils/randomGenerator';
 import { updateContestScore } from '../functions/contest/updateContestScore';
 import { IContestFunctionResponse } from '../models/contest.model';
+import { checkAssignmentSubmissionDeadline } from '../functions/assignment/checkSubmissionDeadline';
+import { checkContestSubmissionDeadline } from '../functions/contest/checkContestSubmissionDeadline';
 class JudgeController {
 
     // send the source code, language id and problem id to the judge0 api
@@ -40,11 +42,15 @@ class JudgeController {
             const tokens = await getTokens(submissionString) as Array<string>
 
             console.log("Tokens: ", tokens);
-
+            const response = {
+                ok: true,
+                message: "Tokens generated successfully",
+                data: tokens
+            }
             res.json(
                 new ApiResponse(
                     200,
-                    tokens
+                    response
                 )
             );
         } catch (Error) {
@@ -77,7 +83,6 @@ class JudgeController {
             submissionUserRollNumber: userRollNumber,
             submissionTestcasesVerdict: submission.submissionTestcasesVerdict
         });
-        newSubmission.save();
         let maxMarks = 0;
         if (problemDifficulty === "Easy") {
             maxMarks = 20;
@@ -88,27 +93,42 @@ class JudgeController {
         }
         // if submission is related to assignment than update the score in assignment
         if (assignmentId) {
+            // check if the time of submission is within the deadline
+            const isWithinDeadline = await checkAssignmentSubmissionDeadline(Number(assignmentId), new Date());
+            if (isWithinDeadline === false) {
+                return res.status(200).json(new ApiError(400, "Submission deadline has passed"));
+            }
             // updateAssignmentScore(assignmentId, userId, problemId, cnt);
             const marks = Math.round((cnt / submissionTestcasesVerdict.length) * maxMarks);
             const response: IAssignmentFunctionResponse = await updateAssignmentScore(Number(assignmentId), userRollNumber, Number(submission.submissionProblemId), marks);
             if (!response.ok) {
-                return res.status(400).json(new ApiError(400, response.message));
+                return res.status(200).json(new ApiError(400, response.message));
             }
         }
-
         // if submission is related to contest than update the score in contest
         if (contestId) {
+            // check if the time of submission is within the deadline
+            const isWithinDeadline = await checkContestSubmissionDeadline(Number(contestId), new Date());
+            if (isWithinDeadline === false) {
+                return res.status(200).json(new ApiError(400, "Submission deadline has passed"));
+            }
             // updateContestScore(contestId, userId, problemId, cnt);
             const marks = Math.round((cnt / submissionTestcasesVerdict.length) * maxMarks);
             const response: IContestFunctionResponse = await updateContestScore(Number(contestId), userRollNumber, Number(submission.submissionProblemId), marks);
             if (!response.ok) {
-                return res.status(400).json(new ApiError(400, response.message));
+                return res.status(200).json(new ApiError(400, response.message));
             }
+        }
+        newSubmission.save();
+        const response = {
+            ok: true,
+            message: "Submission stored successfully",
+            data: newSubmission
         }
         res.json(
             new ApiResponse(
                 200,
-                newSubmission
+                response
             )
         );
     }
