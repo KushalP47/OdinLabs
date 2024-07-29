@@ -4,6 +4,7 @@ import { ApiResponse } from "../utils/ApiResponse";
 import { Request, Response } from 'express';
 import { getUserFromSection } from "../functions/user/getUserFromSection";
 import { generateContestCustomCookie } from "../functions/contest/generateContestCustomCookie";
+import { IUserFunctionResponse } from "../models/user.model";
 class ContestController {
 
     // Admin Functions
@@ -19,8 +20,14 @@ class ContestController {
         } = req.body;
 
         try {
-            const usersInfo = await getUserFromSection(contestSection);
-            const contestUsers = usersInfo.map((user) => {
+            const usersInfo: IUserFunctionResponse = await getUserFromSection(contestSection);
+            if (!usersInfo.ok) {
+                return res.status(200).json(new ApiError(400, usersInfo.message));
+            }
+            if (!usersInfo.usersInfo) {
+                return res.status(200).json(new ApiError(400, "No users found in the given section"));
+            }
+            const contestUsers = usersInfo.usersInfo.map((user) => {
                 return {
                     contestUserRollNumber: user.userRollNumber,
                     contestUserCurrentMarks: 0,
@@ -128,9 +135,6 @@ class ContestController {
         } catch (error: any) {
             return res.status(400).json(new ApiError(400, error?.message));
         }
-    }
-
-    async logContestUserActivity(req: Request, res: Response) {
     }
 
     async updateContestDeadline(req: Request, res: Response) {

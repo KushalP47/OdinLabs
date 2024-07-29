@@ -28,7 +28,6 @@ const CodeEditorWindow = ({
 				language={language || "C++"}
 				value={value}
 				theme={theme}
-				defaultValue="// start coding here..."
 				onChange={handleEditorChange}
 				options={{
 					fontSize: 18,

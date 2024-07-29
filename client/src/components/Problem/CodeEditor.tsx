@@ -64,11 +64,11 @@ const CodeEditor = ({ problemId, problemDifficulty }: CodeEditorProps) => {
 			language.value,
 		);
 		console.log("res...", res);
-		if (res.errors) {
+		if (res.data.ok === false) {
 			setRunProcessing(false);
-			showErrorToast(res.errors);
+			showErrorToast(res.message);
 		}
-		const token = res.token;
+		const token = res.data.token;
 		await checkStatus(token);
 		setTab("Output");
 	};
@@ -78,7 +78,7 @@ const CodeEditor = ({ problemId, problemDifficulty }: CodeEditorProps) => {
 		const res = await codeExecutionService.checkStatus(token);
 		if (res.errors) {
 			setRunProcessing(false);
-			showErrorToast(res.errors);
+			showErrorToast(res.errors || res.message || "Something went wrong!");
 		}
 		const statusId = res.status?.id;
 		if (statusId === 1 || statusId === 2) {
@@ -146,12 +146,12 @@ const CodeEditor = ({ problemId, problemDifficulty }: CodeEditorProps) => {
 			problemDifficulty,
 		);
 		console.log("submissionResp...", submissionResp);
-		if (submissionResp.statusCode !== 200) {
+		if (!submissionResp.data.ok) {
 			setSubmitProcessing(false);
-			showErrorToast(submissionResp.errors);
+			showErrorToast(submissionResp.message);
 			return;
 		}
-		const submissionDetails = submissionResp.data as Submission;
+		const submissionDetails = submissionResp.data.data as Submission;
 		setSubmissionDetails(submissionDetails);
 		setIsModalVisible(true);
 		console.log("Modal visibility should be true now: ", isModalVisible);

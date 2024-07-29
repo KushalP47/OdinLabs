@@ -30,10 +30,20 @@ export interface JwtPayload {
     isAdmin: boolean;
 }
 
+export interface UserInfo {
+    userName: string;
+    userRollNumber: string;
+    userSection: string;
+    userEmail: string;
+    userTeamName: string;
+}
+
 export interface IUserFunctionResponse {
     ok: boolean;
     message: string;
     user?: IUser;
+    users?: Array<IUser>;
+    usersInfo?: Array<UserInfo>;
 }
 
 interface IUserModel extends Model<IUser> { }
@@ -78,7 +88,7 @@ userSchema.pre<IUser>('save', function (next) {
         this.userPassword = this.encryptPassword(this.userPassword);
     }
 
-    if(this.userSecret == "") {
+    if (this.userSecret == "") {
         this.userSecret = this.generateSecret();
     }
     next();
