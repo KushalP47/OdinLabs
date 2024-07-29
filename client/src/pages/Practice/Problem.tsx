@@ -10,6 +10,7 @@ import { codeExecutionService } from "../../api/codeExecutionService";
 import { Submission } from "../../types/submissions";
 import { contestService } from "../../api/contestService";
 import { assignmentService } from "../../api/assignmentService";
+import ErrorModal from "../../components/ErrorModal";
 
 const Problem = () => {
 	// State management
@@ -24,17 +25,27 @@ const Problem = () => {
 	const assignmentId = useParams().assignmentId;
 	const contestId = useParams().contestId;
 	const [deadline, setDeadline] = useState<string | undefined>(undefined);
+	const [errorMessage, setErrorMessage] = useState<string>("");
+	const [errorModalVisible, setErrorModalVisible] = useState(false);
 	// Update status based on currentStatus from Redux
 	useEffect(() => {
 		async function getDeadline() {
 			if (contestId) {
 				const response = await contestService.getContestDeadline(contestId);
 				console.log(response);
+				if (response.data.ok === false) {
+					setErrorMessage(response.data.message);
+					setErrorModalVisible(true);
+				}
 				setDeadline(response.data.contestEndTime);
 			} else if (assignmentId) {
 				const response = await assignmentService.getAssignmentDeadline(
 					assignmentId,
 				);
+				if (response.data.ok === false) {
+					setErrorMessage(response.data.message);
+					setErrorModalVisible(true);
+				}
 				setDeadline(response.data.assignmentEndTime);
 			}
 		}
@@ -46,13 +57,15 @@ const Problem = () => {
 	const fetchProblem = async (id: string) => {
 		try {
 			const response = await problemService.getProblem(id);
-			if (response && response.data && response.data.problem) {
+			if (response.ok) {
 				setProblem(response.data.problem);
 			} else {
-				console.error("Error fetching problem: No data received.");
+				setErrorMessage(response.message);
+				setErrorModalVisible(true);
 			}
 		} catch (error) {
-			console.error("Error fetching problem:", error);
+			setErrorMessage("Error fetching problem: No data received.");
+			setErrorModalVisible(true);
 		}
 	};
 
@@ -60,17 +73,19 @@ const Problem = () => {
 	const fetchSubmissions = async (id: string) => {
 		try {
 			const response = await codeExecutionService.getSubmissions();
-			if (response && response.statusCode === 200 && response.data) {
-				const problemSubmissions = response.data.filter(
+			if (response.ok) {
+				const problemSubmissions = response.data.data.filter(
 					(submission: Submission) =>
 						submission.submissionProblemId === Number(id),
 				);
 				setSubmissions(problemSubmissions);
 			} else {
-				console.error("Error fetching submissions: No data received.");
+				setErrorMessage(response.message);
+				setErrorModalVisible(true);
 			}
 		} catch (error) {
-			console.error("Error fetching submissions:", error);
+			setErrorMessage("Error fetching submissions: No data received.");
+			setErrorModalVisible(true);
 		}
 	};
 
@@ -81,7 +96,8 @@ const Problem = () => {
 			fetchProblem(problemId);
 			fetchSubmissions(problemId);
 		} else {
-			console.error("Problem ID is undefined.");
+			setErrorMessage("Problem ID not found.");
+			setErrorModalVisible(true);
 		}
 	}, [problemId]);
 
@@ -249,6 +265,13 @@ const Problem = () => {
 					<h2 className="text-2xl text-basecolor">
 						Please login to view this page
 					</h2>
+				)}
+				{errorModalVisible && (
+					<ErrorModal
+						message={errorMessage}
+						onClose={() => setErrorModalVisible(false)}
+						isOpen={errorModalVisible}
+					/>
 				)}
 			</div>
 		</div>

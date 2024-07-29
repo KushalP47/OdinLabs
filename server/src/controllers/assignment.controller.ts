@@ -4,6 +4,7 @@ import { ApiResponse } from "../utils/ApiResponse";
 import { Request, Response } from 'express';
 import { getUserFromSection } from "../functions/user/getUserFromSection";
 import { updateAssignmentDeadlines } from "../functions/assignment/updateAssignmentDeadline";
+import { IUserFunctionResponse } from "../models/user.model";
 class AssignmentController {
     async createAssignment(req: Request, res: Response) {
         const {
@@ -16,9 +17,14 @@ class AssignmentController {
             assignmentSection,
         } = req.body;
 
-        const usersInfo = await getUserFromSection(assignmentSection);
-        console.log(usersInfo);
-        const assignmentUsers = usersInfo.map((user) => {
+        const usersInfo: IUserFunctionResponse = await getUserFromSection(assignmentSection);
+        if (!usersInfo.ok) {
+            return res.status(200).json(new ApiError(400, usersInfo.message));
+        }
+        if (!usersInfo.usersInfo) {
+            return res.status(200).json(new ApiError(400, "No users found in the given section"));
+        }
+        const assignmentUsers = usersInfo.usersInfo.map((user) => {
             return {
                 assignmentUserRollNumber: user.userRollNumber,
                 assignmentUserCurrentMarks: 0,

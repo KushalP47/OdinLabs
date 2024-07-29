@@ -137,14 +137,19 @@ class JudgeController {
         try {
             const { user } = req.body;
             const submissions = await Submission.find({ submissionUserRollNumber: user.userRollNumber });
+            const response = {
+                ok: true,
+                message: "Submissions fetched successfully",
+                data: submissions
+            }
             res.json(
                 new ApiResponse(
                     200,
-                    submissions
+                    response
                 )
             );
         } catch (Error) {
-            res.send(Error);
+            res.send(new ApiError(400, "Error fetching submissions"));
         }
     }
 }

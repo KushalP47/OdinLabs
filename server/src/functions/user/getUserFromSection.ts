@@ -1,26 +1,38 @@
-import { User } from '../../models/user.model';
+import { User, IUserFunctionResponse, UserInfo } from '../../models/user.model';
 
-export interface UserInfo {
-    userName: string;
-    userRollNumber: string;
-    userSection: string;
-    userEmail: string;
-    userTeamName: string;
-}
-export const getUserFromSection = async (section: string): Promise<UserInfo[]> => {
-    const users = await User.find({ userSection: section });
-    const usersInfo: Array<UserInfo> = [];
-    users.forEach((user) => {
-        if (!user.userIsAdmin) {
-            const userInfo: UserInfo = {
-                userName: user.userName,
-                userRollNumber: user.userRollNumber,
-                userSection: user.userSection,
-                userEmail: user.userEmail,
-                userTeamName: user.userTeamName,
+
+export const getUserFromSection = async (section: string): Promise<IUserFunctionResponse> => {
+    try {
+        const users = await User.find({ userSection: section });
+        if (!users) {
+            return {
+                ok: false,
+                message: "No users found in the given section"
             };
-            usersInfo.push(userInfo);
         }
-    });
-    return usersInfo;
+        const usersInfo: Array<UserInfo> = [];
+        users.forEach((user) => {
+            if (!user.userIsAdmin) {
+                const userInfo: UserInfo = {
+                    userName: user.userName,
+                    userRollNumber: user.userRollNumber,
+                    userSection: user.userSection,
+                    userEmail: user.userEmail,
+                    userTeamName: user.userTeamName,
+                };
+                usersInfo.push(userInfo);
+            }
+        });
+        return {
+            ok: true,
+            message: "Users fetched successfully",
+            usersInfo: usersInfo,
+        };
+    } catch (error: any) {
+        return {
+            ok: false,
+            message: error?.message
+        };
+    }
+
 }

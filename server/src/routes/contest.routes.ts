@@ -13,7 +13,6 @@ router.route('/:contestId').delete(verifyJWT, verifyIsAdmin, contestController.d
 
 router.route('/updateDeadline/:contestId').put(verifyJWT, verifyIsAdmin, contestController.updateContestDeadline);
 router.route('/signIn/:contestId').post(verifyJWT, contestController.signInContest);
-router.route('/logActivity/:contestId').post(verifyJWT, verifyCustomContestCookie, contestController.logContestUserActivity);
 router.route('/getContestDeadline/:contestId').get(verifyJWT, verifyCustomContestCookie, contestController.getContestDeadline);
 router.route('/retainUser').post(verifyJWT, verifyIsAdmin, contestController.clearUserContestCustomCookie);
 export default router;

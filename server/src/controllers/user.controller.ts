@@ -3,35 +3,88 @@ import { IUserFunctionResponse, } from '../models/user.model';
 import { userExists, createUser, userFromEmail, updateUserPassword } from '../functions/auth';
 import { ApiResponse } from '../utils/ApiResponse';
 import { ApiError } from '../utils/ApiError';
-import { User } from '../models/user.model';
-
-interface UserInfo {
-    userName: string;
-    userRollNumber: string;
-    userSection: string;
-    userEmail: string;
-    userTeamName: string;
-}
+import { User, UserInfo } from '../models/user.model';
+import { getUserFromSection } from '../functions/user/getUserFromSection';
+import { generateRandomString } from '../utils/randomGenerator';
 
 export class UserController {
     async getUsersFromSection(req: Request, res: Response) {
         const { section } = req.body;
-        const users = await User.find({ userSection: section });
-        const usersInfo: Array<UserInfo> = [];
-        users.forEach((user) => {
-            if (!user.userIsAdmin) {
-                const userInfo: UserInfo = {
-                    userName: user.userName,
-                    userRollNumber: user.userRollNumber,
-                    userSection: user.userSection,
-                    userEmail: user.userEmail,
-                    userTeamName: user.userTeamName,
-                };
-                usersInfo.push(userInfo);
+        const users: IUserFunctionResponse = await getUserFromSection(section);
+        if (!users.ok) {
+            return res.status(200).json(new ApiError(400, users.message));
+        }
+        const response = {
+            ok: true,
+            message: "Users fetched successfully",
+            data: users.usersInfo,
+        };
+        return res.status(200).json(new ApiResponse(200, response, "Users fetched successfully"));
+    }
+
+    async editUser(req: Request, res: Response) {
+        const { userEmail, userName, userRollNumber, userSection, userTeamName } = req.body;
+        try {
+            const user = await User.findOne({ userEmail });
+            if (!user) {
+                return res.status(200).json(new ApiError(400, "User not found"));
             }
-        });
-        return usersInfo;
-    } 
+            user.userName = userName;
+            user.userRollNumber = userRollNumber;
+            user.userSection = userSection;
+            user.userTeamName = userTeamName;
+            await user.save();
+            const response = {
+                ok: true,
+                message: "User updated  successfully",
+                data: user,
+            };
+            return res.status(200).json(new ApiResponse(200, response, "User updated successfully"));
+        } catch (error: any) {
+            return res.status(200).json(new ApiError(400, error.message));
+
+        }
+    }
+
+    async deleteUser(req: Request, res: Response) {
+        const { userEmail } = req.body;
+        try {
+            const user = await User.findOne({ userEmail });
+            if (!user) {
+                return res.status(200).json(new ApiError(400, "User not found"));
+            }
+            await user.deleteOne({ userEmail });
+            const response = {
+                ok: true,
+                message: "User deleted successfully",
+            };
+            return res.status(200).json(new ApiResponse(200, response, "User deleted successfully"));
+        } catch (error: any) {
+            return res.status(200).json(new ApiError(400, error.message));
+        }
+    }
+
+    async changeUserSecret(req: Request, res: Response) {
+        const { userEmail } = req.body;
+        try {
+            const user = await User.findOne({ userEmail });
+            if (!user) {
+                return res.status(200).json(new ApiError(400, "User not found"));
+            }
+            user.userSecret = "";
+            await user.save();
+            const response = {
+                ok: true,
+                message: "User secret changed successfully",
+                data: user,
+            };
+            return res.status(200).json(new ApiResponse(200, response, "User secret changed successfully"));
+        } catch (error: any) {
+            return res.status(200).json(new ApiError(400, error.message));
+        }
+    }
+
+
 }
 
 export const userController = new UserController();
