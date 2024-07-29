@@ -29,6 +29,10 @@ const router = createBrowserRouter([
 		children: [
 			// General routes
 			{
+				path: "/",
+				element: <Dashboard />,
+			},
+			{
 				path: "/dashboard",
 				element: (
 					<Protected
@@ -195,7 +199,7 @@ const router = createBrowserRouter([
 					<Protected
 						onlyAdminAllowed={false}
 						allowDuringContest={false}
-						isLoggedIn={true}>
+						isLoggedIn={false}>
 						<Logout />
 					</Protected>
 				),
