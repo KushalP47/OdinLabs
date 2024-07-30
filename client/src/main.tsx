@@ -8,6 +8,7 @@ import {
 	Students,
 	Assignments,
 	Practice,
+	CreateAssignmentPage,
 	Room,
 	Login,
 	Contest,
@@ -110,7 +111,17 @@ const router = createBrowserRouter([
 					</Protected>
 				),
 			},
-
+			{
+				path: "/assignment/create",
+				element: (
+					<Protected
+						onlyAdminAllowed={true}
+						allowDuringContest={false}
+						isLoggedIn={true}>
+						<CreateAssignmentPage />
+					</Protected>
+				),
+			},
 			// Practice Routes
 			{
 				path: "/practice",
