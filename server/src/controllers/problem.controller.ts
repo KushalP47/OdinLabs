@@ -208,6 +208,28 @@ class ProblemController {
         }
     };
 
+    async getPracticeProblemById(req: Request, res: Response) {
+        const problemId = req.params.problemId;
+        try {
+            const problem: IProblem | null = await Problem
+                .findOne({ problemId });
+            if (!problem) {
+                return res.status(200).json(new ApiError(404, "Problem not found"));
+            }
+            if (problem.problemIsHidden) {
+                return res.status(200).json(new ApiError(404, "Problem is hidden"));
+            }
+            const response: IProblemFunctionResponse = {
+                ok: true,
+                message: "Problem fetched successfully",
+                problem: problem,
+            };
+            return res.status(200).json(new ApiResponse(200, response, "Problem fetched successfully"));
+        } catch (error: any) {
+            return res.status(400).json(new ApiError(400, error.message));
+        }
+    };
+
     async changeProblemStatus(req: Request, res: Response) {
         const problemId = req.params.problemId;
         const problemIsHidden = req.params.problemIsHidden;

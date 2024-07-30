@@ -11,10 +11,12 @@ import { Submission } from "../../types/submissions";
 import { contestService } from "../../api/contestService";
 import { assignmentService } from "../../api/assignmentService";
 import ErrorModal from "../../components/Utils/ErrorModal";
+import { useNavigate } from "react-router-dom";
 
 const Problem = () => {
 	// State management
 	const [status, setStatus] = useState(false);
+	const navigate = useNavigate();
 	const currentStatus = useSelector((state: any) => state.auth.status);
 	const { problemId } = useParams<{ problemId: string }>(); // Add generic for useParams
 	const [problem, setProblem] = useState<IProblem | null>(null);
@@ -59,23 +61,43 @@ const Problem = () => {
 	// Fetch problem data
 	const fetchProblem = async (id: string) => {
 		try {
-			const response = await problemService.getProblem(id);
-			if (response.data.ok) {
-				setProblem(response.data.problem);
-				if (response.data.problem.problemEditorialIsHidden === false) {
-					const editorialResponse = await problemService.getEditorialById(id);
-					if (editorialResponse.data.ok) {
-						setProblemEditorial(
-							editorialResponse.data.editorial.editorialContent,
-						);
-					} else {
-						setErrorMessage(editorialResponse.message);
-						setErrorModalVisible(true);
+			if (contestId === undefined && assignmentId === undefined) {
+				const response = await problemService.getPracticeProblem(id);
+				if (response.data.ok) {
+					setProblem(response.data.problem);
+					if (response.data.problem.problemEditorialIsHidden === false) {
+						const editorialResponse = await problemService.getEditorialById(id);
+						if (editorialResponse.data.ok) {
+							setProblemEditorial(
+								editorialResponse.data.editorial.editorialContent,
+							);
+						} else {
+							setErrorMessage(editorialResponse.message);
+							setErrorModalVisible(true);
+						}
 					}
+				} else {
+					navigate(`/practice`);
 				}
 			} else {
-				setErrorMessage(response.message);
-				setErrorModalVisible(true);
+				const response = await problemService.getProblem(id);
+				if (response.data.ok) {
+					setProblem(response.data.problem);
+					if (response.data.problem.problemEditorialIsHidden === false) {
+						const editorialResponse = await problemService.getEditorialById(id);
+						if (editorialResponse.data.ok) {
+							setProblemEditorial(
+								editorialResponse.data.editorial.editorialContent,
+							);
+						} else {
+							setErrorMessage(editorialResponse.message);
+							setErrorModalVisible(true);
+						}
+					}
+				} else {
+					setErrorMessage(response.message);
+					setErrorModalVisible(true);
+				}
 			}
 		} catch (error) {
 			setErrorMessage("Error fetching problem: No data received.");

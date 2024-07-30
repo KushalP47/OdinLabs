@@ -37,6 +37,19 @@ class ProblemService {
         return response.json();
     }
 
+    async getPracticeProblem(problemId: string,) {
+        const response = await fetch(`${this.url}/api/v1/problems/practice/${problemId}`,
+            {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + getCookie("accessToken"),
+                },
+            }
+        );
+        return response.json();
+    }
+
     async changeProblemStatus(problemId: string, problemIsHidden: boolean) {
         const response = await fetch(`${this.url}/api/v1/problems/${problemId}/${problemIsHidden}`,
             {
