@@ -30,11 +30,11 @@ const CodeEditorWindow = ({
 				height="65vh"
 				width={`100%`}
 				language={language || "C++"}
-				value={value}
+				value={code}
 				theme={theme}
 				onChange={handleEditorChange}
 				options={{
-					fontSize: 18,
+					fontSize: 16,
 					readOnly: readOnly, // Set readOnly option
 				}}
 			/>

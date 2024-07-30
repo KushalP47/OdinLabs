@@ -87,7 +87,7 @@ const Problem = () => {
 	const fetchSubmissions = async (id: string) => {
 		try {
 			const response = await codeExecutionService.getSubmissions();
-			if (response.ok) {
+			if (response.data.ok) {
 				const problemSubmissions = response.data.data.filter(
 					(submission: Submission) =>
 						submission.submissionProblemId === Number(id),
@@ -98,8 +98,8 @@ const Problem = () => {
 				setErrorModalVisible(true);
 			}
 		} catch (error) {
-			setErrorMessage("Error fetching submissions: No data received.");
-			setErrorModalVisible(true);
+			// setErrorMessage("Error fetching submissions: No data received.");
+			// setErrorModalVisible(true);
 		}
 	};
 

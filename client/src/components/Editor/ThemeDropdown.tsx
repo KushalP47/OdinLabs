@@ -11,6 +11,7 @@ const ThemeDropdown = ({ handleThemeChange }: ThemeDropdownProps) => {
 			options={themeOptions}
 			onSelect={handleThemeChange}
 			placeholder="Select Theme"
+			defaultOption={themeOptions[1]}
 		/>
 	);
 };

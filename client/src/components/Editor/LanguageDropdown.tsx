@@ -3,9 +3,13 @@ import DropdownMenu from "../Utils/DropDownMenu";
 
 type LanguagesDropdownProps = {
 	onSelectChange: (selectedOption: LanguageOption | null) => void;
+	languageDefaultOption?: LanguageOption;
 };
 
-const LanguagesDropdown = ({ onSelectChange }: LanguagesDropdownProps) => {
+const LanguagesDropdown = ({
+	onSelectChange,
+	languageDefaultOption,
+}: LanguagesDropdownProps) => {
 	const languageOptions = [
 		{ id: 54, name: "C++ (GCC 9.2.0)", label: "C++", value: "cpp" },
 		{ id: 62, name: "Java (OpenJDK 13.0.1)", label: "Java", value: "java" },
@@ -17,6 +21,7 @@ const LanguagesDropdown = ({ onSelectChange }: LanguagesDropdownProps) => {
 			options={languageOptions}
 			onSelect={onSelectChange}
 			placeholder="Select Language"
+			defaultOption={languageDefaultOption}
 		/>
 	);
 };

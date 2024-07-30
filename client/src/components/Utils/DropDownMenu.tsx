@@ -35,11 +35,13 @@ const DropdownMenu = ({
 
 	return (
 		<div className="relative">
-			<button onClick={toggleDropdown} className="btn btn-sm btn-outline">
+			<button
+				onClick={toggleDropdown}
+				className="btn btn-sm text-white text-xl font-semibold btn-primary w-3/4">
 				{selectedOption ? selectedOption.label : placeholder}
 			</button>
 			{isOpen && (
-				<ul className="absolute z-10 mt-2 bg-white border border-gray-300 rounded-lg shadow-lg">
+				<ul className="absolute z-10 mt-2 bg-gray-50 font-semibold text-secondary border border-gray-300 rounded-lg shadow-lg w-3/4">
 					{options.map((option) => (
 						<li
 							key={option.id}

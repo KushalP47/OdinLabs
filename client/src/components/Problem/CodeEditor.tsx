@@ -33,7 +33,7 @@ const CodeEditor = ({
 	problemJavaTemplate,
 	problemPythonTemplate,
 }: CodeEditorProps) => {
-	const [code, setCode] = useState("");
+	const [code, setCode] = useState(problemCppTemplate);
 	const [customInput, setCustomInput] = useState("");
 	const [outputDetails, setOutputDetails] = useState(null);
 	const [runProcessing, setRunProcessing] = useState(false);
@@ -45,17 +45,16 @@ const CodeEditor = ({
 	const [submissionDetails, setSubmissionDetails] = useState<Submission | null>(
 		null,
 	);
-	const [templates, setTemplates] = useState({
+	const templates = {
 		cpp: problemCppTemplate,
 		java: problemJavaTemplate,
 		python: problemPythonTemplate,
-	});
-	const [isReadOnly, setIsReadOnly] = useState(false);
+	};
 
 	const assignmentId = useParams().assignmentId;
 	const contestId = useParams().contestId;
 
-	const onSelectChange = (sl: LanguageOption | null) => {
+	const handleLanguageChange = (sl: LanguageOption | null) => {
 		if (!sl) return;
 		setLanguage(sl);
 
@@ -74,8 +73,7 @@ const CodeEditor = ({
 			default:
 				selectedTemplate = "";
 		}
-		setCode(selectedTemplate);
-		setIsReadOnly(true); // Make the template read-only
+		handleEditorChange(selectedTemplate);
 	};
 
 	const onChange = (action: string, data: string) => {
@@ -94,23 +92,27 @@ const CodeEditor = ({
 			customInput,
 			language.value,
 		);
-		if (res.data.ok === false) {
+		console.log("res...", res);
+		if (res.ok === false) {
 			setRunProcessing(false);
 			showErrorToast(res.message);
 		}
-		const token = res.data.token;
+		const token = res.token;
 		await checkStatus(token);
 		setTab("Output");
 	};
 
 	const checkStatus = async (token: string, isSubmission: boolean = false) => {
+		// We will come to the implementation later in the code
 		const res = await codeExecutionService.checkStatus(token);
 		if (res.errors) {
 			setRunProcessing(false);
 			showErrorToast(res.errors || res.message || "Something went wrong!");
 		}
 		const statusId = res.status?.id;
+		console.log("statusId...", statusId);
 		if (statusId === 1 || statusId === 2) {
+			// still processing
 			setTimeout(() => {
 				checkStatus(token, isSubmission);
 			}, 2000);
@@ -122,11 +124,13 @@ const CodeEditor = ({
 					time: res.time || 0,
 					memory: res.memory || 0,
 				};
+				console.log("TestCaseVeridict...", TestCaseVeridict);
 				return TestCaseVeridict;
 			} else {
 				setRunProcessing(false);
 				setOutputDetails(res);
 				showSuccessToast(`Compiled Successfully!`);
+				console.log("response.data", res);
 				return;
 			}
 		}
@@ -134,26 +138,32 @@ const CodeEditor = ({
 
 	const handleSubmit = async () => {
 		setSubmitProcessing(true);
+		console.log("submitting code...", code);
 		const res = await codeExecutionService.submitCode(
 			code,
 			language.id,
 			problemId,
 		);
+		console.log("res...", res);
 		if (res.statusCode !== 200) {
 			setSubmitProcessing(false);
 			showErrorToast(res.errors);
 			return;
 		}
 		const tokens = res.data as Array<string>;
+		console.log("tokens...", tokens);
 		let i = 0;
 		const testcasesVerdict: Array<testcaseVerdict> = [];
 		while (testcasesVerdict.length < tokens.length) {
 			const currentTestcaseVerdict = await checkStatus(tokens[i], true);
+			console.log("for token...", tokens[i]);
+			console.log("currentTestcaseVerdict...", currentTestcaseVerdict);
 			if (currentTestcaseVerdict !== undefined) {
 				testcasesVerdict.push(currentTestcaseVerdict);
 			}
 			i = (i + 1) % tokens.length;
 		}
+		console.log("Testcases Verdict...", testcasesVerdict);
 		const submissionResp = await codeExecutionService.storeSubmission(
 			{
 				submissionSourceCode: code,
@@ -165,6 +175,7 @@ const CodeEditor = ({
 			contestId,
 			problemDifficulty,
 		);
+		console.log("submissionResp...", submissionResp);
 		if (!submissionResp.data.ok) {
 			setSubmitProcessing(false);
 			showErrorToast(submissionResp.message);
@@ -173,6 +184,7 @@ const CodeEditor = ({
 		const submissionDetails = submissionResp.data.data as Submission;
 		setSubmissionDetails(submissionDetails);
 		setIsModalVisible(true);
+		console.log("Modal visibility should be true now: ", isModalVisible);
 		setSubmitProcessing(false);
 	};
 
@@ -193,6 +205,8 @@ const CodeEditor = ({
 
 	useEffect(() => {
 		defineTheme("dark").then(() => setTheme(themeOptions[1]));
+		handleLanguageChange(languageOptions[0]);
+		handleThemeChange(themeOptions[1]);
 		setCode(problemCppTemplate);
 	}, []);
 
@@ -265,12 +279,18 @@ const CodeEditor = ({
 				</div>
 				{/* Code Editor Component */}
 				{tab === "Editor" && (
-					<div className="flex flex-col border-4 border-secondary rounded-xl">
-						<div className="flex flex-row justify-center items-center text-center m-2 w-full">
-							<div className="w-1/2 px-4 mb-2">
-								<LanguagesDropdown onSelectChange={onSelectChange} />
+					<div
+						className={`flex flex-col border-4 border-secondary rounded-xl ${
+							theme.label === "Light" ? "bg-gray-50" : "bg-editorbg"
+						}`}>
+						<div className="flex flex-row justify-center items-center text-center w-full mt-2">
+							<div className="w-1/2 px-4">
+								<LanguagesDropdown
+									onSelectChange={handleLanguageChange}
+									languageDefaultOption={language}
+								/>
 							</div>
-							<div className="w-1/2 px-4 mb-2">
+							<div className="w-1/2 px-4">
 								<ThemeDropdown handleThemeChange={handleThemeChange} />
 							</div>
 						</div>
@@ -278,13 +298,13 @@ const CodeEditor = ({
 							className={`w-full bg-basecolor ${
 								theme.label === "Light" ? "bg-gray-50" : "bg-editorbg"
 							} p-2 rounded-xl`}>
-							<div className="flex flex-col w-full h-full justify-start items-end p-2 m-2">
+							<div className="flex flex-col w-full h-full justify-start items-end p-2 mb-2">
 								<CodeEditorWindow
 									code={code}
-									onChange={handleEditorChange}
+									onChange={onChange}
 									language={language?.value}
 									theme={theme.value}
-									readOnly={isReadOnly} // Pass readOnly prop
+									readOnly={false} // Pass readOnly prop
 								/>
 							</div>
 							<div className="flex flex-row justify-end items-center m-2 px-4">
