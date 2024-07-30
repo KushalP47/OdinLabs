@@ -39,8 +39,12 @@ const Students = () => {
 			const response = await userService.getUsersFromSection(sectionTab);
 			if (response.data.ok) {
 				console.log("Total users:", response.data.data);
-				setTotalUsers(response.data.data);
-				setIsDataLoaded(true); // Set data loaded to true once users are fetched
+				setTotalUsers((prev) => (prev = response.data.data));
+				// put a 1 secont delay to show the loading spinner
+				setTimeout(() => {
+					setIsDataLoaded(true);
+				}, 1500);
+				// setIsDataLoaded(true); // Set data loaded to true once users are fetched
 			} else {
 				setErrorMessage(response.data.message);
 				setErrorModalOpen(true);
@@ -207,16 +211,9 @@ const Students = () => {
 
 	// UseEffect Hook for Socket Connections
 	useEffect(() => {
-		// Only run socket listeners if data is loaded
-		if (!isDataLoaded) {
-			console.log("Data not loaded, skipping socket event listeners.");
-			return;
-		}
-
 		console.log("Setting up socket event listeners.");
 
 		// Listen for socket events related to students
-		socket.emit("get-student-offers");
 		socket.on("student-offers", handleConnectedStudents);
 		socket.on("admin-disconnected", handleAdminDisconnected);
 
@@ -226,7 +223,16 @@ const Students = () => {
 			socket.off("student-offers", handleConnectedStudents);
 			socket.off("admin-disconnected", handleAdminDisconnected);
 		};
-	}, [isDataLoaded, handleConnectedStudents, handleAdminDisconnected, socket]); // Dependencies array
+	}, [handleConnectedStudents, handleAdminDisconnected, socket]); // Dependencies array
+
+	// UseEffect Hook to emit "get-student-offers" only on sectionTab change
+	useEffect(() => {
+		if (isDataLoaded) {
+			socket.emit("get-student-offers");
+			console.log("Emitted get-student-offers due to sectionTab change.");
+			console.log("Total Users:", totalUsers);
+		}
+	}, [sectionTab, isDataLoaded, socket]); // Emit when sectionTab or isDataLoaded changes
 
 	return (
 		<div className="flex flex-col min-h-screen">
@@ -237,14 +243,20 @@ const Students = () => {
 						className={`tab ${
 							sectionTab === "1" ? "bg-white text-secondary text-xl" : "text-xl"
 						}`}
-						onClick={() => setSectionTab("1")}>
+						onClick={() => {
+							setIsDataLoaded(false);
+							setSectionTab("1");
+						}}>
 						Section 1
 					</a>
 					<a
 						className={`tab ${
 							sectionTab === "2" ? "bg-white text-secondary text-xl" : "text-xl"
 						}`}
-						onClick={() => setSectionTab("2")}>
+						onClick={() => {
+							setIsDataLoaded(false);
+							setSectionTab("2");
+						}}>
 						Section 2
 					</a>
 				</div>
