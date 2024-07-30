@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { logout } from "../store/authSlice";
+import { logout } from "../../store/authSlice";
 import { useNavigate } from "react-router-dom";
-import { getCookie, delete_cookie } from "../lib/cookieUtility";
+import { getCookie, delete_cookie } from "../../lib/cookieUtility";
 
 function Logout() {
 	const dispatch = useDispatch();

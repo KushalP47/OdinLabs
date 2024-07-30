@@ -89,6 +89,7 @@ const ProblemsTable = ({ problems, userIsAdmin }: ProblemsTableProps) => {
 				String(problemId),
 				editorialIsHidden,
 			);
+			console.log(res);
 			if (res.data.ok) {
 				console.log("Editorial status changed successfully");
 				setMessage(res.data.message);

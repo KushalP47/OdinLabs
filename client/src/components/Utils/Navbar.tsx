@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { delete_cookie } from "../lib/cookieUtility";
+import { delete_cookie } from "../../lib/cookieUtility";
 import { useDispatch } from "react-redux";
-import { setContestData } from "../store/contestSlice";
+import { setContestData } from "../../store/contestSlice";
 interface NavbarProps {
 	currentPage: string;
 	deadline?: string;
 	assignmentId?: string;
 	contestId?: string;
 }
-import logo from "../assets/viking.png";
+import logo from "../../assets/viking.png";
 
 const Navbar: React.FC<NavbarProps> = ({
 	currentPage,
