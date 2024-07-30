@@ -31,8 +31,6 @@ export const customStyles = {
         return {
             ...styles,
             backgroundColor: "#ffffff",
-            // maxWidth: "14rem",
-            // border: "2px solid #000000",
             borderRadius: "5px",
         };
     },

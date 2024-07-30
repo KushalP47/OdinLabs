@@ -1,4 +1,4 @@
-import Navbar from "../../components/Navbar";
+import Navbar from "../../components/Utils/Navbar";
 import Submissions from "../../components/Submission/Submissions";
 import { useState, useEffect } from "react";
 import { codeExecutionService } from "../../api/codeExecutionService";

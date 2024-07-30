@@ -243,12 +243,8 @@ class ProblemController {
         if (problemEditorialIsHidden !== "true" && problemEditorialIsHidden !== "false") {
             return res.status(200).json(new ApiError(400, "Invalid value for problemEditorialIsHidden"));
         }
-        let newVal;
-        if (problemEditorialIsHidden === "true") {
-            newVal = true;
-        } else {
-            newVal = false;
-        }
+        const newVal = problemEditorialIsHidden === "true" ? true : false;
+        // console.log(problemEditorialIsHidden, newVal);
         try {
             const problem: IProblem | null = await Problem
                 .findOneAndUpdate({ problemId }, { problemEditorialIsHidden: newVal }, { new: true });
@@ -256,6 +252,7 @@ class ProblemController {
             if (!problem) {
                 return res.status(200).json(new ApiError(404, "Problem not found"));
             }
+            // console.log(problem, editorial);
             const response = {
                 ok: true,
                 message: "Problem editorial status updated successfully",

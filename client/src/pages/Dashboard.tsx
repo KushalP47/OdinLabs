@@ -1,4 +1,4 @@
-import Navbar from "../components/Navbar";
+import Navbar from "../components/Utils/Navbar";
 import { useSelector } from "react-redux";
 import { useState } from "react";
 import ProfileCard from "../components/User/ProfileCard";

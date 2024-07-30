@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import Navbar from "../../components/Navbar";
+import Navbar from "../../components/Utils/Navbar";
 import { Problem as IProblem } from "../../types/problems";
 import { problemService } from "../../api/problemService";
 import CodeEditor from "../../components/Problem/CodeEditor";
@@ -10,7 +10,7 @@ import { codeExecutionService } from "../../api/codeExecutionService";
 import { Submission } from "../../types/submissions";
 import { contestService } from "../../api/contestService";
 import { assignmentService } from "../../api/assignmentService";
-import ErrorModal from "../../components/ErrorModal";
+import ErrorModal from "../../components/Utils/ErrorModal";
 
 const Problem = () => {
 	// State management
@@ -87,7 +87,7 @@ const Problem = () => {
 	const fetchSubmissions = async (id: string) => {
 		try {
 			const response = await codeExecutionService.getSubmissions();
-			if (response.ok) {
+			if (response.data.ok) {
 				const problemSubmissions = response.data.data.filter(
 					(submission: Submission) =>
 						submission.submissionProblemId === Number(id),
@@ -98,8 +98,8 @@ const Problem = () => {
 				setErrorModalVisible(true);
 			}
 		} catch (error) {
-			setErrorMessage("Error fetching submissions: No data received.");
-			setErrorModalVisible(true);
+			// setErrorMessage("Error fetching submissions: No data received.");
+			// setErrorModalVisible(true);
 		}
 	};
 
@@ -272,6 +272,9 @@ const Problem = () => {
 							<CodeEditor
 								problemId={Number(problemId)}
 								problemDifficulty={problem.problemDifficulty}
+								problemCppTemplate={problem.problemCppTemplate}
+								problemJavaTemplate={problem.problemJavaTemplate}
+								problemPythonTemplate={problem.problemPythonTemplate}
 							/>
 						</div>
 					</>

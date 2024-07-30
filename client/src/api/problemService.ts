@@ -47,9 +47,6 @@ class ProblemService {
                 },
             }
         );
-        if (!response.ok) {
-            throw new Error("Error changing problem status");
-        }
         return response.json();
     }
 
@@ -69,7 +66,7 @@ class ProblemService {
     }
 
     async changeProblemEditorialStatus(problemId: string, problemEditorialIsHidden: boolean) {
-        const response = await fetch(`${this.url}/api/v1/problems/${problemId}/${problemEditorialIsHidden}`,
+        const response = await fetch(`${this.url}/api/v1/problems/editorial/${problemId}/${problemEditorialIsHidden}`,
             {
                 method: "PUT",
                 headers: {

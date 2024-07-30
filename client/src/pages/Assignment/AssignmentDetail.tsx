@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import Navbar from "../../components/Navbar";
+import Navbar from "../../components/Utils/Navbar";
 import { assignmentService } from "../../api/assignmentService";
 import { Assignment } from "../../types/assignment";
 import { Problem } from "../../types/problems";

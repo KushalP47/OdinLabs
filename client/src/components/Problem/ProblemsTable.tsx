@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { problemService } from "../../api/problemService";
-import ErrorModal from "../ErrorModal";
-import SuccessModal from "../SuccessModal";
+import ErrorModal from "../Utils/ErrorModal";
+import SuccessModal from "../Utils/SuccessModal";
 interface ProblemsTableProps {
 	problems: {
 		problemId: number;
@@ -89,6 +89,7 @@ const ProblemsTable = ({ problems, userIsAdmin }: ProblemsTableProps) => {
 				String(problemId),
 				editorialIsHidden,
 			);
+			console.log(res);
 			if (res.data.ok) {
 				console.log("Editorial status changed successfully");
 				setMessage(res.data.message);

@@ -1,7 +1,7 @@
 // src/pages/Contests.tsx
 
 import { useEffect, useState } from "react";
-import Navbar from "../../components/Navbar";
+import Navbar from "../../components/Utils/Navbar";
 import { useSelector } from "react-redux";
 import { contestService } from "../../api/contestService";
 import { Contest } from "../../types/contest";

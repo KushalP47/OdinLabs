@@ -3,7 +3,7 @@ import { Contest } from "../../types/contest";
 import { formatDate, isOngoingContest } from "../../lib/dateUtils";
 import ConfirmationModal from "./ConfirmationModal";
 import { contestService } from "../../api/contestService";
-import ErrorModal from "../ErrorModal";
+import ErrorModal from "../Utils/ErrorModal";
 import { setContestData } from "../../store/contestSlice";
 import { getCookie } from "../../lib/cookieUtility";
 import { useDispatch } from "react-redux";

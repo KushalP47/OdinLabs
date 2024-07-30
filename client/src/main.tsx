@@ -17,8 +17,8 @@ import {
 	ContestPage,
 	ForgotPassword,
 } from "./pages/index.ts";
-import Protected from "./components/Protected.tsx";
-import Logout from "./components/Logout.tsx";
+import Protected from "./components/Utils/Protected.tsx";
+import Logout from "./components/Utils/Logout.tsx";
 import App from "./App.tsx";
 import "./index.css";
 

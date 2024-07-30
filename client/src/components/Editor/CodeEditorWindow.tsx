@@ -1,16 +1,20 @@
 import Editor from "@monaco-editor/react";
 import { useState } from "react";
+
 type CodeEditorWindowProps = {
 	onChange: (key: string, value: string) => void;
 	language: string;
 	code: string;
 	theme: string;
+	readOnly: boolean; // Add this prop
 };
+
 const CodeEditorWindow = ({
 	onChange,
 	language,
 	code,
 	theme,
+	readOnly,
 }: CodeEditorWindowProps) => {
 	const [value, setValue] = useState(code || "");
 
@@ -26,14 +30,16 @@ const CodeEditorWindow = ({
 				height="65vh"
 				width={`100%`}
 				language={language || "C++"}
-				value={value}
+				value={code}
 				theme={theme}
 				onChange={handleEditorChange}
 				options={{
-					fontSize: 18,
+					fontSize: 16,
+					readOnly: readOnly, // Set readOnly option
 				}}
 			/>
 		</div>
 	);
 };
+
 export default CodeEditorWindow;

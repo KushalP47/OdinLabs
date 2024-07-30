@@ -1,9 +1,9 @@
 import { useEffect, useState, useCallback, useMemo, useRef } from "react";
 import { io } from "socket.io-client";
-import Navbar from "../../components/Navbar";
+import Navbar from "../../components/Utils/Navbar";
 import { userService } from "../../api/userService";
 import { UserInfo } from "../../types/user";
-import ErrorModal from "../../components/ErrorModal";
+import ErrorModal from "../../components/Utils/ErrorModal";
 
 interface studentSocket {
 	emailId: string;

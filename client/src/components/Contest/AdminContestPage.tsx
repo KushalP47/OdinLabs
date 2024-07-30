@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import Navbar from "../../components/Navbar";
+import Navbar from "../../components/Utils/Navbar";
 import { contestService } from "../../api/contestService";
 import { Contest, ContestUser } from "../../types/contest";
 import { Problem } from "../../types/problems";
 import ProblemCard from "../../components/Problem/ProblemCard";
 import Leaderboard from "../../components/Contest/Leaderboard";
-import ErrorModal from "../../components/ErrorModal";
+import ErrorModal from "../Utils/ErrorModal";
 import { useSelector } from "react-redux";
 import StudentTable from "./StudentTable";
 
