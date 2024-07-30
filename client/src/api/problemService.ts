@@ -92,6 +92,34 @@ class ProblemService {
         return response.json();
     }
 
+    async createProblem(problem: any) {
+        const response = await fetch(`${this.url}/api/v1/problems/create`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + getCookie("accessToken"),
+                },
+                body: JSON.stringify(problem),
+            }
+        );
+        return response.json();
+    }
+
+    async updateProblem(problem: any) {
+        const response = await fetch(`${this.url}/api/v1/problems/update/${problem.problemId}`,
+            {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + getCookie("accessToken"),
+                },
+                body: JSON.stringify(problem),
+            }
+        );
+        return response.json();
+    }
+
 }
 
 export const problemService = new ProblemService();

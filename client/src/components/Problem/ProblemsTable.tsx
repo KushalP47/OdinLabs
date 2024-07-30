@@ -265,7 +265,7 @@ const ProblemsTable = ({ problems, userIsAdmin }: ProblemsTableProps) => {
 												: ""
 										}`}>
 										<Link
-											to={`/admin/edit/problem/${problem.problemId}`}
+											to={`/practice/update/${problem.problemId}`}
 											className="text-white bg-secondary rounded-lg px-4 py-2 font-semibold">
 											Edit
 										</Link>

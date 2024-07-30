@@ -18,6 +18,7 @@ const Problem = () => {
 	const [status, setStatus] = useState(false);
 	const navigate = useNavigate();
 	const currentStatus = useSelector((state: any) => state.auth.status);
+	const userIsAdmin = useSelector((state: any) => state.auth.userIsAdmin);
 	const { problemId } = useParams<{ problemId: string }>(); // Add generic for useParams
 	const [problem, setProblem] = useState<IProblem | null>(null);
 	const [submissions, setSubmissions] = useState<Submission[]>([]); // Simplified type
@@ -56,12 +57,16 @@ const Problem = () => {
 		}
 		getDeadline();
 		setStatus(currentStatus);
+		
 	}, []);
 
 	// Fetch problem data
 	const fetchProblem = async (id: string) => {
 		try {
-			if (contestId === undefined && assignmentId === undefined) {
+			if (
+				contestId === undefined &&
+				assignmentId === undefined
+			) {
 				const response = await problemService.getPracticeProblem(id);
 				if (response.data.ok) {
 					setProblem(response.data.problem);
