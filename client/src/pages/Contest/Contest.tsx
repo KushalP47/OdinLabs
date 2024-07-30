@@ -45,6 +45,10 @@ const Contests = () => {
 		navigate(`/contest/${contestId}`);
 	};
 
+	const handleAddContest = () => {
+		navigate("/contest/create");
+	};
+
 	return (
 		<div className="flex flex-col min-h-screen">
 			<Navbar currentPage="Contest" />
@@ -52,7 +56,9 @@ const Contests = () => {
 				<div>
 					{isAdmin && (
 						<div className="flex flex-row justify-begin items-center m-4">
-							<button className="btn btn-primary btn-md text-lg mb-4 text-white">
+							<button
+								onClick={handleAddContest}
+								className="btn btn-primary btn-md text-lg mb-4 text-white">
 								Add Contest
 							</button>
 						</div>

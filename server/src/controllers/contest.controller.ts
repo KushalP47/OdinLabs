@@ -65,6 +65,40 @@ class ContestController {
     }
 
     async updateContest(req: Request, res: Response) {
+        const { contestId } = req.params;
+        const {
+            contestName,
+            contestDescription,
+            contestProblems,
+            contestStartTime,
+            contestEndTime,
+            contestSection,
+        } = req.body;
+
+        try {
+            const intContestId = Number(contestId);
+            const contest = await Contest.findOne({ contestId: intContestId });
+            if (!contest) {
+                return res.status(200).json(new ApiError(404, "Contest not found"));
+            }
+
+            contest.contestName = contestName;
+            contest.contestDescription = contestDescription;
+            contest.contestProblems = contestProblems;
+            contest.contestStartTime = contestStartTime;
+            contest.contestEndTime = contestEndTime;
+            contest.contestSection = contestSection;
+            contest.contestUsers = contest.contestUsers;
+            const savedContest = await contest.save();
+            const response = {
+                ok: true,
+                message: "Contest updated successfully",
+                contest: savedContest,
+            };
+            return res.status(200).json(new ApiResponse(200, response, "Contest updated successfully"));
+        } catch (error: any) {
+            return res.status(400).json(new ApiError(400, error?.message));
+        }
     }
 
     async deleteContest(req: Request, res: Response) {

@@ -5,7 +5,7 @@ import { verifyIsAdmin } from '../middleware/admin.middleware';
 import { verifyNoCustomContestCookie, verifyCustomContestCookie } from '../middleware/customContestCokkie.middleware';
 const router = Router();
 
-router.route('/createContest').post(verifyJWT, verifyIsAdmin, contestController.createContest);
+router.route('/create').post(verifyJWT, verifyIsAdmin, contestController.createContest);
 router.route('/getAllContests').get(verifyJWT, contestController.getAllContests);
 router.route('/:contestId').get(verifyJWT, contestController.getContest);
 router.route('/:contestId').put(verifyJWT, verifyIsAdmin, contestController.updateContest);
