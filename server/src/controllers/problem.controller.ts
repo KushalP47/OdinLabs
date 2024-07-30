@@ -216,7 +216,8 @@ class ProblemController {
             if (!problem) {
                 return res.status(200).json(new ApiError(404, "Problem not found"));
             }
-            if (problem.problemIsHidden) {
+
+            if (req.body.user.userIsAdmin === false && problem.problemIsHidden) {
                 return res.status(200).json(new ApiError(404, "Problem is hidden"));
             }
             const response: IProblemFunctionResponse = {
