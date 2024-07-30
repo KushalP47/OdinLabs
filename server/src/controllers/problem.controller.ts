@@ -65,9 +65,93 @@ class ProblemController {
     };
 
     async updateProblem(req: Request, res: Response) {
+        const problemId = req.params.problemId;
+        const {
+            problemTitle,
+            problemDescription,
+            problemTags,
+            problemDifficulty,
+            problemInputFormat,
+            problemOutputFormat,
+            problemSampleInput,
+            problemSampleOutput,
+            problemNote,
+            problemConstraints,
+            problemTestcases,
+            problemCppTemplate,
+            problemJavaTemplate,
+            problemPythonTemplate,
+            problemEditorial,
+        } = req.body;
+
+        const problem: IProblem | null = await Problem
+            .findOneAndUpdate({ problemId }, {
+                problemTitle,
+                problemDescription,
+                problemTags,
+                problemDifficulty,
+                problemInputFormat,
+                problemOutputFormat,
+                problemSampleInput,
+                problemSampleOutput,
+                problemNote,
+                problemConstraints,
+                problemTestcases,
+                problemCppTemplate,
+                problemJavaTemplate,
+                problemPythonTemplate,
+            }, { new: true });
+
+        const editorial: IEditorial | null = await Editorial.findOneAndUpdate({ editorialId: problemId }, { editorialContent: problemEditorial }, { new: true });
+
+        if (!problem) {
+            return res.status(200).json(new ApiError(404, "Problem not found"));
+        }
+
+        if (!editorial) {
+            return res.status(200).json(new ApiError(404, "Editorial not found"));
+        }
+
+        try {
+            const savedProblem = await problem.save();
+            const savedEditorial = await editorial.save();
+            const response = {
+                ok: true,
+                message: "Problem updated successfully",
+                data: {
+                    savedProblem: savedProblem,
+                    savedEditorial: savedEditorial
+                }
+            };
+            return res.status(200).json(new ApiResponse(200, response, "Problem updated successfully"));
+        } catch (error: any) {
+            return res.status(400).json(new ApiError(400, error.message));
+        };
     };
 
     async deleteProblem(req: Request, res: Response) {
+        const problemId = req.params.problemId;
+        try {
+            const problem: IProblem | null = await Problem.findOneAndDelete({ problemId });
+            const editorial: IEditorial | null = await Editorial.findOneAndDelete({ editorialId: problemId });
+            if (!problem) {
+                return res.status(200).json(new ApiError(404, "Problem not found"));
+            }
+            if (!editorial) {
+                return res.status(200).json(new ApiError(404, "Editorial not found"));
+            }
+            const response = {
+                ok: true,
+                message: "Problem deleted successfully",
+                data: {
+                    problem: problem,
+                    editorial: editorial,
+                }
+            };
+            return res.status(200).json(new ApiResponse(200, response, "Problem deleted successfully"));
+        } catch (error: any) {
+            return res.status(400).json(new ApiError(400, error.message));
+        };
     };
 
     async getAllProblems(req: Request, res: Response) {
