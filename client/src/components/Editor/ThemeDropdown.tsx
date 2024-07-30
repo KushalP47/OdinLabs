@@ -1,7 +1,5 @@
-import Select from "react-select";
-import { customStyles } from "../../constants/customStyles";
-import { themeOptions } from "../../constants/themeOptions";
-import { themeOption } from "../../constants/themeOptions";
+import { themeOption, themeOptions } from "../../constants/themeOptions";
+import DropdownMenu from "../Utils/DropDownMenu";
 
 type ThemeDropdownProps = {
 	handleThemeChange: (selectedOption: themeOption | null) => void;
@@ -9,12 +7,10 @@ type ThemeDropdownProps = {
 
 const ThemeDropdown = ({ handleThemeChange }: ThemeDropdownProps) => {
 	return (
-		<Select
-			placeholder={`Filter By Category`}
+		<DropdownMenu
 			options={themeOptions}
-			styles={customStyles}
-			defaultValue={themeOptions[1]}
-			onChange={(selectedOption) => handleThemeChange(selectedOption)}
+			onSelect={handleThemeChange}
+			placeholder="Select Theme"
 		/>
 	);
 };

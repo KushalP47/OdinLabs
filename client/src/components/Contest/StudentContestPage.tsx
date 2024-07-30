@@ -7,7 +7,7 @@ import { Contest, ContestUser } from "../../types/contest";
 import ProblemCard from "../../components/Problem/ProblemCard";
 import Leaderboard from "../../components/Contest/Leaderboard";
 import { Problem } from "../../types/problems";
-import ErrorModal from "../../components/ErrorModal";
+import ErrorModal from "../Utils/ErrorModal";
 
 const StudentContestPage = () => {
 	const { contestId } = useParams<{ contestId: string }>();

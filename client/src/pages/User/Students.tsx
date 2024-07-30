@@ -3,7 +3,7 @@ import { io } from "socket.io-client";
 import Navbar from "../../components/Navbar";
 import { userService } from "../../api/userService";
 import { UserInfo } from "../../types/user";
-import ErrorModal from "../../components/ErrorModal";
+import ErrorModal from "../../components/Utils/ErrorModal";
 
 interface studentSocket {
 	emailId: string;

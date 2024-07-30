@@ -21,9 +21,18 @@ import { useParams } from "react-router-dom";
 type CodeEditorProps = {
 	problemId: number;
 	problemDifficulty: string;
+	problemCppTemplate: string;
+	problemJavaTemplate: string;
+	problemPythonTemplate: string;
 };
 
-const CodeEditor = ({ problemId, problemDifficulty }: CodeEditorProps) => {
+const CodeEditor = ({
+	problemId,
+	problemDifficulty,
+	problemCppTemplate,
+	problemJavaTemplate,
+	problemPythonTemplate,
+}: CodeEditorProps) => {
 	const [code, setCode] = useState("");
 	const [customInput, setCustomInput] = useState("");
 	const [outputDetails, setOutputDetails] = useState(null);
@@ -36,25 +45,47 @@ const CodeEditor = ({ problemId, problemDifficulty }: CodeEditorProps) => {
 	const [submissionDetails, setSubmissionDetails] = useState<Submission | null>(
 		null,
 	);
+	const [templates, setTemplates] = useState({
+		cpp: problemCppTemplate,
+		java: problemJavaTemplate,
+		python: problemPythonTemplate,
+	});
+	const [isReadOnly, setIsReadOnly] = useState(false);
+
 	const assignmentId = useParams().assignmentId;
 	const contestId = useParams().contestId;
+
 	const onSelectChange = (sl: LanguageOption | null) => {
 		if (!sl) return;
-		console.log("selected Option...", sl);
 		setLanguage(sl);
+
+		// Update the template based on the selected language
+		let selectedTemplate = "";
+		switch (sl.value) {
+			case "cpp":
+				selectedTemplate = templates.cpp;
+				break;
+			case "java":
+				selectedTemplate = templates.java;
+				break;
+			case "python":
+				selectedTemplate = templates.python;
+				break;
+			default:
+				selectedTemplate = "";
+		}
+		setCode(selectedTemplate);
+		setIsReadOnly(true); // Make the template read-only
 	};
 
 	const onChange = (action: string, data: string) => {
-		switch (action) {
-			case "code": {
-				setCode(data);
-				break;
-			}
-			default: {
-				console.warn("case not handled!", action, data);
-			}
+		if (action === "code") {
+			setCode(data);
+		} else {
+			console.warn("case not handled!", action, data);
 		}
 	};
+
 	const handleCompile = async () => {
 		setRunProcessing(true);
 		const res = await codeExecutionService.executeCode(
@@ -63,7 +94,6 @@ const CodeEditor = ({ problemId, problemDifficulty }: CodeEditorProps) => {
 			customInput,
 			language.value,
 		);
-		console.log("res...", res);
 		if (res.data.ok === false) {
 			setRunProcessing(false);
 			showErrorToast(res.message);
@@ -74,7 +104,6 @@ const CodeEditor = ({ problemId, problemDifficulty }: CodeEditorProps) => {
 	};
 
 	const checkStatus = async (token: string, isSubmission: boolean = false) => {
-		// We will come to the implementation later in the code
 		const res = await codeExecutionService.checkStatus(token);
 		if (res.errors) {
 			setRunProcessing(false);
@@ -82,7 +111,6 @@ const CodeEditor = ({ problemId, problemDifficulty }: CodeEditorProps) => {
 		}
 		const statusId = res.status?.id;
 		if (statusId === 1 || statusId === 2) {
-			// still processing
 			setTimeout(() => {
 				checkStatus(token, isSubmission);
 			}, 2000);
@@ -94,13 +122,11 @@ const CodeEditor = ({ problemId, problemDifficulty }: CodeEditorProps) => {
 					time: res.time || 0,
 					memory: res.memory || 0,
 				};
-				console.log("TestCaseVeridict...", TestCaseVeridict);
 				return TestCaseVeridict;
 			} else {
 				setRunProcessing(false);
 				setOutputDetails(res);
 				showSuccessToast(`Compiled Successfully!`);
-				console.log("response.data", res);
 				return;
 			}
 		}
@@ -108,32 +134,26 @@ const CodeEditor = ({ problemId, problemDifficulty }: CodeEditorProps) => {
 
 	const handleSubmit = async () => {
 		setSubmitProcessing(true);
-		console.log("submitting code...", code);
 		const res = await codeExecutionService.submitCode(
 			code,
 			language.id,
 			problemId,
 		);
-		console.log("res...", res);
 		if (res.statusCode !== 200) {
 			setSubmitProcessing(false);
 			showErrorToast(res.errors);
 			return;
 		}
 		const tokens = res.data as Array<string>;
-		console.log("tokens...", tokens);
 		let i = 0;
 		const testcasesVerdict: Array<testcaseVerdict> = [];
 		while (testcasesVerdict.length < tokens.length) {
 			const currentTestcaseVerdict = await checkStatus(tokens[i], true);
-			console.log("for token...", tokens[i]);
-			console.log("currentTestcaseVerdict...", currentTestcaseVerdict);
 			if (currentTestcaseVerdict !== undefined) {
 				testcasesVerdict.push(currentTestcaseVerdict);
 			}
 			i = (i + 1) % tokens.length;
 		}
-		console.log("Testcases Verdict...", testcasesVerdict);
 		const submissionResp = await codeExecutionService.storeSubmission(
 			{
 				submissionSourceCode: code,
@@ -145,7 +165,6 @@ const CodeEditor = ({ problemId, problemDifficulty }: CodeEditorProps) => {
 			contestId,
 			problemDifficulty,
 		);
-		console.log("submissionResp...", submissionResp);
 		if (!submissionResp.data.ok) {
 			setSubmitProcessing(false);
 			showErrorToast(submissionResp.message);
@@ -154,24 +173,27 @@ const CodeEditor = ({ problemId, problemDifficulty }: CodeEditorProps) => {
 		const submissionDetails = submissionResp.data.data as Submission;
 		setSubmissionDetails(submissionDetails);
 		setIsModalVisible(true);
-		console.log("Modal visibility should be true now: ", isModalVisible);
 		setSubmitProcessing(false);
 	};
 
 	const closeModal = () => {
 		setIsModalVisible(false);
-		console.log("Modal visibility should be false now: ", isModalVisible);
 	};
 
-	function handleThemeChange(th: themeOption | null) {
+	const handleThemeChange = (th: themeOption | null) => {
 		if (!th) return;
-		const theme = th;
-		console.log("theme...", theme);
-		defineTheme(theme.value).then((_) => setTheme(theme));
-	}
+		defineTheme(th.value).then(() => setTheme(th));
+	};
+
+	const handleEditorChange = (value: string | undefined) => {
+		if (value === undefined) return;
+		setCode(value);
+		onChange("code", value);
+	};
 
 	useEffect(() => {
-		defineTheme("dark").then((_) => setTheme(themeOptions[1]));
+		defineTheme("dark").then(() => setTheme(themeOptions[1]));
+		setCode(problemCppTemplate);
 	}, []);
 
 	const showSuccessToast = (msg: string) => {
@@ -185,6 +207,7 @@ const CodeEditor = ({ problemId, problemDifficulty }: CodeEditorProps) => {
 			progress: undefined,
 		});
 	};
+
 	const showErrorToast = (msg: string) => {
 		toast.error(msg || `Something went wrong! Please try again.`, {
 			position: "top-right",
@@ -243,7 +266,7 @@ const CodeEditor = ({ problemId, problemDifficulty }: CodeEditorProps) => {
 				{/* Code Editor Component */}
 				{tab === "Editor" && (
 					<div className="flex flex-col border-4 border-secondary rounded-xl">
-						<div className="flex flex-row justify-center  items-center text-center m-2 w-full">
+						<div className="flex flex-row justify-center items-center text-center m-2 w-full">
 							<div className="w-1/2 px-4 mb-2">
 								<LanguagesDropdown onSelectChange={onSelectChange} />
 							</div>
@@ -254,13 +277,14 @@ const CodeEditor = ({ problemId, problemDifficulty }: CodeEditorProps) => {
 						<div
 							className={`w-full bg-basecolor ${
 								theme.label === "Light" ? "bg-gray-50" : "bg-editorbg"
-							}  p-2 rounded-xl`}>
+							} p-2 rounded-xl`}>
 							<div className="flex flex-col w-full h-full justify-start items-end p-2 m-2">
 								<CodeEditorWindow
 									code={code}
-									onChange={onChange}
+									onChange={handleEditorChange}
 									language={language?.value}
 									theme={theme.value}
+									readOnly={isReadOnly} // Pass readOnly prop
 								/>
 							</div>
 							<div className="flex flex-row justify-end items-center m-2 px-4">

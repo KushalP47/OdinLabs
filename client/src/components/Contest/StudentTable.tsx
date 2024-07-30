@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { ContestUser } from "../../types/contest";
 import { contestService } from "../../api/contestService";
-import ErrorModal from "../../components/ErrorModal";
-import SuccessModal from "../SuccessModal";
+import ErrorModal from "../Utils/ErrorModal";
+import SuccessModal from "../Utils/SuccessModal";
 import { useParams } from "react-router-dom";
 interface StudentTableProps {
 	students: ContestUser[];

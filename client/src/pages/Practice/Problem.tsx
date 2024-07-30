@@ -10,7 +10,7 @@ import { codeExecutionService } from "../../api/codeExecutionService";
 import { Submission } from "../../types/submissions";
 import { contestService } from "../../api/contestService";
 import { assignmentService } from "../../api/assignmentService";
-import ErrorModal from "../../components/ErrorModal";
+import ErrorModal from "../../components/Utils/ErrorModal";
 
 const Problem = () => {
 	// State management
@@ -272,6 +272,9 @@ const Problem = () => {
 							<CodeEditor
 								problemId={Number(problemId)}
 								problemDifficulty={problem.problemDifficulty}
+								problemCppTemplate={problem.problemCppTemplate}
+								problemJavaTemplate={problem.problemJavaTemplate}
+								problemPythonTemplate={problem.problemPythonTemplate}
 							/>
 						</div>
 					</>

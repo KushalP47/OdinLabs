@@ -1,16 +1,20 @@
 import Editor from "@monaco-editor/react";
 import { useState } from "react";
+
 type CodeEditorWindowProps = {
 	onChange: (key: string, value: string) => void;
 	language: string;
 	code: string;
 	theme: string;
+	readOnly: boolean; // Add this prop
 };
+
 const CodeEditorWindow = ({
 	onChange,
 	language,
 	code,
 	theme,
+	readOnly,
 }: CodeEditorWindowProps) => {
 	const [value, setValue] = useState(code || "");
 
@@ -31,9 +35,11 @@ const CodeEditorWindow = ({
 				onChange={handleEditorChange}
 				options={{
 					fontSize: 18,
+					readOnly: readOnly, // Set readOnly option
 				}}
 			/>
 		</div>
 	);
 };
+
 export default CodeEditorWindow;

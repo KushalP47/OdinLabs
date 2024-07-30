@@ -6,7 +6,7 @@ import { Contest, ContestUser } from "../../types/contest";
 import { Problem } from "../../types/problems";
 import ProblemCard from "../../components/Problem/ProblemCard";
 import Leaderboard from "../../components/Contest/Leaderboard";
-import ErrorModal from "../../components/ErrorModal";
+import ErrorModal from "../Utils/ErrorModal";
 import { useSelector } from "react-redux";
 import StudentTable from "./StudentTable";
 
