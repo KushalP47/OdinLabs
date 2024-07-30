@@ -13,8 +13,11 @@ export interface IProblem extends Document {
     problemNote: string;
     problemConstraints: string;
     problemTestcases: Testcase[];
-    problemSolution: string;
+    problemEditorialIsHidden: boolean;
     problemIsHidden: boolean;
+    problemCppTemplate: string;
+    problemJavaTemplate: string;
+    problemPythonTemplate: string;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -85,9 +88,21 @@ const problemSchema = new Schema({
         }],
         required: true
     },
-    problemSolution: {
+    problemCppTemplate: {
         type: String,
-        required: true
+        default: "// Start writing your C++ solution here\n"
+    },
+    problemJavaTemplate: {
+        type: String,
+        default: "// Start writing your Java solution here\n"
+    },
+    problemPythonTemplate: {
+        type: String,
+        default: "# Start writing your Python solution here\n"
+    },
+    problemEditorialIsHidden: {
+        type: Boolean,
+        default: true
     },
     problemIsHidden: {
         type: Boolean,
