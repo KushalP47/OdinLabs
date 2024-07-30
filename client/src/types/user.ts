@@ -8,3 +8,12 @@ export interface User {
     userIsAdmin: boolean;
     userTeamName: string;
 }
+
+export interface UserInfo {
+    userName: string;
+    userRollNumber: string;
+    userSection: string;
+    userEmail: string;
+    userTeamName: string;
+    userStatus?: string;
+}

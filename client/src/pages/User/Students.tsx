@@ -1,6 +1,10 @@
 import { useEffect, useState, useCallback, useMemo, useRef } from "react";
 import { io } from "socket.io-client";
 import Navbar from "../../components/Navbar";
+import { userService } from "../../api/userService";
+import { UserInfo } from "../../types/user";
+import ErrorModal from "../../components/ErrorModal";
+
 interface studentSocket {
 	emailId: string;
 	socketId: string;
@@ -21,35 +25,38 @@ const Students = () => {
 	const [selectedStudents, setSelectedStudents] = useState<
 		Array<studentSocket>
 	>([]);
+	const [errorMessage, setErrorMessage] = useState<string>("");
+	const [errorModalOpen, setErrorModalOpen] = useState(false);
 	const videoRef = useRef<HTMLVideoElement>(null);
 	const peerRef = useRef<RTCPeerConnection | null>(null);
-	const [totalUsers, setTotalUsers] = useState([
-		{
-			emailId: "harsh.b2@ahduni.edu.in",
-			rollNumber: "AU214080",
-			name: "Harsh Bhagat",
-			status: "offline",
-		},
-		{
-			emailId: "jeet.b2@ahduni.edu.in",
-			rollNumber: "AU214033",
-			name: "Jeet Bhadaniya",
-			status: "offline",
-		},
-		{
-			emailId: "neel.s2@ahduni.edu.in",
-			rollNumber: "AU2140005",
-			name: "Neel Sheth",
-			status: "offline",
-		},
-		{
-			emailId: "kushalp4774@gmail.com",
-			rollNumber: "AU2140105",
-			name: "Kushal Patel",
-			status: "offline",
-		},
-	]);
+	const [totalUsers, setTotalUsers] = useState<UserInfo[]>([]);
+	const [sectionTab, setSectionTab] = useState<string>("1");
+	const [isDataLoaded, setIsDataLoaded] = useState<boolean>(false); // New state to track data loading
 
+	// Fetch Students
+	const getStudents = useCallback(async () => {
+		try {
+			const response = await userService.getUsersFromSection(sectionTab);
+			if (response.data.ok) {
+				console.log("Total users:", response.data.data);
+				setTotalUsers((prev) => (prev = response.data.data));
+				// put a 1 secont delay to show the loading spinner
+				setTimeout(() => {
+					setIsDataLoaded(true);
+				}, 1500);
+				// setIsDataLoaded(true); // Set data loaded to true once users are fetched
+			} else {
+				setErrorMessage(response.data.message);
+				setErrorModalOpen(true);
+			}
+		} catch (error) {
+			console.error("Error fetching students:", error);
+			setErrorMessage("Failed to fetch student data.");
+			setErrorModalOpen(true);
+		}
+	}, [sectionTab]); // sectionTab as a dependency
+
+	// Create Peer Connection
 	const createPeerConnection = useCallback(() => {
 		const peer = new RTCPeerConnection({
 			iceServers: [
@@ -70,38 +77,53 @@ const Students = () => {
 		return peer;
 	}, []);
 
+	// Handle Connected Students Event
 	const handleConnectedStudents = useCallback(
 		({ connectedUsers }: ConnectedStudentsEvent) => {
-			setStudents(connectedUsers);
-			for (let i = 0; i < totalUsers.length; i++) {
-				const student = connectedUsers.find(
-					(user) => user.emailId === totalUsers[i].emailId,
-				);
-				if (student) {
-					totalUsers[i].status = "online";
-				} else {
-					totalUsers[i].status = "offline";
-				}
+			console.log("Connected Students Event Triggered:", connectedUsers);
+
+			// Ensure totalUsers is populated before proceeding
+			if (!isDataLoaded) {
+				console.log("Data not loaded, skipping connected students handling.");
+				return;
 			}
-			setTotalUsers([...totalUsers]);
-			console.log("Connected Users:", connectedUsers);
+
+			// Set the online status for users
+			setStudents(connectedUsers);
+			console.log("Connected Students:", connectedUsers);
+
+			const updatedUsers = totalUsers.map((studentUser) => {
+				const student = connectedUsers.find(
+					(user) => user.emailId === studentUser.userEmail,
+				);
+				return {
+					...studentUser,
+					userStatus: student ? "online" : "offline",
+				};
+			});
+
+			setTotalUsers(updatedUsers);
+			console.log("Total Users with Status:", updatedUsers);
 		},
-		[],
+		[totalUsers, isDataLoaded], // Include totalUsers and isDataLoaded as dependencies
 	);
 
+	// Handle Student Click
 	const handleStudentClick = useCallback(
 		(name: string, email: string) => {
-			console.log("Student clicked");
+			console.log("Student clicked:", name, email);
+
+			// Check if the student is connected
 			const student = students.find((user) => user.emailId === email);
 			if (student) {
 				setSelectedStudents([student]);
 				console.log("Selected student:", student);
 			}
-			console.log("Name:", name, "Email:", email);
 		},
-		[selectedStudents, students],
+		[students], // Add students as a dependency
 	);
 
+	// Connect Student
 	const connectStudent = useCallback(
 		async (
 			emailId: string,
@@ -137,6 +159,7 @@ const Students = () => {
 		[createPeerConnection, socket],
 	);
 
+	// Handle Track Event
 	const handleTrackEvent = useCallback((event: RTCTrackEvent) => {
 		console.log("Track event:", event);
 		const incomingStream = event.streams[0];
@@ -149,6 +172,7 @@ const Students = () => {
 		}
 	}, []);
 
+	// Disconnect Student
 	const disconnectStudent = useCallback(
 		(emailId: string, roomId: string) => {
 			setIsConnected(false);
@@ -166,6 +190,7 @@ const Students = () => {
 		[socket],
 	);
 
+	// Handle Admin Disconnected
 	const handleAdminDisconnected = useCallback(() => {
 		console.log("Admin disconnected");
 		setIsConnected(false);
@@ -178,36 +203,70 @@ const Students = () => {
 		}
 	}, []);
 
+	// UseEffect Hook for Data Fetching
 	useEffect(() => {
-		socket.emit("get-student-offers");
-	}, [socket]);
+		// Fetch students on mount and when sectionTab changes
+		getStudents();
+	}, [getStudents, sectionTab]); // Add sectionTab to dependencies
 
+	// UseEffect Hook for Socket Connections
 	useEffect(() => {
+		console.log("Setting up socket event listeners.");
+
+		// Listen for socket events related to students
 		socket.on("student-offers", handleConnectedStudents);
-
-		return () => {
-			socket.off("student-offers", handleConnectedStudents);
-		};
-	}, [socket, handleConnectedStudents]);
-
-	useEffect(() => {
 		socket.on("admin-disconnected", handleAdminDisconnected);
+
+		// Cleanup function to run when the component unmounts
 		return () => {
+			console.log("Cleaning up socket event listeners.");
+			socket.off("student-offers", handleConnectedStudents);
 			socket.off("admin-disconnected", handleAdminDisconnected);
 		};
-	}, [socket, handleAdminDisconnected]);
+	}, [handleConnectedStudents, handleAdminDisconnected, socket]); // Dependencies array
+
+	// UseEffect Hook to emit "get-student-offers" only on sectionTab change
+	useEffect(() => {
+		if (isDataLoaded) {
+			socket.emit("get-student-offers");
+			console.log("Emitted get-student-offers due to sectionTab change.");
+			console.log("Total Users:", totalUsers);
+		}
+	}, [sectionTab, isDataLoaded, socket]); // Emit when sectionTab or isDataLoaded changes
 
 	return (
 		<div className="flex flex-col min-h-screen">
 			<Navbar currentPage="Students" />
 			<div className="bg-white w-full min-h-screen border-4 border-blue shadow-xl flex flex-col p-8">
-				<div className="overflow-x-auto">
-					<div className="flex flex-row">
-						<div className="flex flex-col">
+				<div className="tabs tabs-boxed mb-4 bg-gray-100 font-bold text-lg">
+					<a
+						className={`tab ${
+							sectionTab === "1" ? "bg-white text-secondary text-xl" : "text-xl"
+						}`}
+						onClick={() => {
+							setIsDataLoaded(false);
+							setSectionTab("1");
+						}}>
+						Section 1
+					</a>
+					<a
+						className={`tab ${
+							sectionTab === "2" ? "bg-white text-secondary text-xl" : "text-xl"
+						}`}
+						onClick={() => {
+							setIsDataLoaded(false);
+							setSectionTab("2");
+						}}>
+						Section 2
+					</a>
+				</div>
+				<div className="">
+					<div className="flex flex-row w-full">
+						<div className="flex flex-col w-1/2 px-2">
 							<div className="text-basecolor text-2xl font-bold">
 								Online Students
 							</div>
-							<table className="scroll-smooth">
+							<table className="scroll-smooth w-full">
 								<thead className="text-xs text-secondary uppercase bg-gray-50">
 									<tr>
 										<th scope="col" className="px-6 py-3">
@@ -227,17 +286,19 @@ const Students = () => {
 								<tbody>
 									{totalUsers.map((student, index) => (
 										<tr
-											key={student.emailId}
+											key={student.userEmail}
 											className="bg-white text-basecolor hover:bg-gray-50 text-md border-b"
 											onClick={() =>
-												handleStudentClick(student.name, student.emailId)
+												handleStudentClick(student.userName, student.userEmail)
 											}>
-											{student.status === "online" && (
+											{student.userStatus === "online" && (
 												<>
 													<td className="px-6 py-4">{index + 1}</td>
-													<td className="px-6 py-4">{student.name}</td>
-													<td className="px-6 py-4">{student.emailId}</td>
-													<td className="px-6 py-4">{student.rollNumber}</td>
+													<td className="px-6 py-4">{student.userName}</td>
+													<td className="px-6 py-4">{student.userEmail}</td>
+													<td className="px-6 py-4">
+														{student.userRollNumber}
+													</td>
 												</>
 											)}
 										</tr>
@@ -245,14 +306,14 @@ const Students = () => {
 								</tbody>
 							</table>
 						</div>
-						<div className="divider divider-horizontal"></div>
+						{/* <div className="divider divider-horizontal"></div> */}
 						<div>
-							<div className="flex flex-col">
+							<div className="flex flex-col w-full px-2">
 								<div className="text-basecolor text-2xl font-bold">
 									Offline Students
 								</div>
-								<table className="scroll-smooth">
-									<thead className="text-xs sticky top-0 text-secondary uppercase bg-gray-50">
+								<table className="scroll-smooth w-full">
+									<thead className="text-xs text-secondary uppercase bg-gray-50">
 										<tr>
 											<th scope="col" className="px-6 py-3">
 												Sr. No.
@@ -271,14 +332,16 @@ const Students = () => {
 									<tbody>
 										{totalUsers.map((student, index) => (
 											<tr
-												key={student.emailId}
+												key={student.userEmail}
 												className="bg-gray-100 select-none text-basecolor text-md border-b">
-												{student.status === "offline" && (
+												{student.userStatus === "offline" && (
 													<>
 														<td className="px-6 py-4">{index + 1}</td>
-														<td className="px-6 py-4">{student.name}</td>
-														<td className="px-6 py-4">{student.emailId}</td>
-														<td className="px-6 py-4">{student.rollNumber}</td>
+														<td className="px-6 py-4">{student.userName}</td>
+														<td className="px-6 py-4">{student.userEmail}</td>
+														<td className="px-6 py-4">
+															{student.userRollNumber}
+														</td>
 													</>
 												)}
 											</tr>
@@ -367,6 +430,11 @@ const Students = () => {
 							className="w-full h-full"></video>
 					</div>
 				</div>
+				<ErrorModal
+					message={errorMessage}
+					isOpen={errorModalOpen}
+					onClose={() => setErrorModalOpen(false)}
+				/>
 			</div>
 		</div>
 	);
