@@ -17,6 +17,7 @@ import {
 	AssignmentDetail,
 	ContestPage,
 	ForgotPassword,
+	UpdateAssignment,
 } from "./pages/index.ts";
 import Protected from "./components/Utils/Protected.tsx";
 import Logout from "./components/Utils/Logout.tsx";
@@ -119,6 +120,17 @@ const router = createBrowserRouter([
 						allowDuringContest={false}
 						isLoggedIn={true}>
 						<CreateAssignmentPage />
+					</Protected>
+				),
+			},
+			{
+				path: "/assignment/update/:assignmentId",
+				element: (
+					<Protected
+						onlyAdminAllowed={true}
+						allowDuringContest={false}
+						isLoggedIn={true}>
+						<UpdateAssignment />
 					</Protected>
 				),
 			},
