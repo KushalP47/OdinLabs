@@ -260,13 +260,13 @@ const Students = () => {
 						Section 2
 					</a>
 				</div>
-				<div className="overflow-x-auto">
-					<div className="flex flex-row">
-						<div className="flex flex-col">
+				<div className="">
+					<div className="flex flex-row w-full">
+						<div className="flex flex-col w-1/2 px-2">
 							<div className="text-basecolor text-2xl font-bold">
 								Online Students
 							</div>
-							<table className="scroll-smooth">
+							<table className="scroll-smooth w-full">
 								<thead className="text-xs text-secondary uppercase bg-gray-50">
 									<tr>
 										<th scope="col" className="px-6 py-3">
@@ -306,14 +306,14 @@ const Students = () => {
 								</tbody>
 							</table>
 						</div>
-						<div className="divider divider-horizontal"></div>
+						{/* <div className="divider divider-horizontal"></div> */}
 						<div>
-							<div className="flex flex-col">
+							<div className="flex flex-col w-full px-2">
 								<div className="text-basecolor text-2xl font-bold">
 									Offline Students
 								</div>
-								<table className="scroll-smooth">
-									<thead className="text-xs sticky top-0 text-secondary uppercase bg-gray-50">
+								<table className="scroll-smooth w-full">
+									<thead className="text-xs text-secondary uppercase bg-gray-50">
 										<tr>
 											<th scope="col" className="px-6 py-3">
 												Sr. No.
