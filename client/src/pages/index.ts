@@ -11,7 +11,11 @@ import ForgotPassword from "./Auth/ForgetPassword.tsx";
 import Contest from "./Contest/Contest.tsx";
 import ContestPage from "./Contest/ContestPage.tsx";
 import SubmissionPage from "./User/SubmissionPage.tsx";
+import CreateAssignmentPage from "./Assignment/CreateAssignmentPage.tsx";
+import UpdateAssignment from "./Assignment/UpdateAssignment.tsx";
+import CreateContestPage from "./Contest/CreateContestPage.tsx";
+import UpdateContest from "./Contest/UpdateContest.tsx";
 
-export { Dashboard, Students, Contest, Problem, SubmissionPage, ContestPage, Assignments, AssignmentDetail, Practice, Room, Login, Register, ForgotPassword }
+export { Dashboard, Students, Contest, Problem, CreateContestPage, UpdateContest, CreateAssignmentPage, UpdateAssignment, SubmissionPage, ContestPage, Assignments, AssignmentDetail, Practice, Room, Login, Register, ForgotPassword }
 
 

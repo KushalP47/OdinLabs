@@ -61,8 +61,8 @@ export class ContestService {
         return response.json();
     }
 
-    async updateContest(contest: any) {
-        const response = await fetch(`${this.url}/api/v1/contests/update`, {
+    async updateContest(contestId: string, contest: any) {
+        const response = await fetch(`${this.url}/api/v1/contests/${contestId}`, {
             method: "PUT",
             credentials: "include",
             headers: {

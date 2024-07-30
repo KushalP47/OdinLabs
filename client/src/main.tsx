@@ -8,6 +8,7 @@ import {
 	Students,
 	Assignments,
 	Practice,
+	CreateAssignmentPage,
 	Room,
 	Login,
 	Contest,
@@ -16,6 +17,9 @@ import {
 	AssignmentDetail,
 	ContestPage,
 	ForgotPassword,
+	UpdateAssignment,
+	UpdateContest,
+	CreateContestPage,
 } from "./pages/index.ts";
 import Protected from "./components/Utils/Protected.tsx";
 import Logout from "./components/Utils/Logout.tsx";
@@ -110,7 +114,28 @@ const router = createBrowserRouter([
 					</Protected>
 				),
 			},
-
+			{
+				path: "/assignment/create",
+				element: (
+					<Protected
+						onlyAdminAllowed={true}
+						allowDuringContest={false}
+						isLoggedIn={true}>
+						<CreateAssignmentPage />
+					</Protected>
+				),
+			},
+			{
+				path: "/assignment/update/:assignmentId",
+				element: (
+					<Protected
+						onlyAdminAllowed={true}
+						allowDuringContest={false}
+						isLoggedIn={true}>
+						<UpdateAssignment />
+					</Protected>
+				),
+			},
 			// Practice Routes
 			{
 				path: "/practice",
@@ -169,7 +194,28 @@ const router = createBrowserRouter([
 					</Protected>
 				),
 			},
-
+			{
+				path: "/contest/create",
+				element: (
+					<Protected
+						onlyAdminAllowed={true}
+						allowDuringContest={false}
+						isLoggedIn={true}>
+						<CreateContestPage />
+					</Protected>
+				),
+			},
+			{
+				path: "/contest/update/:contestId",
+				element: (
+					<Protected
+						onlyAdminAllowed={true}
+						allowDuringContest={false}
+						isLoggedIn={true}>
+						<UpdateContest />
+					</Protected>
+				),
+			},
 			// Auth routes
 			{
 				path: "/auth/login",

@@ -40,7 +40,7 @@ const Practice = () => {
 				<div>
 					{status ? (
 						<div className="flex flex-col justify-center overflow-x-auto">
-							<div className="flex flex-row justify-between items-center m-4">
+							<div className="flex flex-row justify-begin items-center m-4">
 								{isAdmin && (
 									<button className="btn btn-primary btn-md text-lg text-white">
 										Add Problem

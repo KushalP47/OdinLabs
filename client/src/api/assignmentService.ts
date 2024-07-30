@@ -50,6 +50,18 @@ export class AssignmentService {
         return response.json();
     }
 
+    async updateAssignment(assignmentId: any, assignment: any) {
+        const response = await fetch(`${this.url}/api/v1/assignments/${assignmentId}`, {
+            method: "PUT",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(assignment),
+        });
+        return response.json();
+    }
+
     async getAssignmentDeadline(assignmentId: string) {
         const response = await fetch(`${this.url}/api/v1/assignments/getAssignmentDeadline/${assignmentId}`, {
             method: "GET",

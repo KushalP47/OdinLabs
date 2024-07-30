@@ -8,6 +8,7 @@ import AssignmentCard from "../../components/Assignment/AssignmentCard";
 import { Assignment } from "../../types/assignment";
 import { useNavigate } from "react-router-dom";
 import { isOngoing, isUpcoming, isCompleted } from "../../lib/dateUtils";
+import { Link } from "react-router-dom";
 
 const Assignments = () => {
 	const [status, setStatus] = useState(false);
@@ -36,14 +37,20 @@ const Assignments = () => {
 		navigate(`/assignment/${assignmentId}`);
 	};
 
+	const handleAddAssignmentClick = () => {
+		navigate(`/assignment/create`);
+	};
+
 	return (
 		<div className="flex flex-col min-h-screen">
 			<Navbar currentPage="Assignment" />
 			<div className="bg-white w-full min-h-screen border-4 border-secondary shadow-xl flex flex-col p-8">
 				<div>
 					{isAdmin && (
-						<div className="flex flex-row justify-end items-center m-4">
-							<button className="btn btn-primary btn-md text-lg mb-4 text-white">
+						<div className="flex flex-row justify-begin items-center m-4">
+							<button
+								onClick={handleAddAssignmentClick}
+								className="btn btn-primary btn-md text-lg mb-4 text-white">
 								Add Assignment
 							</button>
 						</div>

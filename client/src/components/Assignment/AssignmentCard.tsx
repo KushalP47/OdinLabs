@@ -3,6 +3,7 @@
 import React from "react";
 import { Assignment } from "../../types/assignment";
 import { formatDate, isOngoing } from "../../lib/dateUtils";
+import { useNavigate } from "react-router-dom";
 
 interface AssignmentCardProps {
 	assignment: Assignment;
@@ -17,6 +18,7 @@ const AssignmentCard: React.FC<AssignmentCardProps> = ({
 	handleClick,
 	isAdmin,
 }) => {
+	const navigate = useNavigate();
 	const userMarks = assignment.assignmentUsers.find(
 		(assignmentUser) =>
 			assignmentUser.assignmentUserRollNumber === user?.rollNumber,
@@ -31,6 +33,10 @@ const AssignmentCard: React.FC<AssignmentCardProps> = ({
 		handleClick(assignment.assignmentId);
 	};
 
+	const handleUpdateClick = () => {
+		// Direct navigation for admin or ongoing assignment
+		navigate(`/assignment/update/${assignment.assignmentId}`);
+	};
 	return (
 		<div key={assignment.assignmentId} className="mb-4">
 			<div className="card bg-white w-full shadow-xl flex flex-row px-4">
@@ -45,7 +51,7 @@ const AssignmentCard: React.FC<AssignmentCardProps> = ({
 					</div>
 				</div>
 				<div className="divider divider-horizontal py-4"></div>
-				<div className="flex w-1/4 justify-center items-center">
+				<div className="flex w-1/4 justify-center items-center m-2">
 					<button
 						className={`btn btn-primary w-1/2 text-white px-2 ${
 							!isAdmin && !ongoing ? "disabled" : ""
@@ -54,6 +60,14 @@ const AssignmentCard: React.FC<AssignmentCardProps> = ({
 						disabled={!isAdmin && !ongoing}>
 						{!isAdmin && !ongoing ? "Not Available" : "Solve"}
 					</button>
+					{isAdmin && <div className="divider divider-horizontal"></div>}
+					{isAdmin && (
+						<button
+							className="btn btn-secondary w-1/2 text-white px-2"
+							onClick={handleUpdateClick}>
+							Update
+						</button>
+					)}
 				</div>
 			</div>
 		</div>

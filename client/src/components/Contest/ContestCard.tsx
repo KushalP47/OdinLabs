@@ -7,6 +7,8 @@ import ErrorModal from "../Utils/ErrorModal";
 import { setContestData } from "../../store/contestSlice";
 import { getCookie } from "../../lib/cookieUtility";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+
 interface ContestCardProps {
 	contest: Contest;
 	user: any;
@@ -21,6 +23,7 @@ const ContestCard: React.FC<ContestCardProps> = ({
 	isAdmin,
 }) => {
 	const dispatch = useDispatch();
+	const navigate = useNavigate();
 	const userMarks = contest.contestUsers.find(
 		(contestUser) => contestUser.contestUserRollNumber === user?.rollNumber,
 	)?.contestUserCurrentMarks;
@@ -80,6 +83,10 @@ const ContestCard: React.FC<ContestCardProps> = ({
 		}
 	};
 
+	const handleUpdateContest = () => {
+		navigate(`/contest/update/${contest.contestId}`);
+	};
+
 	return (
 		<div key={contest.contestId} className="mb-4">
 			<div className="card bg-white w-full shadow-xl flex flex-row px-4">
@@ -109,6 +116,14 @@ const ContestCard: React.FC<ContestCardProps> = ({
 						disabled={!isAdmin && !ongoing}>
 						{!isAdmin && !ongoing ? "Not Available" : "Join"}
 					</button>
+					{isAdmin && <div className="divider divider-horizontol"></div>}
+					{isAdmin && (
+						<button
+							className="btn btn-secondary w-1/2 text-white px-2"
+							onClick={handleUpdateContest}>
+							Update
+						</button>
+					)}
 				</div>
 			</div>
 

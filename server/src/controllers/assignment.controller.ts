@@ -7,6 +7,7 @@ import { updateAssignmentDeadlines } from "../functions/assignment/updateAssignm
 import { IUserFunctionResponse } from "../models/user.model";
 class AssignmentController {
     async createAssignment(req: Request, res: Response) {
+        console.log(req.body);
         const {
             assignmentId,
             assignmentName,
