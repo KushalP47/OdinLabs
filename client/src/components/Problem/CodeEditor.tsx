@@ -349,12 +349,14 @@ const CodeEditor = ({
 								setCustomInput={setCustomInput}
 							/>
 							<div className="divider divider-horizontal"></div>
-							<button
-								onClick={handleCompile}
-								disabled={!code}
-								className="btn btn-sm btn-primary text-white text-lg">
-								{runProcessing ? "Processing..." : "Compile"}
-							</button>
+							<div className="flex flex-row justify-end items-center m-2 px-4">
+								<button
+									onClick={handleCompile}
+									disabled={!code}
+									className="btn btn-sm btn-primary text-white text-lg">
+									{runProcessing ? "Processing..." : "Compile"}
+								</button>
+							</div>
 						</div>
 					</div>
 				)}
