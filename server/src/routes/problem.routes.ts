@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import { verifyJWT } from '../middleware/auth.middleware';
 import { verifyIsAdmin } from '../middleware/admin.middleware';
-import { verifyNoCustomContestCookie } from '../middleware/customContestCokkie.middleware';
 const router = Router();
 
 // Import the controller
@@ -15,5 +14,8 @@ router.route('/create').post(verifyJWT, verifyIsAdmin, problemController.createP
 router.route('/update/:problemId').put(verifyJWT, verifyIsAdmin, problemController.updateProblem);
 router.route('/delete/:problemId').delete(verifyJWT, verifyIsAdmin, problemController.deleteProblem);
 router.route('/:problemId/:problemIsHidden').put(verifyJWT, verifyIsAdmin, problemController.changeProblemStatus);
+
+router.route('/editorial/:editorialId').get(verifyJWT, problemController.getEditorialById);
+router.route('/:problemId/problemEditorialIsHidden').put(verifyJWT, verifyIsAdmin, problemController.changeProblemEditorialStatus);
 // Export the router
 export default router;

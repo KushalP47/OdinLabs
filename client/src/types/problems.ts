@@ -11,8 +11,11 @@ export interface Problem {
     problemNote: string;
     problemConstraints: string;
     problemTestcases: Testcase[];
-    problemSolution: string;
+    problemEditorialIsHidden: boolean;
     problemIsHidden: boolean;
+    problemCppTemplate: string;
+    problemJavaTemplate: string;
+    problemPythonTemplate: string;
     createdAt: Date;
     updatedAt: Date;
 }

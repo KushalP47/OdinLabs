@@ -34,9 +34,6 @@ class ProblemService {
                 },
             }
         );
-        if (!response.ok) {
-            throw new Error("Error fetching problem");
-        }
         return response.json();
     }
 
@@ -53,6 +50,35 @@ class ProblemService {
         if (!response.ok) {
             throw new Error("Error changing problem status");
         }
+        return response.json();
+    }
+
+    async getEditorialById(problemId: string) {
+        const editorialId = problemId;
+        const response = await fetch(`${this.url}/api/v1/problems/editorial/${editorialId}`,
+            {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + getCookie("accessToken"),
+                },
+            }
+        );
+
+        return response.json();
+    }
+
+    async changeProblemEditorialStatus(problemId: string, problemEditorialIsHidden: boolean) {
+        const response = await fetch(`${this.url}/api/v1/problems/${problemId}/${problemEditorialIsHidden}`,
+            {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + getCookie("accessToken"),
+                },
+            }
+        );
+
         return response.json();
     }
 

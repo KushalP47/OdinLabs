@@ -22,6 +22,9 @@ const Problem = () => {
 	const [tab, setTab] = useState<"Details" | "Submissions" | "Editorial">(
 		"Details",
 	);
+	const [problemEditorial, setProblemEditorial] = useState<string>(
+		"Editorial is not available currently",
+	);
 	const assignmentId = useParams().assignmentId;
 	const contestId = useParams().contestId;
 	const [deadline, setDeadline] = useState<string | undefined>(undefined);
@@ -57,8 +60,19 @@ const Problem = () => {
 	const fetchProblem = async (id: string) => {
 		try {
 			const response = await problemService.getProblem(id);
-			if (response.ok) {
+			if (response.data.ok) {
 				setProblem(response.data.problem);
+				if (response.data.problem.problemEditorialIsHidden === false) {
+					const editorialResponse = await problemService.getEditorialById(id);
+					if (editorialResponse.data.ok) {
+						setProblemEditorial(
+							editorialResponse.data.editorial.editorialContent,
+						);
+					} else {
+						setErrorMessage(editorialResponse.message);
+						setErrorModalVisible(true);
+					}
+				}
 			} else {
 				setErrorMessage(response.message);
 				setErrorModalVisible(true);
@@ -232,7 +246,7 @@ const Problem = () => {
 											Editorial
 										</h1>
 										<p className="text-basecolor mt-4">
-											{problem?.problemSolution || "No editorial available"}
+											{problemEditorial || "Editorial not available"}
 										</p>
 									</div>
 								)}
