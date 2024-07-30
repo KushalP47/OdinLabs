@@ -15,7 +15,7 @@ router.route('/update/:problemId').put(verifyJWT, verifyIsAdmin, problemControll
 router.route('/delete/:problemId').delete(verifyJWT, verifyIsAdmin, problemController.deleteProblem);
 router.route('/:problemId/:problemIsHidden').put(verifyJWT, verifyIsAdmin, problemController.changeProblemStatus);
 
-router.route('/editorial/:problemId').get(verifyJWT, problemController.getEditorialById);
+router.route('/editorial/:editorialId').get(verifyJWT, problemController.getEditorialById);
 router.route('/:problemId/problemEditorialIsHidden').put(verifyJWT, verifyIsAdmin, problemController.changeProblemEditorialStatus);
 // Export the router
 export default router;

@@ -195,7 +195,7 @@ class ProblemController {
             const problem: IProblem | null = await Problem
                 .findOne({ problemId });
             if (!problem) {
-                return res.status(404).json(new ApiError(404, "Problem not found"));
+                return res.status(200).json(new ApiError(404, "Problem not found"));
             }
             const response: IProblemFunctionResponse = {
                 ok: true,
