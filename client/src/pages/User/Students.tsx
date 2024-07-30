@@ -4,6 +4,7 @@ import Navbar from "../../components/Navbar";
 import { userService } from "../../api/userService";
 import { UserInfo } from "../../types/user";
 import ErrorModal from "../../components/ErrorModal";
+
 interface studentSocket {
 	emailId: string;
 	socketId: string;
@@ -30,18 +31,28 @@ const Students = () => {
 	const peerRef = useRef<RTCPeerConnection | null>(null);
 	const [totalUsers, setTotalUsers] = useState<UserInfo[]>([]);
 	const [sectionTab, setSectionTab] = useState<string>("1");
+	const [isDataLoaded, setIsDataLoaded] = useState<boolean>(false); // New state to track data loading
 
+	// Fetch Students
 	const getStudents = useCallback(async () => {
-		const response = await userService.getUsersFromSection(sectionTab);
-		if (response.data.ok) {
-			console.log("Total users:", response.data.usersInfo);
-			setTotalUsers(response.data.usersInfo);
-		} else {
-			setErrorMessage(response.data.message);
+		try {
+			const response = await userService.getUsersFromSection(sectionTab);
+			if (response.data.ok) {
+				console.log("Total users:", response.data.data);
+				setTotalUsers(response.data.data);
+				setIsDataLoaded(true); // Set data loaded to true once users are fetched
+			} else {
+				setErrorMessage(response.data.message);
+				setErrorModalOpen(true);
+			}
+		} catch (error) {
+			console.error("Error fetching students:", error);
+			setErrorMessage("Failed to fetch student data.");
 			setErrorModalOpen(true);
 		}
-	}, [setSectionTab]);
+	}, [sectionTab]); // sectionTab as a dependency
 
+	// Create Peer Connection
 	const createPeerConnection = useCallback(() => {
 		const peer = new RTCPeerConnection({
 			iceServers: [
@@ -62,39 +73,53 @@ const Students = () => {
 		return peer;
 	}, []);
 
+	// Handle Connected Students Event
 	const handleConnectedStudents = useCallback(
 		({ connectedUsers }: ConnectedStudentsEvent) => {
+			console.log("Connected Students Event Triggered:", connectedUsers);
+
+			// Ensure totalUsers is populated before proceeding
+			if (!isDataLoaded) {
+				console.log("Data not loaded, skipping connected students handling.");
+				return;
+			}
+
+			// Set the online status for users
 			setStudents(connectedUsers);
 			console.log("Connected Students:", connectedUsers);
-			for (let i = 0; i < totalUsers.length; i++) {
+
+			const updatedUsers = totalUsers.map((studentUser) => {
 				const student = connectedUsers.find(
-					(user) => user.emailId === totalUsers[i].userEmail,
+					(user) => user.emailId === studentUser.userEmail,
 				);
-				if (student) {
-					totalUsers[i].userStatus = "online";
-				} else {
-					totalUsers[i].userStatus = "offline";
-				}
-			}
-			setTotalUsers([...totalUsers]);
-			console.log("Connected Users:", connectedUsers);
+				return {
+					...studentUser,
+					userStatus: student ? "online" : "offline",
+				};
+			});
+
+			setTotalUsers(updatedUsers);
+			console.log("Total Users with Status:", updatedUsers);
 		},
-		[],
+		[totalUsers, isDataLoaded], // Include totalUsers and isDataLoaded as dependencies
 	);
 
+	// Handle Student Click
 	const handleStudentClick = useCallback(
 		(name: string, email: string) => {
-			console.log("Student clicked");
+			console.log("Student clicked:", name, email);
+
+			// Check if the student is connected
 			const student = students.find((user) => user.emailId === email);
 			if (student) {
 				setSelectedStudents([student]);
 				console.log("Selected student:", student);
 			}
-			console.log("Name:", name, "Email:", email);
 		},
-		[selectedStudents, students],
+		[students], // Add students as a dependency
 	);
 
+	// Connect Student
 	const connectStudent = useCallback(
 		async (
 			emailId: string,
@@ -130,6 +155,7 @@ const Students = () => {
 		[createPeerConnection, socket],
 	);
 
+	// Handle Track Event
 	const handleTrackEvent = useCallback((event: RTCTrackEvent) => {
 		console.log("Track event:", event);
 		const incomingStream = event.streams[0];
@@ -142,6 +168,7 @@ const Students = () => {
 		}
 	}, []);
 
+	// Disconnect Student
 	const disconnectStudent = useCallback(
 		(emailId: string, roomId: string) => {
 			setIsConnected(false);
@@ -159,6 +186,7 @@ const Students = () => {
 		[socket],
 	);
 
+	// Handle Admin Disconnected
 	const handleAdminDisconnected = useCallback(() => {
 		console.log("Admin disconnected");
 		setIsConnected(false);
@@ -171,19 +199,34 @@ const Students = () => {
 		}
 	}, []);
 
+	// UseEffect Hook for Data Fetching
 	useEffect(() => {
-		socket.emit("get-student-offers");
+		// Fetch students on mount and when sectionTab changes
 		getStudents();
-	}, [socket]);
+	}, [getStudents, sectionTab]); // Add sectionTab to dependencies
 
+	// UseEffect Hook for Socket Connections
 	useEffect(() => {
+		// Only run socket listeners if data is loaded
+		if (!isDataLoaded) {
+			console.log("Data not loaded, skipping socket event listeners.");
+			return;
+		}
+
+		console.log("Setting up socket event listeners.");
+
+		// Listen for socket events related to students
+		socket.emit("get-student-offers");
 		socket.on("student-offers", handleConnectedStudents);
 		socket.on("admin-disconnected", handleAdminDisconnected);
+
+		// Cleanup function to run when the component unmounts
 		return () => {
+			console.log("Cleaning up socket event listeners.");
 			socket.off("student-offers", handleConnectedStudents);
 			socket.off("admin-disconnected", handleAdminDisconnected);
 		};
-	}, [socket, handleConnectedStudents]);
+	}, [isDataLoaded, handleConnectedStudents, handleAdminDisconnected, socket]); // Dependencies array
 
 	return (
 		<div className="flex flex-col min-h-screen">
