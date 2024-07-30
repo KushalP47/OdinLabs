@@ -20,6 +20,8 @@ import {
 	UpdateAssignment,
 	UpdateContest,
 	CreateContestPage,
+	AddProblemPage,
+	UpdateProblem,
 } from "./pages/index.ts";
 import Protected from "./components/Utils/Protected.tsx";
 import Logout from "./components/Utils/Logout.tsx";
@@ -159,7 +161,28 @@ const router = createBrowserRouter([
 					</Protected>
 				),
 			},
-
+			{
+				path: "/practice/create",
+				element: (
+					<Protected
+						onlyAdminAllowed={true}
+						allowDuringContest={false}
+						isLoggedIn={true}>
+						<AddProblemPage />
+					</Protected>
+				),
+			},
+			{
+				path: "/practice/update/:problemId",
+				element: (
+					<Protected
+						onlyAdminAllowed={true}
+						allowDuringContest={false}
+						isLoggedIn={true}>
+						<UpdateProblem />
+					</Protected>
+				),
+			},
 			// Contest Routes
 			{
 				path: "/contest",

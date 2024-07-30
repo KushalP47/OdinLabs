@@ -4,12 +4,13 @@ import Navbar from "../../components/Utils/Navbar";
 import { Problem } from "../../types/problems";
 import { problemService } from "../../api/problemService";
 import ProblemsTable from "../../components/Problem/ProblemsTable";
-
+import { useNavigate } from "react-router-dom";
 const Practice = () => {
 	const [status, setStatus] = useState(false);
 	const [problems, setProblems] = useState<Array<Problem>>([]);
 	const currentStatus = useSelector((state: any) => state.auth.status);
 	const isAdmin = useSelector((state: any) => state.auth.userData?.userIsAdmin);
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		setStatus(currentStatus);
@@ -30,6 +31,10 @@ const Practice = () => {
 		getProblems();
 	}, []);
 
+	const handleAddProblem = () => {
+		navigate("/practice/create");
+	};
+
 	return (
 		<div className="flex flex-col min-h-screen">
 			{/* Navbar */}
@@ -42,7 +47,9 @@ const Practice = () => {
 						<div className="flex flex-col justify-center overflow-x-auto">
 							<div className="flex flex-row justify-begin items-center m-4">
 								{isAdmin && (
-									<button className="btn btn-primary btn-md text-lg text-white">
+									<button
+										onClick={handleAddProblem}
+										className="btn btn-primary btn-md text-lg text-white">
 										Add Problem
 									</button>
 								)}

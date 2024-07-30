@@ -15,7 +15,10 @@ import CreateAssignmentPage from "./Assignment/CreateAssignmentPage.tsx";
 import UpdateAssignment from "./Assignment/UpdateAssignment.tsx";
 import CreateContestPage from "./Contest/CreateContestPage.tsx";
 import UpdateContest from "./Contest/UpdateContest.tsx";
+import AddProblemPage from "./Practice/AddProblemPage.tsx";
+import UpdateProblem from "./Practice/UpdateProblem.tsx";
 
-export { Dashboard, Students, Contest, Problem, CreateContestPage, UpdateContest, CreateAssignmentPage, UpdateAssignment, SubmissionPage, ContestPage, Assignments, AssignmentDetail, Practice, Room, Login, Register, ForgotPassword }
+
+export { Dashboard, Students, Contest, Problem, AddProblemPage, UpdateProblem, CreateContestPage, UpdateContest, CreateAssignmentPage, UpdateAssignment, SubmissionPage, ContestPage, Assignments, AssignmentDetail, Practice, Room, Login, Register, ForgotPassword }
 
 
