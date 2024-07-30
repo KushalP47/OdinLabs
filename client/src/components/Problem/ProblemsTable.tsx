@@ -10,6 +10,7 @@ interface ProblemsTableProps {
 		problemTags: string[];
 		problemDifficulty: string;
 		problemIsHidden: boolean;
+		problemEditorialIsHidden: boolean;
 	}[];
 	userIsAdmin: boolean;
 }
@@ -54,7 +55,7 @@ const ProblemsTable = ({ problems, userIsAdmin }: ProblemsTableProps) => {
 		}
 	};
 
-	const handleCheckboxChange = async (problemId: number) => {
+	const handleProblemVisibilityCheckboxChange = async (problemId: number) => {
 		// Call the API to change the status of the problem
 		try {
 			const problemIsHidden = !problems.find(
@@ -74,6 +75,30 @@ const ProblemsTable = ({ problems, userIsAdmin }: ProblemsTableProps) => {
 			}
 		} catch (error: any) {
 			setMessage(error.message || "Error changing problem status");
+			setErrorModalOpen(true);
+		}
+	};
+
+	const handleEditorialVisibilityCheckboxChange = async (problemId: number) => {
+		// Call the API to change the status of the editorial
+		try {
+			const editorialIsHidden = !problems.find(
+				(problem) => problem.problemId === problemId,
+			)?.problemEditorialIsHidden;
+			const res = await problemService.changeProblemEditorialStatus(
+				String(problemId),
+				editorialIsHidden,
+			);
+			if (res.data.ok) {
+				console.log("Editorial status changed successfully");
+				setMessage(res.data.message);
+				setSuccessModalOpen(true);
+			} else {
+				setMessage(res.message || "Error changing editorial status");
+				setErrorModalOpen(true);
+			}
+		} catch (error: any) {
+			setMessage(error.message || "Error changing editorial status");
 			setErrorModalOpen(true);
 		}
 	};
@@ -174,7 +199,8 @@ const ProblemsTable = ({ problems, userIsAdmin }: ProblemsTableProps) => {
 								<th className="px-4 py-2 border">Title</th>
 								<th className="px-4 py-2 border">Tags</th>
 								<th className="px-4 py-2 border">Difficulty</th>
-								<th className="px-4 py-2 border">Hidden</th>
+								<th className="px-4 py-2 border">ProblemIsHidden</th>
+								<th className="px-4 py-2 border">EditorialIsHidden</th>
 								<th className="px-4 py-2 border rounded-tr-xl">Edit</th>
 							</tr>
 						</thead>
@@ -213,7 +239,21 @@ const ProblemsTable = ({ problems, userIsAdmin }: ProblemsTableProps) => {
 										<input
 											type="checkbox"
 											checked={problem.problemIsHidden}
-											onChange={() => handleCheckboxChange(problem.problemId)}
+											onChange={() =>
+												handleProblemVisibilityCheckboxChange(problem.problemId)
+											}
+											onClick={(e) => e.stopPropagation()} // Prevent row click
+										/>
+									</td>
+									<td className="px-4 py-2 border text-center">
+										<input
+											type="checkbox"
+											checked={problem.problemEditorialIsHidden}
+											onChange={() =>
+												handleEditorialVisibilityCheckboxChange(
+													problem.problemId,
+												)
+											}
 											onClick={(e) => e.stopPropagation()} // Prevent row click
 										/>
 									</td>
