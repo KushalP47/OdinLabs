@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { assignmentService } from "../../api/assignmentService";
-import Navbar from "../../components/Navbar";
+import Navbar from "../../components/Utils/Navbar";
 import AssignmentCard from "../../components/Assignment/AssignmentCard";
 import { Assignment } from "../../types/assignment";
 import { useNavigate } from "react-router-dom";

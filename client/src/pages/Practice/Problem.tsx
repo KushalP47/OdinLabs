@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import Navbar from "../../components/Navbar";
+import Navbar from "../../components/Utils/Navbar";
 import { Problem as IProblem } from "../../types/problems";
 import { problemService } from "../../api/problemService";
 import CodeEditor from "../../components/Problem/CodeEditor";

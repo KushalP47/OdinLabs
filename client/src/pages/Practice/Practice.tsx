@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import Navbar from "../../components/Navbar";
+import Navbar from "../../components/Utils/Navbar";
 import { Problem } from "../../types/problems";
 import { problemService } from "../../api/problemService";
 import ProblemsTable from "../../components/Problem/ProblemsTable";
