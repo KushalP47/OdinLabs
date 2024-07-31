@@ -19,8 +19,11 @@ class ProblemController {
             problemConstraints,
             problemTestcases,
             problemCppTemplate,
+            problemCppDriverCode,
             problemJavaTemplate,
+            problemJavaDriverCode,
             problemPythonTemplate,
+            problemPythonDriverCode,
             problemEditorial,
         } = req.body;
 
@@ -38,8 +41,11 @@ class ProblemController {
             problemConstraints,
             problemTestcases,
             problemCppTemplate,
+            problemCppDriverCode,
             problemJavaTemplate,
+            problemJavaDriverCode,
             problemPythonTemplate,
+            problemPythonDriverCode,
         });
 
         const editorial: IEditorial = new Editorial({
@@ -79,8 +85,11 @@ class ProblemController {
             problemConstraints,
             problemTestcases,
             problemCppTemplate,
+            problemCppDriverCode,
             problemJavaTemplate,
+            problemJavaDriverCode,
             problemPythonTemplate,
+            problemPythonDriverCode,
             problemEditorial,
         } = req.body;
 
@@ -98,8 +107,11 @@ class ProblemController {
                 problemConstraints,
                 problemTestcases,
                 problemCppTemplate,
+                problemCppDriverCode,
                 problemJavaTemplate,
+                problemJavaDriverCode,
                 problemPythonTemplate,
+                problemPythonDriverCode,
             }, { new: true });
 
         const editorial: IEditorial | null = await Editorial.findOneAndUpdate({ editorialId: problemId }, { editorialContent: problemEditorial }, { new: true });

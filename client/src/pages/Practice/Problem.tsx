@@ -57,16 +57,12 @@ const Problem = () => {
 		}
 		getDeadline();
 		setStatus(currentStatus);
-		
 	}, []);
 
 	// Fetch problem data
 	const fetchProblem = async (id: string) => {
 		try {
-			if (
-				contestId === undefined &&
-				assignmentId === undefined
-			) {
+			if (contestId === undefined && assignmentId === undefined) {
 				const response = await problemService.getPracticeProblem(id);
 				if (response.data.ok) {
 					setProblem(response.data.problem);
@@ -302,6 +298,9 @@ const Problem = () => {
 								problemCppTemplate={problem.problemCppTemplate}
 								problemJavaTemplate={problem.problemJavaTemplate}
 								problemPythonTemplate={problem.problemPythonTemplate}
+								problemCppDriverCode={problem.problemCppDriverCode}
+								problemJavaDriverCode={problem.problemJavaDriverCode}
+								problemPythonDriverCode={problem.problemPythonDriverCode}
 							/>
 						</div>
 					</>

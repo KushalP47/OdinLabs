@@ -16,8 +16,11 @@ export interface IProblem extends Document {
     problemEditorialIsHidden: boolean;
     problemIsHidden: boolean;
     problemCppTemplate: string;
+    problemCppDriverCode?: string;
     problemJavaTemplate: string;
+    problemJavaDriverCode?: string;
     problemPythonTemplate: string;
+    problemPythonDriverCode?: string;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -92,13 +95,25 @@ const problemSchema = new Schema({
         type: String,
         default: "// Start writing your C++ solution here\n"
     },
+    problemCppDriverCode: {
+        type: String,
+        default: ""
+    },
     problemJavaTemplate: {
         type: String,
         default: "// Start writing your Java solution here\n"
     },
+    problemJavaDriverCode: {
+        type: String,
+        default: ""
+    },
     problemPythonTemplate: {
         type: String,
         default: "# Start writing your Python solution here\n"
+    },
+    problemPythonDriverCode: {
+        type: String,
+        default: ""
     },
     problemEditorialIsHidden: {
         type: Boolean,

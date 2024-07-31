@@ -22,16 +22,22 @@ type CodeEditorProps = {
 	problemId: number;
 	problemDifficulty: string;
 	problemCppTemplate: string;
+	problemCppDriverCode?: string;
 	problemJavaTemplate: string;
+	problemJavaDriverCode?: string;
 	problemPythonTemplate: string;
+	problemPythonDriverCode?: string;
 };
 
 const CodeEditor = ({
 	problemId,
 	problemDifficulty,
 	problemCppTemplate,
+	problemCppDriverCode,
 	problemJavaTemplate,
+	problemJavaDriverCode,
 	problemPythonTemplate,
+	problemPythonDriverCode,
 }: CodeEditorProps) => {
 	const [code, setCode] = useState(problemCppTemplate);
 	const [customInput, setCustomInput] = useState("");
@@ -86,8 +92,16 @@ const CodeEditor = ({
 
 	const handleCompile = async () => {
 		setRunProcessing(true);
+		let finalCode = code;
+		if (language.value === "python") {
+			finalCode = code + problemPythonDriverCode;
+		} else if (language.value === "java") {
+			finalCode = code + problemJavaDriverCode;
+		} else {
+			finalCode = code + problemCppDriverCode;
+		}
 		const res = await codeExecutionService.executeCode(
-			code,
+			finalCode,
 			language.id,
 			customInput,
 			language.value,
@@ -138,9 +152,17 @@ const CodeEditor = ({
 
 	const handleSubmit = async () => {
 		setSubmitProcessing(true);
+		let finalCode = code;
+		if (language.value === "python") {
+			finalCode = code + problemPythonDriverCode;
+		} else if (language.value === "java") {
+			finalCode = code + problemJavaDriverCode;
+		} else {
+			finalCode = code + problemCppDriverCode;
+		}
 		console.log("submitting code...", code);
 		const res = await codeExecutionService.submitCode(
-			code,
+			finalCode,
 			language.id,
 			problemId,
 		);
