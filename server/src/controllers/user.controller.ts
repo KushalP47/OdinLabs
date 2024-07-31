@@ -86,6 +86,19 @@ export class UserController {
         }
     }
 
+    async getUser(req: Request, res: Response) {
+        const { userRollNumber } = req.params;
+        const user = await User.findOne({ userRollNumber });
+        if (!user) {
+            return res.status(200).json(new ApiError(400, "User not found"));
+        }
+        const response = {
+            ok: true,
+            message: "User fetched successfully",
+            data: user,
+        };
+        return res.status(200).json(new ApiResponse(200, response, "User fetched successfully"));
+    }
 
 }
 

@@ -16,6 +16,17 @@ export class UserService {
         return await response.json();
     }
 
+    async getUser(userRollNumber: string) {
+        const response = await fetch(`${this.url}/api/v1/users/getUser/${userRollNumber}`, {
+            method: "GET",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        return await response.json();
+    }
+
     async editUser(userEmail: string, userName: string, userRollNumber: string, userSection: string, userTeamName: string) {
         const response = await fetch(`${this.url}/api/v1/users/edituser/${userRollNumber}`, {
             method: "PUT",

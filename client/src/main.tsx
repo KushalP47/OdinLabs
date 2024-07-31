@@ -24,6 +24,7 @@ import {
 	UpdateProblem,
 } from "./pages/index.ts";
 import Protected from "./components/Utils/Protected.tsx";
+import EditUserForm from "./components/User/EditUserForm.tsx";
 import Logout from "./components/Utils/Logout.tsx";
 import App from "./App.tsx";
 import "./index.css";
@@ -270,6 +271,17 @@ const router = createBrowserRouter([
 						allowDuringContest={false}
 						isLoggedIn={false}>
 						<Logout />
+					</Protected>
+				),
+			},
+			{
+				path: "/edit/:userRollNumber",
+				element: (
+					<Protected
+						onlyAdminAllowed={true}
+						allowDuringContest={false}
+						isLoggedIn={true}>
+						<EditUserForm />
 					</Protected>
 				),
 			},
