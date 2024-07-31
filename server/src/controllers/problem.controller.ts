@@ -5,6 +5,7 @@ import { Problem, IProblem, IProblemFunctionResponse } from '../models/problem.m
 import { Editorial, IEditorial, IEditorialFunctionResponse } from '../models/editorial.model';
 class ProblemController {
     async createProblem(req: Request, res: Response) {
+        console.log(req.body);
         const {
             problemId,
             problemTitle,
@@ -28,7 +29,7 @@ class ProblemController {
         } = req.body;
 
         const problem: IProblem = new Problem({
-            problemId,
+            problemId: Number(problemId),
             problemTitle,
             problemDescription,
             problemTags,
@@ -52,10 +53,12 @@ class ProblemController {
             editorialId: problemId,
             editorialContent: problemEditorial,
         });
-
+        console.log(problem, editorial);
         try {
             const savedProblem = await problem.save();
+            console.log("Problem saved");
             const savedEditorial = await editorial.save();
+            console.log("Editorial saved");
             const response = {
                 ok: true,
                 message: "Problem created successfully",
@@ -64,6 +67,7 @@ class ProblemController {
                     savedEditorial: savedEditorial,
                 }
             };
+            console.log(response);
             return res.status(201).json(new ApiResponse(201, response, "Problem created successfully"));
         } catch (error: any) {
             return res.status(400).json(new ApiError(400, error.message));
