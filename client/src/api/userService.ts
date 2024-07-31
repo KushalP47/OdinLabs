@@ -17,7 +17,7 @@ export class UserService {
     }
 
     async editUser(userEmail: string, userName: string, userRollNumber: string, userSection: string, userTeamName: string) {
-        const response = await fetch(`${this.url}/users/edituser/${userEmail}`, {
+        const response = await fetch(`${this.url}/api/v1/users/edituser/${userRollNumber}`, {
             method: "PUT",
             credentials: "include",
             headers: {
@@ -29,7 +29,7 @@ export class UserService {
     }
 
     async deleteUser(userEmail: string) {
-        const response = await fetch(`${this.url}/users/deleteuser/${userEmail}`, {
+        const response = await fetch(`${this.url}/api/v1/users/deleteuser/${userEmail}`, {
             method: "DELETE",
             credentials: "include",
             headers: {
@@ -41,11 +41,12 @@ export class UserService {
     }
 
     async changeUserSecret(userEmail: string) {
-        const response = await fetch(`${this.url}/users/changeUserSecret`, {
+        const response = await fetch(`${this.url}/api/v1/users/changeUserSecret`, {
             method: "POST",
             credentials: "include",
             headers: {
                 "Content-Type": "application/json",
+                "Authorization": `Bearer ${localStorage.getItem("accessToken")}`,
             },
             body: JSON.stringify({ userEmail }),
         });

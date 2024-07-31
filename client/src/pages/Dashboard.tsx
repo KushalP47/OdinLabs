@@ -4,11 +4,13 @@ import { useState } from "react";
 import ProfileCard from "../components/User/ProfileCard";
 import PastContestsTable from "../components/Contest/PastContestsTable";
 import PastAssignmentsTable from "../components/Assignment/PastAssignmentsTable";
-
+import UserTable from "../components/User/UserTable";
 const Dashboard = () => {
 	const status = useSelector((state: any) => state.auth.status);
 	const user = useSelector((state: any) => state.auth.userData);
-	const [tab, setTab] = useState<"Contests" | "Assignments">("Contests");
+	const [tab, setTab] = useState<"Contests" | "Assignments" | "Users">(
+		"Contests",
+	);
 	return (
 		<div className="flex flex-col min-h-screen">
 			{/* Navbar */}
@@ -48,10 +50,22 @@ const Dashboard = () => {
 							onClick={() => setTab("Contests")}>
 							Past Contests
 						</a>
+						{user.userIsAdmin === true && (
+							<a
+								className={`tab ${
+									tab === "Users"
+										? "bg-white text-secondary text-xl"
+										: "text-xl"
+								}`}
+								onClick={() => setTab("Users")}>
+								Users
+							</a>
+						)}
 					</div>
 					<div className="flex">
 						{tab === "Assignments" && <PastAssignmentsTable />}
 						{tab === "Contests" && <PastContestsTable />}
+						{user.userIsAdmin === true && tab === "Users" && <UserTable />}
 					</div>
 				</div>
 			)}

@@ -65,7 +65,9 @@ export class UserController {
     }
 
     async changeUserSecret(req: Request, res: Response) {
+        console.log(req.body);
         const { userEmail } = req.body;
+        console.log(req.body);
         try {
             const user = await User.findOne({ userEmail });
             if (!user) {
