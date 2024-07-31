@@ -1,6 +1,6 @@
 import { User, IUserFunctionResponse } from '../../models/user.model';
 
-export const createUser = async (userEmail: string, userPassword: string, userName: string, userRollNumber: string, userSection: string): Promise<IUserFunctionResponse> => {
+export const createUser = async (userEmail: string, userPassword: string, userName: string, userRollNumber: string, userSection: string, userTeamName: string): Promise<IUserFunctionResponse> => {
     const data: IUserFunctionResponse = {
         ok: false,
         message: '',
@@ -23,14 +23,14 @@ export const createUser = async (userEmail: string, userPassword: string, userNa
         return data;
     }
 
-    const userIsAdmin = userEmail === 'kushal.p@ahduni.edu.in'; // Simplified isAdmin check
+    const userIsAdmin = (userEmail === 'kushal.p@ahduni.edu.in' || userEmail === 'neel.s2@ahduni.edu.in' || userEmail === 'harsh.b2@ahduni.edu.in' || userEmail === 'amit.nanavati@ahduni.edu.in'); // Simplified isAdmin check
     const newUser = new User({
         userEmail, // Simplified based on the user.model.ts structure
         userPassword, // Simplified based on the user.model.ts structure
         userName, // Simplified based on the user.model.ts structure
         userRollNumber, // Simplified based on the user.model.ts structure
         userSection, // Simplified based on the user.model.ts structure
-        userTeamName: '', // Assuming default value for optional field
+        userTeamName, // Assuming default value for optional field
         userIsAdmin // Simplified based on the user.model.ts structure
     });
     console.log("Saving New User");

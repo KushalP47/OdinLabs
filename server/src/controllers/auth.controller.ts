@@ -8,11 +8,11 @@ import { ApiError } from '../utils/ApiError';
 class AuthController {
 
     async register(req: Request, res: Response) {
-        const { userEmail, userPassword, userName, userRollNumber, userSection } = req.body;
+        const { userEmail, userPassword, userName, userRollNumber, userSection, userTeamName } = req.body;
 
         console.log(req.body)
         // create a new user
-        const data = await createUser(userEmail, userPassword, userName, userRollNumber, userSection);
+        const data = await createUser(userEmail, userPassword, userName, userRollNumber, userSection, userTeamName);
 
         if (!data.ok) {
             return res
