@@ -314,6 +314,16 @@ class ProblemController {
             if (!editorial) {
                 return res.status(200).json(new ApiError(404, "Editorial not found"));
             }
+            console.log(editorial)
+            console.log(req.body.user.userIsAdmin);
+            if (req.body.user.userIsAdmin) {
+                const response: IEditorialFunctionResponse = {
+                    ok: true,
+                    message: "Editorial fetched successfully",
+                    editorial: editorial,
+                };
+                return res.status(200).json(new ApiResponse(200, response, "Editorial fetched successfully"));
+            }
             if (editorial.editorialIsHidden) {
                 return res.status(200).json(new ApiError(404, "Editorial is hidden"));
             }

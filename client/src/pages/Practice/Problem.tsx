@@ -66,16 +66,13 @@ const Problem = () => {
 				const response = await problemService.getPracticeProblem(id);
 				if (response.data.ok) {
 					setProblem(response.data.problem);
-					if (response.data.problem.problemEditorialIsHidden === false) {
-						const editorialResponse = await problemService.getEditorialById(id);
-						if (editorialResponse.data.ok) {
-							setProblemEditorial(
-								editorialResponse.data.editorial.editorialContent,
-							);
-						} else {
-							setErrorMessage(editorialResponse.message);
-							setErrorModalVisible(true);
-						}
+					const editorialResponse = await problemService.getEditorialById(id);
+					console.log(editorialResponse);
+					if (editorialResponse.data.ok) {
+						console.log(editorialResponse.data.editorial);
+						setProblemEditorial(
+							editorialResponse.data.editorial.editorialContent,
+						);
 					}
 				} else {
 					navigate(`/practice`);
@@ -84,16 +81,15 @@ const Problem = () => {
 				const response = await problemService.getProblem(id);
 				if (response.data.ok) {
 					setProblem(response.data.problem);
-					if (response.data.problem.problemEditorialIsHidden === false) {
-						const editorialResponse = await problemService.getEditorialById(id);
-						if (editorialResponse.data.ok) {
-							setProblemEditorial(
-								editorialResponse.data.editorial.editorialContent,
-							);
-						} else {
-							setErrorMessage(editorialResponse.message);
-							setErrorModalVisible(true);
-						}
+
+					const editorialResponse = await problemService.getEditorialById(id);
+					if (editorialResponse.data.ok) {
+						setProblemEditorial(
+							editorialResponse.data.editorial.editorialContent,
+						);
+					} else {
+						setErrorMessage(editorialResponse.message);
+						setErrorModalVisible(true);
 					}
 				} else {
 					setErrorMessage(response.message);
@@ -121,8 +117,8 @@ const Problem = () => {
 				setErrorModalVisible(true);
 			}
 		} catch (error) {
-			// setErrorMessage("Error fetching submissions: No data received.");
-			// setErrorModalVisible(true);
+			setErrorMessage("Error fetching submissions: No data received.");
+			setErrorModalVisible(true);
 		}
 	};
 
@@ -292,7 +288,7 @@ const Problem = () => {
 										<p
 											className="text-basecolor"
 											dangerouslySetInnerHTML={{
-												__html: DOMPurify.sanitize(problem.problemConstraints),
+												__html: DOMPurify.sanitize(problemEditorial),
 											}}
 										/>
 									</div>

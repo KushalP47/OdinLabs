@@ -305,7 +305,7 @@ const CodeEditor = ({
 						className={`flex flex-col border-4 border-secondary rounded-xl ${
 							theme.label === "Light" ? "bg-gray-50" : "bg-editorbg"
 						}`}>
-						<div className="flex flex-row justify-center items-center w-full space-x-8 p-2">
+						<div className="flex flex-row justify-center items-center w-full space-x-8 p-4">
 							<div className="w-1/2 flex flex-row items-center justify-center space-y-2">
 								<label className="text-xl font-semibold text-secondary mr-2">
 									Language:{" "}
