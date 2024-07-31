@@ -283,14 +283,20 @@ const CodeEditor = ({
 						className={`flex flex-col border-4 border-secondary rounded-xl ${
 							theme.label === "Light" ? "bg-gray-50" : "bg-editorbg"
 						}`}>
-						<div className="flex flex-row justify-center items-center text-center w-full mt-2">
-							<div className="w-1/2 px-4">
+						<div className="flex flex-row justify-center items-center w-full space-x-8 p-2">
+							<div className="w-1/2 flex flex-row items-center justify-center space-y-2">
+								<label className="text-xl font-semibold text-secondary mr-2">
+									Language:{" "}
+								</label>
 								<LanguagesDropdown
 									onSelectChange={handleLanguageChange}
 									languageDefaultOption={language}
 								/>
 							</div>
-							<div className="w-1/2 px-4">
+							<div className="w-1/2 flex flex-row items-center justify-center space-y-2">
+								<label className="text-xl font-semibold text-secondary mr-2">
+									Theme:
+								</label>
 								<ThemeDropdown handleThemeChange={handleThemeChange} />
 							</div>
 						</div>

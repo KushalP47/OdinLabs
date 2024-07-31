@@ -34,19 +34,19 @@ const DropdownMenu = ({
 	};
 
 	return (
-		<div className="relative">
+		<div className="relative w-full">
 			<button
 				onClick={toggleDropdown}
-				className="btn btn-sm text-white text-xl font-semibold btn-primary w-3/4">
+				className="w-full px-2 text-center bg-white border border-gray-300 text-gray-700 rounded-md shadow-sm hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary mb-2">
 				{selectedOption ? selectedOption.label : placeholder}
 			</button>
 			{isOpen && (
-				<ul className="absolute z-10 mt-2 bg-gray-50 font-semibold text-secondary border border-gray-300 rounded-lg shadow-lg w-3/4">
+				<ul className="absolute z-10 mt-2 bg-white text-gray-700 border border-gray-300 rounded-md shadow-lg w-full">
 					{options.map((option) => (
 						<li
 							key={option.id}
 							onClick={() => handleOptionClick(option)}
-							className="cursor-pointer hover:bg-gray-200 p-2">
+							className="cursor-pointer hover:bg-gray-200 p-2 text-center">
 							{option.label}
 						</li>
 					))}
