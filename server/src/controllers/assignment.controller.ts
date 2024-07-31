@@ -69,7 +69,24 @@ class AssignmentController {
             const intAssignmentId = parseInt(assignmentId, 10);
             const assignment = await Assignment.findOne({ assignmentId: intAssignmentId });
             if (!assignment) {
-                return res.status(401).json(new ApiError(404, "Assignment not found"));
+                return res.status(200).json(new ApiError(404, "Assignment not found"));
+            }
+            if (req.body.user.userIsAdmin) {
+                const response = {
+                    ok: true,
+                    message: "Assignment fetched successfully",
+                    assignment,
+                };
+                return res.status(200).json(new ApiResponse(200, response, "Assignment fetched successfully"));
+            }
+            if (assignment.assignmentSection !== req.body.user.userSection) {
+                return res.status(200).json(new ApiError(402, "You are not authorized to view this assignment"));
+            }
+            if (new Date(assignment.assignmentStartTime) > new Date()) {
+                return res.status(200).json(new ApiError(402, "Assignment has not started yet"));
+            }
+            if (new Date(assignment.assignmentEndTime) < new Date()) {
+                return res.status(200).json(new ApiError(402, "Assignment has ended"));
             }
             const response = {
                 ok: true,

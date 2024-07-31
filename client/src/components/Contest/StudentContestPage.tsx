@@ -8,11 +8,12 @@ import ProblemCard from "../../components/Problem/ProblemCard";
 import Leaderboard from "../../components/Contest/Leaderboard";
 import { Problem } from "../../types/problems";
 import ErrorModal from "../Utils/ErrorModal";
+import { useNavigate } from "react-router-dom";
 
 const StudentContestPage = () => {
 	const { contestId } = useParams<{ contestId: string }>();
 	if (!contestId) return null;
-
+	const navigate = useNavigate();
 	const user = useSelector((state: any) => state.auth.userData);
 	const [contest, setContest] = useState<Contest | null>(null);
 	const [tab, setTab] = useState<"problems" | "leaderboard">("problems");
@@ -27,9 +28,10 @@ const StudentContestPage = () => {
 		async function fetchContest() {
 			try {
 				if (!contestId) return;
-				const { data } = await contestService.getContest(contestId);
-				console.log(data);
-				if (data.ok) {
+				const resp = await contestService.getContest(contestId);
+				console.log(resp);
+				if (resp.data.ok) {
+					const data = resp.data;
 					setContest(data.contest);
 					// Fetch problems related to the contest
 					const problems = await contestService.getContestProblems(
@@ -44,8 +46,10 @@ const StudentContestPage = () => {
 						setErrorMessage(problems.data.error || "Failed to fetch problems."); // Set error message
 						setIsModalOpen(true); // Open modal on error
 					}
+				} else if (resp.statusCode === 402) {
+					navigate("/contest");
 				} else {
-					setErrorMessage(data.error || "Failed to fetch contest."); // Set error message
+					setErrorMessage(resp.message || "Failed to fetch contest."); // Set error message
 					setIsModalOpen(true); // Open modal on error
 				}
 			} catch (error: any) {

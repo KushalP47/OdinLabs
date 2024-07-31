@@ -110,7 +110,21 @@ class ContestController {
             const intContestId = Number(contestId);
             const contest = await Contest.findOne({ contestId: intContestId });
             if (!contest) {
-                return res.status(404).json(new ApiError(404, "Contest not found"));
+                return res.status(200).json(new ApiError(404, "Contest not found"));
+            }
+            if (req.body.user.userIsAdmin === false) {
+                if (contest.contestUsers.find((contestUser) => contestUser.contestUserRollNumber === req.body.user.userRollNumber) === undefined) {
+                    return res.status(200).json(new ApiError(400, "User not found in contest"));
+                }
+                if (contest.contestSection !== req.body.user.userSection) {
+                    return res.status(200).json(new ApiError(402, "User not authorized to view this contest"));
+                }
+                if (new Date(contest.contestStartTime) > new Date()) {
+                    return res.status(200).json(new ApiError(402, "Contest has not started yet"));
+                }
+                if (new Date(contest.contestEndTime) < new Date()) {
+                    return res.status(200).json(new ApiError(402, "Contest has ended"));
+                }
             }
             const response = {
                 ok: true,

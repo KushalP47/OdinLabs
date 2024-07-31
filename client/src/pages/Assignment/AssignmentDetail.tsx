@@ -7,27 +7,46 @@ import { Assignment } from "../../types/assignment";
 import { Problem } from "../../types/problems";
 import ProblemCard from "../../components/Problem/ProblemCard";
 import TeamLeaderboard from "../../components/Assignment/TeamLeaderboard";
+import ErrorModal from "../../components/Utils/ErrorModal";
+import { useNavigate } from "react-router-dom";
 
 const AssignmentDetail = () => {
 	const { assignmentId } = useParams<{ assignmentId: string }>();
 	if (!assignmentId) return null;
+	const navigate = useNavigate();
 	const user = useSelector((state: any) => state.auth.userData);
 	const [assignment, setAssignment] = useState<Assignment | null>(null);
 	const [tab, setTab] = useState<"problems" | "leaderboard">("problems");
 	const [assignmentProblems, setAssignmentProblems] = useState<Problem[]>([]);
+	const [message, setMessage] = useState<string>("");
+	const [errorModal, setErrorModal] = useState<boolean>(false);
 
 	useEffect(() => {
 		async function fetchAssignment() {
 			try {
 				if (!assignmentId) return;
-				const { data } = await assignmentService.getAssignment(assignmentId);
-				const problems = await assignmentService.getAssignmentProblems(
-					data.assignment.assignmentProblems,
-				);
-				setAssignmentProblems(problems.data.problems);
-				setAssignment(data.assignment);
+				const resp = await assignmentService.getAssignment(assignmentId);
+				if (!resp.data.ok) {
+					const problems = await assignmentService.getAssignmentProblems(
+						resp.data.assignment.assignmentProblems,
+					);
+					if (!problems.data.ok) {
+						setMessage(problems.data.message);
+						setErrorModal(true);
+						return;
+					} else {
+						setAssignmentProblems(problems.data.problems);
+						setAssignment(resp.data.assignment);
+					}
+				} else if (resp.status === 402) {
+					navigate("/assignments");
+				} else {
+					setMessage(resp.data.message);
+					setErrorModal(true);
+				}
 			} catch (error) {
-				console.error("Failed to fetch assignment", error);
+				setMessage("Error fetching assignment");
+				setErrorModal(true);
 			}
 		}
 		fetchAssignment();
@@ -117,6 +136,13 @@ const AssignmentDetail = () => {
 						</div>
 					)}
 				</div>
+				{errorModal && (
+					<ErrorModal
+						message={message}
+						isOpen={errorModal}
+						onClose={() => setErrorModal(false)}
+					/>
+				)}
 			</div>
 		</div>
 	);
