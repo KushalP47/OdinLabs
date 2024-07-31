@@ -1,19 +1,23 @@
-// src/components/Problems/CreateProblemForm.tsx
+// src/components/Problems/UpdateProblemForm.tsx
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ReactQuill from "react-quill"; // Import react-quill
 import "react-quill/dist/quill.snow.css"; // Import react-quill styles
 import { Testcase } from "../../types/problems";
 import TagsInput from "./TagsInput";
 import DifficultySelector from "./DifficultySelector";
 import TestcaseInput from "./TestcaseInput";
-import CodeEditorInput from "./CodeEditorInput"; // Updated to use CodeEditorWindow
+import CodeEditorInput from "./CodeEditorInput";
 import ErrorModal from "../../components/Utils/ErrorModal";
 import SuccessModal from "../../components/Utils/SuccessModal";
 import { problemService } from "../../api/problemService";
+import { useParams } from "react-router-dom";
 
-const CreateProblemForm = () => {
-	const [problemId, setProblemId] = useState("");
+const UpdateProblemForm = () => {
+	const { problemId } = useParams<{ problemId?: string }>();
+	if (!problemId) {
+		return <div>Problem ID not provided</div>;
+	}
 	const [problemTitle, setProblemTitle] = useState("");
 	const [problemDescription, setProblemDescription] = useState("");
 	const [problemTags, setProblemTags] = useState<string[]>([]);
@@ -36,24 +40,63 @@ const CreateProblemForm = () => {
 	const [errorModalOpen, setErrorModalOpen] = useState(false);
 	const [successModalOpen, setSuccessModalOpen] = useState(false);
 
+	useEffect(() => {
+		if (problemId) {
+			// Fetch the problem data by ID
+			const fetchProblemData = async () => {
+				const response = await problemService.getProblem(problemId as string);
+				if (response.data.ok) {
+					const data = response.data.problem;
+					setProblemTitle(data.problemTitle);
+					setProblemDescription(data.problemDescription);
+					setProblemTags(data.problemTags);
+					setProblemDifficulty(data.problemDifficulty);
+					setProblemInputFormat(data.problemInputFormat);
+					setProblemOutputFormat(data.problemOutputFormat);
+					setProblemSampleInput(data.problemSampleInput);
+					setProblemSampleOutput(data.problemSampleOutput);
+					setProblemNote(data.problemNote);
+					setProblemConstraints(data.problemConstraints);
+					setProblemTestcases(data.problemTestcases);
+					setProblemCppTemplate(data.problemCppTemplate);
+					setProblemCppDriverCode(data.problemCppDriverCode);
+					setProblemJavaTemplate(data.problemJavaTemplate);
+					setProblemJavaDriverCode(data.problemJavaDriverCode);
+					setProblemPythonTemplate(data.problemPythonTemplate);
+					setProblemPythonDriverCode(data.problemPythonDriverCode);
+					const editorialResponse = await problemService.getEditorialById(
+						problemId,
+					);
+					console.log(editorialResponse);
+					if (editorialResponse.data.ok) {
+						setProblemEditorial(
+							editorialResponse.data.editorial.editorialContent,
+						);
+					} else {
+						setMessage("An error occurred while fetching the editorial data.");
+						setErrorModalOpen(true);
+					}
+				} else {
+					setMessage("An error occurred while fetching the problem data.");
+					setErrorModalOpen(true);
+				}
+			};
+			fetchProblemData();
+		}
+	}, [problemId]);
+
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 
 		// Validation
-		if (
-			!problemId ||
-			!problemTitle ||
-			!problemDescription ||
-			!problemDifficulty
-		) {
+		if (!problemTitle || !problemDescription || !problemDifficulty) {
 			setMessage("Please fill in all the required fields.");
 			setErrorModalOpen(true);
 			return;
 		}
 
 		// Create the problem data
-		const newProblem = {
-			problemId, // Temporary ID generation for the example
+		const updatedProblem = {
 			problemTitle,
 			problemDescription,
 			problemTags,
@@ -65,8 +108,6 @@ const CreateProblemForm = () => {
 			problemNote,
 			problemConstraints,
 			problemTestcases,
-			problemEditorialIsHidden: false,
-			problemIsHidden: false,
 			problemCppTemplate,
 			problemCppDriverCode,
 			problemJavaTemplate,
@@ -76,13 +117,13 @@ const CreateProblemForm = () => {
 			problemEditorial,
 		};
 
-		// Call the API to create the problem
-		const response = await problemService.createProblem(newProblem);
+		// Call the API to update the problem
+		const response = await problemService.updateProblem(updatedProblem);
 		if (response.data.ok) {
-			setMessage("Problem created successfully!");
+			setMessage("Problem updated successfully!");
 			setSuccessModalOpen(true);
 		} else {
-			setMessage("An error occurred while creating the problem.");
+			setMessage("An error occurred while updating the problem.");
 			setErrorModalOpen(true);
 		}
 	};
@@ -95,14 +136,13 @@ const CreateProblemForm = () => {
 				{/* Problem ID */}
 				<div className="flex flex-col">
 					<label className="font-semibold text-lg mb-2" htmlFor="problemId">
-						Problem ID <span className="text-red-500">*</span>
+						Problem Id <span className="text-red-500">*</span>
 					</label>
 					<input
 						type="text"
 						value={problemId}
-						onChange={(e) => setProblemId(e.target.value)}
 						className="border bg-white rounded-md p-2 text-lg"
-						placeholder="Enter the problem ID here..."
+						readOnly
 					/>
 				</div>
 				{/* Problem Title */}
@@ -200,7 +240,7 @@ const CreateProblemForm = () => {
 							value={problemSampleOutput}
 							onChange={(e) => setProblemSampleOutput(e.target.value)}
 							className="border rounded-md p-2 min-h-[100px] bg-gray-50 dark:bg-editorbg text-lg"
-							placeholder="Enter the sample input here..."
+							placeholder="Enter the sample output here..."
 						/>
 					</div>
 				</div>
@@ -212,6 +252,7 @@ const CreateProblemForm = () => {
 						htmlFor="problemConstraints">
 						Constraints
 					</label>
+
 					<ReactQuill
 						value={problemConstraints}
 						onChange={(value) => setProblemConstraints(value)}
@@ -323,7 +364,7 @@ const CreateProblemForm = () => {
 				<button
 					type="submit"
 					className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600">
-					Submit Problem
+					Update Problem
 				</button>
 			</form>
 
@@ -348,4 +389,4 @@ const CreateProblemForm = () => {
 	);
 };
 
-export default CreateProblemForm;
+export default UpdateProblemForm;

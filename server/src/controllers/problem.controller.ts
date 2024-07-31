@@ -96,9 +96,9 @@ class ProblemController {
             problemPythonDriverCode,
             problemEditorial,
         } = req.body;
-
+        const intProblemId = Number(problemId);
         const problem: IProblem | null = await Problem
-            .findOneAndUpdate({ problemId }, {
+            .findOneAndUpdate({ problemId: intProblemId }, {
                 problemTitle,
                 problemDescription,
                 problemTags,
