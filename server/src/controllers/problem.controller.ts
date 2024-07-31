@@ -96,39 +96,41 @@ class ProblemController {
             problemPythonDriverCode,
             problemEditorial,
         } = req.body;
-        const intProblemId = Number(problemId);
-        const problem: IProblem | null = await Problem
-            .findOneAndUpdate({ problemId: intProblemId }, {
-                problemTitle,
-                problemDescription,
-                problemTags,
-                problemDifficulty,
-                problemInputFormat,
-                problemOutputFormat,
-                problemSampleInput,
-                problemSampleOutput,
-                problemNote,
-                problemConstraints,
-                problemTestcases,
-                problemCppTemplate,
-                problemCppDriverCode,
-                problemJavaTemplate,
-                problemJavaDriverCode,
-                problemPythonTemplate,
-                problemPythonDriverCode,
-            }, { new: true });
-
-        const editorial: IEditorial | null = await Editorial.findOneAndUpdate({ editorialId: problemId }, { editorialContent: problemEditorial }, { new: true });
-
-        if (!problem) {
-            return res.status(200).json(new ApiError(404, "Problem not found"));
-        }
-
-        if (!editorial) {
-            return res.status(200).json(new ApiError(404, "Editorial not found"));
-        }
 
         try {
+            const intProblemId = Number(problemId);
+
+            const problem = await Problem
+                .findOne({ problemId: intProblemId });
+
+            const editorial: IEditorial | null = await Editorial.findOne({ editorialId: problemId });
+
+            if (!problem) {
+                return res.status(200).json(new ApiError(404, "Problem not found"));
+            }
+
+            if (!editorial) {
+                return res.status(200).json(new ApiError(404, "Editorial not found"));
+            }
+            problem.problemTitle = problemTitle;
+            problem.problemDescription = problemDescription;
+            problem.problemTags = problemTags;
+            problem.problemDifficulty = problemDifficulty;
+            problem.problemInputFormat = problemInputFormat;
+            problem.problemOutputFormat = problemOutputFormat;
+            problem.problemSampleInput = problemSampleInput;
+            problem.problemSampleOutput = problemSampleOutput;
+            problem.problemNote = problemNote;
+            problem.problemConstraints = problemConstraints;
+            problem.problemTestcases = problemTestcases;
+            problem.problemCppTemplate = problemCppTemplate;
+            problem.problemCppDriverCode = problemCppDriverCode;
+            problem.problemJavaTemplate = problemJavaTemplate;
+            problem.problemJavaDriverCode = problemJavaDriverCode;
+            problem.problemPythonTemplate = problemPythonTemplate;
+            problem.problemPythonDriverCode = problemPythonDriverCode;
+            editorial.editorialContent = problemEditorial;
+
             const savedProblem = await problem.save();
             const savedEditorial = await editorial.save();
             const response = {

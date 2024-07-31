@@ -118,7 +118,10 @@ const UpdateProblemForm = () => {
 		};
 
 		// Call the API to update the problem
-		const response = await problemService.updateProblem(updatedProblem);
+		const response = await problemService.updateProblem(
+			problemId,
+			updatedProblem,
+		);
 		if (response.data.ok) {
 			setMessage("Problem updated successfully!");
 			setSuccessModalOpen(true);
