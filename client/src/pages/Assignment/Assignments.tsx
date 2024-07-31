@@ -8,7 +8,6 @@ import AssignmentCard from "../../components/Assignment/AssignmentCard";
 import { Assignment } from "../../types/assignment";
 import { useNavigate } from "react-router-dom";
 import { isOngoing, isUpcoming, isCompleted } from "../../lib/dateUtils";
-import { Link } from "react-router-dom";
 
 const Assignments = () => {
 	const [status, setStatus] = useState(false);

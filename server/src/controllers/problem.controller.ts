@@ -5,6 +5,7 @@ import { Problem, IProblem, IProblemFunctionResponse } from '../models/problem.m
 import { Editorial, IEditorial, IEditorialFunctionResponse } from '../models/editorial.model';
 class ProblemController {
     async createProblem(req: Request, res: Response) {
+        console.log(req.body);
         const {
             problemId,
             problemTitle,
@@ -19,13 +20,16 @@ class ProblemController {
             problemConstraints,
             problemTestcases,
             problemCppTemplate,
+            problemCppDriverCode,
             problemJavaTemplate,
+            problemJavaDriverCode,
             problemPythonTemplate,
+            problemPythonDriverCode,
             problemEditorial,
         } = req.body;
 
         const problem: IProblem = new Problem({
-            problemId,
+            problemId: Number(problemId),
             problemTitle,
             problemDescription,
             problemTags,
@@ -38,18 +42,23 @@ class ProblemController {
             problemConstraints,
             problemTestcases,
             problemCppTemplate,
+            problemCppDriverCode,
             problemJavaTemplate,
+            problemJavaDriverCode,
             problemPythonTemplate,
+            problemPythonDriverCode,
         });
 
         const editorial: IEditorial = new Editorial({
             editorialId: problemId,
             editorialContent: problemEditorial,
         });
-
+        console.log(problem, editorial);
         try {
             const savedProblem = await problem.save();
+            console.log("Problem saved");
             const savedEditorial = await editorial.save();
+            console.log("Editorial saved");
             const response = {
                 ok: true,
                 message: "Problem created successfully",
@@ -58,6 +67,7 @@ class ProblemController {
                     savedEditorial: savedEditorial,
                 }
             };
+            console.log(response);
             return res.status(201).json(new ApiResponse(201, response, "Problem created successfully"));
         } catch (error: any) {
             return res.status(400).json(new ApiError(400, error.message));
@@ -79,40 +89,48 @@ class ProblemController {
             problemConstraints,
             problemTestcases,
             problemCppTemplate,
+            problemCppDriverCode,
             problemJavaTemplate,
+            problemJavaDriverCode,
             problemPythonTemplate,
+            problemPythonDriverCode,
             problemEditorial,
         } = req.body;
 
-        const problem: IProblem | null = await Problem
-            .findOneAndUpdate({ problemId }, {
-                problemTitle,
-                problemDescription,
-                problemTags,
-                problemDifficulty,
-                problemInputFormat,
-                problemOutputFormat,
-                problemSampleInput,
-                problemSampleOutput,
-                problemNote,
-                problemConstraints,
-                problemTestcases,
-                problemCppTemplate,
-                problemJavaTemplate,
-                problemPythonTemplate,
-            }, { new: true });
-
-        const editorial: IEditorial | null = await Editorial.findOneAndUpdate({ editorialId: problemId }, { editorialContent: problemEditorial }, { new: true });
-
-        if (!problem) {
-            return res.status(200).json(new ApiError(404, "Problem not found"));
-        }
-
-        if (!editorial) {
-            return res.status(200).json(new ApiError(404, "Editorial not found"));
-        }
-
         try {
+            const intProblemId = Number(problemId);
+
+            const problem = await Problem
+                .findOne({ problemId: intProblemId });
+
+            const editorial: IEditorial | null = await Editorial.findOne({ editorialId: problemId });
+
+            if (!problem) {
+                return res.status(200).json(new ApiError(404, "Problem not found"));
+            }
+
+            if (!editorial) {
+                return res.status(200).json(new ApiError(404, "Editorial not found"));
+            }
+            problem.problemTitle = problemTitle;
+            problem.problemDescription = problemDescription;
+            problem.problemTags = problemTags;
+            problem.problemDifficulty = problemDifficulty;
+            problem.problemInputFormat = problemInputFormat;
+            problem.problemOutputFormat = problemOutputFormat;
+            problem.problemSampleInput = problemSampleInput;
+            problem.problemSampleOutput = problemSampleOutput;
+            problem.problemNote = problemNote;
+            problem.problemConstraints = problemConstraints;
+            problem.problemTestcases = problemTestcases;
+            problem.problemCppTemplate = problemCppTemplate;
+            problem.problemCppDriverCode = problemCppDriverCode;
+            problem.problemJavaTemplate = problemJavaTemplate;
+            problem.problemJavaDriverCode = problemJavaDriverCode;
+            problem.problemPythonTemplate = problemPythonTemplate;
+            problem.problemPythonDriverCode = problemPythonDriverCode;
+            editorial.editorialContent = problemEditorial;
+
             const savedProblem = await problem.save();
             const savedEditorial = await editorial.save();
             const response = {
@@ -297,6 +315,16 @@ class ProblemController {
                 .findOne({ editorialId });
             if (!editorial) {
                 return res.status(200).json(new ApiError(404, "Editorial not found"));
+            }
+            console.log(editorial)
+            console.log(req.body.user.userIsAdmin);
+            if (req.body.user.userIsAdmin) {
+                const response: IEditorialFunctionResponse = {
+                    ok: true,
+                    message: "Editorial fetched successfully",
+                    editorial: editorial,
+                };
+                return res.status(200).json(new ApiResponse(200, response, "Editorial fetched successfully"));
             }
             if (editorial.editorialIsHidden) {
                 return res.status(200).json(new ApiError(404, "Editorial is hidden"));

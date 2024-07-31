@@ -22,16 +22,22 @@ type CodeEditorProps = {
 	problemId: number;
 	problemDifficulty: string;
 	problemCppTemplate: string;
+	problemCppDriverCode?: string;
 	problemJavaTemplate: string;
+	problemJavaDriverCode?: string;
 	problemPythonTemplate: string;
+	problemPythonDriverCode?: string;
 };
 
 const CodeEditor = ({
 	problemId,
 	problemDifficulty,
 	problemCppTemplate,
+	problemCppDriverCode,
 	problemJavaTemplate,
+	problemJavaDriverCode,
 	problemPythonTemplate,
+	problemPythonDriverCode,
 }: CodeEditorProps) => {
 	const [code, setCode] = useState(problemCppTemplate);
 	const [customInput, setCustomInput] = useState("");
@@ -86,8 +92,16 @@ const CodeEditor = ({
 
 	const handleCompile = async () => {
 		setRunProcessing(true);
+		let finalCode = code;
+		if (language.value === "python") {
+			finalCode = code + problemPythonDriverCode;
+		} else if (language.value === "java") {
+			finalCode = code + problemJavaDriverCode;
+		} else {
+			finalCode = code + problemCppDriverCode;
+		}
 		const res = await codeExecutionService.executeCode(
-			code,
+			finalCode,
 			language.id,
 			customInput,
 			language.value,
@@ -138,9 +152,17 @@ const CodeEditor = ({
 
 	const handleSubmit = async () => {
 		setSubmitProcessing(true);
+		let finalCode = code;
+		if (language.value === "python") {
+			finalCode = code + problemPythonDriverCode;
+		} else if (language.value === "java") {
+			finalCode = code + problemJavaDriverCode;
+		} else {
+			finalCode = code + problemCppDriverCode;
+		}
 		console.log("submitting code...", code);
 		const res = await codeExecutionService.submitCode(
-			code,
+			finalCode,
 			language.id,
 			problemId,
 		);
@@ -283,14 +305,20 @@ const CodeEditor = ({
 						className={`flex flex-col border-4 border-secondary rounded-xl ${
 							theme.label === "Light" ? "bg-gray-50" : "bg-editorbg"
 						}`}>
-						<div className="flex flex-row justify-center items-center text-center w-full mt-2">
-							<div className="w-1/2 px-4">
+						<div className="flex flex-row justify-center items-center w-full space-x-8 p-4">
+							<div className="w-1/2 flex flex-row items-center justify-center space-y-2">
+								<label className="text-xl font-semibold text-secondary mr-2">
+									Language:{" "}
+								</label>
 								<LanguagesDropdown
 									onSelectChange={handleLanguageChange}
 									languageDefaultOption={language}
 								/>
 							</div>
-							<div className="w-1/2 px-4">
+							<div className="w-1/2 flex flex-row items-center justify-center space-y-2">
+								<label className="text-xl font-semibold text-secondary mr-2">
+									Theme:
+								</label>
 								<ThemeDropdown handleThemeChange={handleThemeChange} />
 							</div>
 						</div>

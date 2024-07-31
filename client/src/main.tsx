@@ -20,7 +20,7 @@ import {
 	UpdateAssignment,
 	UpdateContest,
 	CreateContestPage,
-	AddProblemPage,
+	CreateProblemPage,
 	UpdateProblem,
 } from "./pages/index.ts";
 import Protected from "./components/Utils/Protected.tsx";
@@ -168,7 +168,7 @@ const router = createBrowserRouter([
 						onlyAdminAllowed={true}
 						allowDuringContest={false}
 						isLoggedIn={true}>
-						<AddProblemPage />
+						<CreateProblemPage />
 					</Protected>
 				),
 			},

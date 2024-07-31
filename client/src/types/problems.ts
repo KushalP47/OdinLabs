@@ -14,8 +14,11 @@ export interface Problem {
     problemEditorialIsHidden: boolean;
     problemIsHidden: boolean;
     problemCppTemplate: string;
+    problemCppDriverCode?: string;
     problemJavaTemplate: string;
+    problemJavaDriverCode?: string;
     problemPythonTemplate: string;
+    problemPythonDriverCode?: string;
     createdAt: Date;
     updatedAt: Date;
 }

@@ -106,8 +106,8 @@ class ProblemService {
         return response.json();
     }
 
-    async updateProblem(problem: any) {
-        const response = await fetch(`${this.url}/api/v1/problems/update/${problem.problemId}`,
+    async updateProblem(problemId: string, problem: any) {
+        const response = await fetch(`${this.url}/api/v1/problems/update/${problemId}`,
             {
                 method: "PUT",
                 headers: {

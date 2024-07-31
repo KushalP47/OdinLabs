@@ -37,11 +37,19 @@ const Navbar: React.FC<NavbarProps> = ({
 	// Countdown logic
 	const calculateTimeLeft = () => {
 		const difference = +new Date(deadline || "") - +new Date();
+		if (difference <= 0) {
+			if (user.isUserAdmin === false) handleEndContest();
+			return {
+				hours: 0,
+				minutes: 0,
+				seconds: 0,
+			};
+		}
 		let timeLeft: any = {};
 
 		if (difference > 0) {
 			timeLeft = {
-				hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+				hours: Math.floor(difference / (1000 * 60 * 60)),
 				minutes: Math.floor((difference / 1000 / 60) % 60),
 				seconds: Math.floor((difference / 1000) % 60),
 			};
