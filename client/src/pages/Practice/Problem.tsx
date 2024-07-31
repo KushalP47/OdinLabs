@@ -12,13 +12,13 @@ import { contestService } from "../../api/contestService";
 import { assignmentService } from "../../api/assignmentService";
 import ErrorModal from "../../components/Utils/ErrorModal";
 import { useNavigate } from "react-router-dom";
+import DOMPurify from "dompurify";
 
 const Problem = () => {
 	// State management
 	const [status, setStatus] = useState(false);
 	const navigate = useNavigate();
 	const currentStatus = useSelector((state: any) => state.auth.status);
-	const userIsAdmin = useSelector((state: any) => state.auth.userIsAdmin);
 	const { problemId } = useParams<{ problemId: string }>(); // Add generic for useParams
 	const [problem, setProblem] = useState<IProblem | null>(null);
 	const [submissions, setSubmissions] = useState<Submission[]>([]); // Simplified type
@@ -202,27 +202,39 @@ const Problem = () => {
 											<h1 className="text-2xl text-secondary font-bold">
 												{problem?.problemTitle || "Problem Title"}
 											</h1>
-											<p className="text-basecolor mt-4">
-												{problem?.problemDescription ||
-													"No description available"}
-											</p>
+											<p
+												className="text-basecolor mt-4"
+												dangerouslySetInnerHTML={{
+													__html: problem?.problemDescription
+														? DOMPurify.sanitize(problem.problemDescription)
+														: "No description available",
+												}}
+											/>
 											<div className="mt-4">
 												<h2 className="text-lg text-secondary font-semibold">
 													Input Format
 												</h2>
-												<p className="text-basecolor">
-													{problem?.problemInputFormat ||
-														"No input format specified"}
-												</p>
+												<p
+													className="text-basecolor"
+													dangerouslySetInnerHTML={{
+														__html: problem?.problemInputFormat
+															? DOMPurify.sanitize(problem.problemInputFormat)
+															: "No Input Format available",
+													}}
+												/>
 											</div>
 											<div className="mt-4">
 												<h2 className="text-lg text-secondary font-semibold">
 													Output Format
 												</h2>
-												<p className="text-basecolor">
-													{problem?.problemOutputFormat ||
-														"No output format specified"}
-												</p>
+												<p
+													className="text-basecolor"
+													dangerouslySetInnerHTML={{
+														__html: problem?.problemOutputFormat
+															? DOMPurify.sanitize(problem.problemOutputFormat)
+															: "No Output Format available",
+													}}
+												/>
 											</div>
 											<div className="mt-4">
 												<h2 className="text-lg text-secondary font-semibold">
@@ -246,18 +258,27 @@ const Problem = () => {
 												<h2 className="text-lg text-secondary font-semibold">
 													Note
 												</h2>
-												<p className="text-basecolor">
-													{problem?.problemNote || "No additional notes"}
-												</p>
+												<p
+													className="text-basecolor"
+													dangerouslySetInnerHTML={{
+														__html: problem?.problemNote
+															? DOMPurify.sanitize(problem.problemNote)
+															: "No Note available",
+													}}
+												/>
 											</div>
 											<div className="mt-4">
 												<h2 className="text-lg text-secondary font-semibold">
 													Constraints
 												</h2>
-												<p className="text-basecolor">
-													{problem?.problemConstraints ||
-														"No constraints specified"}
-												</p>
+												<p
+													className="text-basecolor"
+													dangerouslySetInnerHTML={{
+														__html: problem?.problemConstraints
+															? DOMPurify.sanitize(problem.problemConstraints)
+															: "No Constraints available",
+													}}
+												/>
 											</div>
 										</div>
 									</div>
@@ -268,9 +289,12 @@ const Problem = () => {
 										<h1 className="text-2xl text-secondary font-bold">
 											Editorial
 										</h1>
-										<p className="text-basecolor mt-4">
-											{problemEditorial || "Editorial not available"}
-										</p>
+										<p
+											className="text-basecolor"
+											dangerouslySetInnerHTML={{
+												__html: DOMPurify.sanitize(problem.problemConstraints),
+											}}
+										/>
 									</div>
 								)}
 
