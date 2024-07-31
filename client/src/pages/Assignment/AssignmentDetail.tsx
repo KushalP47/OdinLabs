@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 const AssignmentDetail = () => {
 	const { assignmentId } = useParams<{ assignmentId: string }>();
 	if (!assignmentId) return null;
+	console.log(assignmentId);
 	const navigate = useNavigate();
 	const user = useSelector((state: any) => state.auth.userData);
 	const [assignment, setAssignment] = useState<Assignment | null>(null);
@@ -26,20 +27,22 @@ const AssignmentDetail = () => {
 			try {
 				if (!assignmentId) return;
 				const resp = await assignmentService.getAssignment(assignmentId);
-				if (!resp.data.ok) {
+				console.log(resp);
+				if (resp.data.ok) {
+					console.log(resp.data.message);
 					const problems = await assignmentService.getAssignmentProblems(
 						resp.data.assignment.assignmentProblems,
 					);
+					console.log(problems);
 					if (!problems.data.ok) {
 						setMessage(problems.data.message);
 						setErrorModal(true);
-						return;
 					} else {
 						setAssignmentProblems(problems.data.problems);
 						setAssignment(resp.data.assignment);
 					}
-				} else if (resp.status === 402) {
-					navigate("/assignments");
+				} else if (resp.statusCode === 402) {
+					navigate("/assignment");
 				} else {
 					setMessage(resp.data.message);
 					setErrorModal(true);
