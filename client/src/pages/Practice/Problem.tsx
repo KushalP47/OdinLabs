@@ -87,9 +87,6 @@ const Problem = () => {
 						setProblemEditorial(
 							editorialResponse.data.editorial.editorialContent,
 						);
-					} else {
-						setErrorMessage(editorialResponse.message);
-						setErrorModalVisible(true);
 					}
 				} else {
 					setErrorMessage(response.message);

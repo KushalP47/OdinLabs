@@ -1,26 +1,43 @@
 import express from "express";
-import cors from "cors";    // cross origin resource sharing
-import cookieParser from "cookie-parser"; // middleware used in parsing cookies
+import cors from "cors"; // Cross-Origin Resource Sharing
+import cookieParser from "cookie-parser"; // Middleware used for parsing cookies
 
 const app = express();
 
+// Updated CORS options
 const corsOptions = {
+    origin: function (
+        origin: string | undefined,
+        callback: (error?: any, allow?: boolean) => void
+    ) {
+        // Allow requests from specific origins
+        if (!origin || origin.startsWith("http://localhost")) {
+            // Allow requests from any localhost origin or without origin (like Postman)
+            callback(null, true);
+        } else {
+            // Block requests from other origins
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
     credentials: true, // Reflect (pass through) the request's credentials
 };
 
+// Apply CORS middleware
 app.use(cors(corsOptions));
 
-app.use(express.json({ limit: "16kb" })); // to limit the size of data which express should accept
-app.use(express.urlencoded({ extended: true, limit: "16kb" })) // with extended flag, we will get the nested data at deep level
-app.use(express.static("public")); // it is a addres folder, where we will keep files which we want to keep in public
+// Other middleware
+app.use(express.json({ limit: "16kb" })); // Limit the size of JSON payloads
+app.use(express.urlencoded({ extended: true, limit: "16kb" })); // Parse URL-encoded payloads
+app.use(express.static("public")); // Serve static files from 'public' folder
 
 app.use(cookieParser());
 
-
+// Sample route for testing
 app.get("/", (req, res) => {
     res.send("Hello World");
 });
 
+// Import and use routers
 import authRouter from "../routes/auth.routes";
 app.use("/api/v1/auth", authRouter);
 

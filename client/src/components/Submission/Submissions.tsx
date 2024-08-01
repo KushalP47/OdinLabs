@@ -36,21 +36,24 @@ const Submissions = ({ submissions, problemId = null }: SubmissionsProps) => {
 						</tr>
 					</thead>
 					<tbody>
-						{submissions.map((submission) => (
-							<tr
-								key={submission.submissionId}
-								className="cursor-pointer hover:bg-gray-100 p-2 rounded"
-								onClick={() => handleClick(submission)}>
-								<td className="px-4 py-2 border">
-									{submission.submissionProblemId}
-								</td>
-								<td className="px-4 py-2 border">{submission.submissionId}</td>
-								<td className="px-4 py-2 border">
-									{submission.submissionStatus}
-								</td>
-								<td className="px-4 py-2 border">{submission.createdAt}</td>
-							</tr>
-						))}
+						{submissions.length > 0 &&
+							submissions.map((submission) => (
+								<tr
+									key={submission.submissionId}
+									className="cursor-pointer hover:bg-gray-100 p-2 rounded"
+									onClick={() => handleClick(submission)}>
+									<td className="px-4 py-2 border">
+										{submission.submissionProblemId}
+									</td>
+									<td className="px-4 py-2 border">
+										{submission.submissionId}
+									</td>
+									<td className="px-4 py-2 border">
+										{submission.submissionStatus}
+									</td>
+									<td className="px-4 py-2 border">{submission.createdAt}</td>
+								</tr>
+							))}
 					</tbody>
 				</table>
 			)}

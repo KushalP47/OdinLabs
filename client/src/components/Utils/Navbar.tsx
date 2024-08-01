@@ -85,7 +85,7 @@ const Navbar: React.FC<NavbarProps> = ({
 	};
 
 	const renderCountdown = () => {
-		if (contestId && user.isUserAdmin === false) toFullscreen();
+		if (contestId && user.userIsAdmin === false) toFullscreen();
 		return (
 			<span className="countdown font-mono text-2xl">
 				<span

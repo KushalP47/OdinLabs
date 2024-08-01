@@ -5,7 +5,7 @@ import { ApiError } from "../utils/ApiError";
 export const verifyCustomContestCookie = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     try {
         const customContestCookie = req.cookies?.customContestCookie;
-        if (!customContestCookie) {
+        if (!customContestCookie && !req.body.user.userIsAdmin) {
             return res
                 .status(200)
                 .json(new ApiError(200, "Request doesn't have custom contest cookie!!"));

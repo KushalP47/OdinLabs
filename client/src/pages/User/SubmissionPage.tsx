@@ -2,8 +2,9 @@ import Navbar from "../../components/Utils/Navbar";
 import Submissions from "../../components/Submission/Submissions";
 import { useState, useEffect } from "react";
 import { codeExecutionService } from "../../api/codeExecutionService";
+import { Submission } from "../../types/submissions";
 const SubmissionPage = () => {
-	const [submissions, setSubmissions] = useState([]);
+	const [submissions, setSubmissions] = useState<Submission[]>([]);
 
 	useEffect(() => {
 		const fetchSubmissions = async () => {
@@ -13,7 +14,7 @@ const SubmissionPage = () => {
 				console.log("Error fetching submissions", data);
 				return;
 			}
-			setSubmissions(data.data);
+			setSubmissions(data.data.data);
 		};
 		fetchSubmissions();
 	}, []);
@@ -25,9 +26,11 @@ const SubmissionPage = () => {
 					Submissions
 				</h1>
 
-				<div className="border-4 border-secondary">
-					<Submissions submissions={submissions} />
-				</div>
+				{submissions.length > 0 && (
+					<div className="border-4 border-secondary">
+						<Submissions submissions={submissions} />
+					</div>
+				)}
 			</div>
 		</>
 	);
