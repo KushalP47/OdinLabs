@@ -16,7 +16,7 @@ const Room = () => {
 	);
 	const dispatch = useDispatch();
 	const [myStream, setMyStream] = useState<MediaStream | null>(null);
-	const socket = useMemo(() => io("http://localhost:8001"), []);
+	const socket = useMemo(() => io(import.meta.env.VITE_SOCKET_URL), []);
 	let peer = useMemo(
 		() =>
 			new RTCPeerConnection({

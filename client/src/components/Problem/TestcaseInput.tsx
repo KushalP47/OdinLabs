@@ -14,10 +14,6 @@ const TestcaseInput: React.FC<TestcaseInputProps> = ({
 }) => {
 	const [input, setInput] = useState("");
 	const [expectedOutput, setExpectedOutput] = useState("");
-	const [fileInput, setFileInput] = useState<File | null>(null);
-	const [fileExpectedOutput, setFileExpectedOutput] = useState<File | null>(
-		null,
-	);
 
 	const handleAddTestcase = () => {
 		if (input && expectedOutput) {

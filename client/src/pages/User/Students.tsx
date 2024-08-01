@@ -18,8 +18,7 @@ interface ConnectedStudentsEvent {
 }
 
 const Students = () => {
-	const socket = useMemo(() => io("http://localhost:8001"), []);
-	const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
+	const socket = useMemo(() => io(import.meta.env.VITE_SOCKET_URL), []);
 	const [isConnected, setIsConnected] = useState(false);
 	const [students, setStudents] = useState<Array<studentSocket>>([]);
 	const [selectedStudents, setSelectedStudents] = useState<
@@ -39,7 +38,7 @@ const Students = () => {
 			const response = await userService.getUsersFromSection(sectionTab);
 			if (response.data.ok) {
 				console.log("Total users:", response.data.data);
-				setTotalUsers((prev) => (prev = response.data.data));
+				setTotalUsers(response.data.data);
 				// put a 1 secont delay to show the loading spinner
 				setTimeout(() => {
 					setIsDataLoaded(true);
@@ -165,7 +164,6 @@ const Students = () => {
 		const incomingStream = event.streams[0];
 		console.log("Incoming stream:", incomingStream);
 
-		setRemoteStream(incomingStream);
 		if (videoRef.current) {
 			videoRef.current.srcObject = incomingStream;
 			console.log("Video ref:", videoRef.current.srcObject);
@@ -180,7 +178,7 @@ const Students = () => {
 			if (peerRef.current) {
 				peerRef.current.close();
 			}
-			setRemoteStream(null);
+
 			if (videoRef.current) {
 				videoRef.current.srcObject = null;
 			}
@@ -197,7 +195,7 @@ const Students = () => {
 		if (peerRef.current) {
 			peerRef.current.close();
 		}
-		setRemoteStream(null);
+
 		if (videoRef.current) {
 			videoRef.current.srcObject = null;
 		}

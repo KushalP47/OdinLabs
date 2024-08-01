@@ -7,7 +7,6 @@ import { Problem } from "../../types/problems";
 import ProblemCard from "../../components/Problem/ProblemCard";
 import Leaderboard from "../../components/Contest/Leaderboard";
 import ErrorModal from "../Utils/ErrorModal";
-import { useSelector } from "react-redux";
 import StudentTable from "./StudentTable";
 
 const AdminContestPage = () => {
@@ -22,7 +21,6 @@ const AdminContestPage = () => {
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 	const [errorMessage, setErrorMessage] = useState<string>("");
 	const [students, setStudents] = useState<ContestUser[]>([]);
-	const user = useSelector((state: any) => state.auth.userData);
 
 	useEffect(() => {
 		async function fetchContest() {

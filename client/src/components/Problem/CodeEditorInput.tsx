@@ -20,7 +20,7 @@ const CodeEditorInput: React.FC<CodeEditorInputProps> = ({
 }) => {
 	const [isExpanded, setIsExpanded] = useState(!isTemplate);
 
-	const handleEditorChange = (key: string, value: string) => {
+	const handleEditorChange = (value: string) => {
 		setCode(value);
 	};
 

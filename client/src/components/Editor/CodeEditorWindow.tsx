@@ -1,5 +1,4 @@
 import Editor from "@monaco-editor/react";
-import { useState } from "react";
 
 type CodeEditorWindowProps = {
 	onChange: (key: string, value: string) => void;
@@ -16,11 +15,8 @@ const CodeEditorWindow = ({
 	theme,
 	readOnly,
 }: CodeEditorWindowProps) => {
-	const [value, setValue] = useState(code || "");
-
 	const handleEditorChange = (value: string | undefined) => {
 		if (value === undefined) return;
-		setValue(value);
 		onChange("code", value);
 	};
 
