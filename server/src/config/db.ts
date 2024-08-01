@@ -9,7 +9,7 @@ const connectDB = async () => {
     try {
         // connecting with the Database through atlas via mongoose.connect() method
         console.log(`${process.env.MONGODB_URI}`)
-        const connectionInstance = await mongoose.connect(`${process.env.MONGODB_URI}OdinLabs`);
+        const connectionInstance = await mongoose.connect(`${process.env.MONGODB_URI}`);
         console.log(`\n MongoDB connected !! DB Host: ${connectionInstance.connection.host}`);
     } catch (error) {
         // Error Handling
