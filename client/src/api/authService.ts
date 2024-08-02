@@ -7,7 +7,7 @@ export class AuthService {
     }
     async register(user: User) {
         const reqBody = { userEmail: user.userEmail, userPassword: user.userPassword, userName: user.userName, userRollNumber: user.userRollNumber, userSection: user.userSection };
-        const response = await fetch(`http://localhost:8000/api/v1/auth/register`, {
+        const response = await fetch(`${this.url}/api/v1/auth/register`, {
             method: "POST",
             credentials: "include",
             headers: {
@@ -24,7 +24,7 @@ export class AuthService {
         console.log("from authService: ", data);
         console.log(this.url);
         const reqBody = { userEmail: data.userEmail, userPassword: data.userPassword };
-        const response = await fetch(`http://localhost:8000/api/v1/auth/login`, {
+        const response = await fetch(`${this.url}/api/v1/auth/login`, {
             method: "POST",
             credentials: "include",
             headers: {
@@ -39,8 +39,8 @@ export class AuthService {
     async forgotPassword(data: any) {
         console.log("from authService: ", data);
         console.log(this.url);
-        const reqBody = { userEmail: data.userEmail, userSecret: data.userSecret, newPassword: data.newPassword};
-        const response = await fetch(`http://localhost:8000/api/v1/auth/forgot-password`, {
+        const reqBody = { userEmail: data.userEmail, userSecret: data.userSecret, newPassword: data.newPassword };
+        const response = await fetch(`${this.url}/api/v1/auth/forgot-password`, {
             method: "POST",
             credentials: "include",
             headers: {

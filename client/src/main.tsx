@@ -12,6 +12,7 @@ import {
 	Room,
 	Login,
 	Contest,
+	Register,
 	Problem,
 	SubmissionPage,
 	AssignmentDetail,
@@ -241,6 +242,17 @@ const router = createBrowserRouter([
 				),
 			},
 			// Auth routes
+			{
+				path: "/auth/register",
+				element: (
+					<Protected
+						onlyAdminAllowed={false}
+						allowDuringContest={false}
+						isLoggedIn={false}>
+						<Register />
+					</Protected>
+				),
+			},
 			{
 				path: "/auth/login",
 				element: (
