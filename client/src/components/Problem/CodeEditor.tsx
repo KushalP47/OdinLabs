@@ -17,7 +17,6 @@ import { Submission } from "../../types/submissions";
 import SubmissionDetails from "../Submission/SubmissionDetails";
 import { testcaseVerdict } from "../../types/submissions";
 import { useParams } from "react-router-dom";
-import { setTime } from "react-datepicker/dist/date_utils";
 
 type CodeEditorProps = {
 	problemId: number;
