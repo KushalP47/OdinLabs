@@ -1,4 +1,4 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import { ProblemStatus } from "../../types/assignment";
 import { Problem } from "../../types/problems";
 import { Link } from "react-router-dom";
@@ -11,12 +11,12 @@ interface ProblemCardProps {
 	contestId?: number;
 }
 
-const ProblemCard: React.FC<ProblemCardProps> = ({
+const ProblemCard = ({
 	problem,
 	problemStatus,
 	assignmentId,
 	contestId,
-}) => {
+}: ProblemCardProps) => {
 	const getDifficultyClass = (difficulty: string) => {
 		switch (difficulty) {
 			case "Easy":
@@ -29,17 +29,19 @@ const ProblemCard: React.FC<ProblemCardProps> = ({
 				return "font-bold text-gray-500"; // Default class if difficulty is not matched
 		}
 	};
-
+	const [problemLink, setProblemLink] = useState("");
 	// Determine URL based on whether it is an assignment or contest
-	let problemLink;
-	console.log(assignmentId, contestId);
-	if (assignmentId) {
-		problemLink = `/assignment/${assignmentId}/problem/${problem.problemId}`;
-	} else if (contestId) {
-		problemLink = `/contest/${contestId}/problem/${problem.problemId}`;
-	} else {
-		problemLink = `/practice/problem/${problem.problemId}`;
-	}
+	useEffect(() => {
+		if (assignmentId) {
+			setProblemLink(
+				`/assignment/${assignmentId}/problem/${problem.problemId}`,
+			);
+		} else if (contestId) {
+			setProblemLink(`/contest/${contestId}/problem/${problem.problemId}`);
+		} else {
+			setProblemLink(`#`);
+		}
+	}, [assignmentId, contestId, problem.problemId]);
 
 	return (
 		<div className="card bg-white shadow-xl p-4">
