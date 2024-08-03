@@ -6,7 +6,7 @@ import CodeEditorWindow from "../../components/Editor/CodeEditorWindow"; // Impo
 interface CodeEditorInputProps {
 	label: string;
 	code: string;
-	setCode: React.Dispatch<React.SetStateAction<string>>;
+	onChange: (key: string, value: string) => void;
 	language: string;
 	isTemplate?: boolean;
 }
@@ -14,15 +14,16 @@ interface CodeEditorInputProps {
 const CodeEditorInput: React.FC<CodeEditorInputProps> = ({
 	label,
 	code,
-	setCode,
+	onChange,
 	language,
 	isTemplate = false,
 }) => {
 	const [isExpanded, setIsExpanded] = useState(!isTemplate);
 
-	const handleEditorChange = (value: string) => {
-		setCode(value);
-	};
+	// const handleEditorChange = (value: string | undefined) => {
+	// 	if (value === undefined) return;
+	// 	onChange("code", value);
+	// };
 
 	return (
 		<div className="flex flex-col space-y-2">
@@ -39,7 +40,7 @@ const CodeEditorInput: React.FC<CodeEditorInputProps> = ({
 			</div>
 			{isExpanded && (
 				<CodeEditorWindow
-					onChange={handleEditorChange}
+					onChange={onChange}
 					language={language}
 					code={code}
 					theme={

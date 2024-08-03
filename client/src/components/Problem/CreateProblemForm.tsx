@@ -246,7 +246,13 @@ const CreateProblemForm = () => {
 							language="cpp"
 							code={problemCppTemplate}
 							label={"C++ Template"}
-							setCode={(code) => setProblemCppTemplate(code)}
+							onChange={(action: string, data: string) => {
+								if (action === "code") {
+									setProblemCppTemplate(data);
+								} else {
+									console.warn("case not handled!", action, data);
+								}
+							}}
 							isTemplate={false}
 						/>
 					</div>
@@ -255,7 +261,13 @@ const CreateProblemForm = () => {
 							language="cpp"
 							code={problemCppDriverCode}
 							label={"C++ Driver Code"}
-							setCode={(code) => setProblemCppDriverCode(code)}
+							onChange={(action: string, data: string) => {
+								if (action === "code") {
+									setProblemCppDriverCode(data);
+								} else {
+									console.warn("case not handled!", action, data);
+								}
+							}}
 							isTemplate={false}
 						/>
 					</div>
@@ -266,7 +278,13 @@ const CreateProblemForm = () => {
 						<CodeEditorInput
 							language="java"
 							code={problemJavaTemplate}
-							setCode={(code) => setProblemJavaTemplate(code)}
+							onChange={(action: string, data: string) => {
+								if (action === "code") {
+									setProblemJavaTemplate(data);
+								} else {
+									console.warn("case not handled!", action, data);
+								}
+							}}
 							isTemplate={false}
 							label="Java Template"
 						/>
@@ -276,7 +294,13 @@ const CreateProblemForm = () => {
 						<CodeEditorInput
 							language="java"
 							code={problemJavaDriverCode}
-							setCode={(code) => setProblemJavaDriverCode(code)}
+							onChange={(action: string, data: string) => {
+								if (action === "code") {
+									setProblemJavaDriverCode(data);
+								} else {
+									console.warn("case not handled!", action, data);
+								}
+							}}
 							isTemplate={false}
 							label={"Java Driver Code"}
 						/>
@@ -288,7 +312,13 @@ const CreateProblemForm = () => {
 						<CodeEditorInput
 							language="python"
 							code={problemPythonTemplate}
-							setCode={(code) => setProblemPythonTemplate(code)}
+							onChange={(action: string, data: string) => {
+								if (action === "code") {
+									setProblemPythonTemplate(data);
+								} else {
+									console.warn("case not handled!", action, data);
+								}
+							}}
 							isTemplate={false}
 							label={"Python Template"}
 						/>
@@ -298,7 +328,13 @@ const CreateProblemForm = () => {
 						<CodeEditorInput
 							language="python"
 							code={problemPythonDriverCode}
-							setCode={(code) => setProblemPythonDriverCode(code)}
+							onChange={(action: string, data: string) => {
+								if (action === "code") {
+									setProblemPythonTemplate(data);
+								} else {
+									console.warn("case not handled!", action, data);
+								}
+							}}
 							isTemplate={false}
 							label={"Python Driver Code"}
 						/>
