@@ -330,7 +330,7 @@ const CreateProblemForm = () => {
 							code={problemPythonDriverCode}
 							onChange={(action: string, data: string) => {
 								if (action === "code") {
-									setProblemPythonTemplate(data);
+									setProblemPythonDriverCode(data);
 								} else {
 									console.warn("case not handled!", action, data);
 								}
