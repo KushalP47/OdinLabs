@@ -17,6 +17,7 @@ import { Submission } from "../../types/submissions";
 import SubmissionDetails from "../Submission/SubmissionDetails";
 import { testcaseVerdict } from "../../types/submissions";
 import { useParams } from "react-router-dom";
+import { setTime } from "react-datepicker/dist/date_utils";
 
 type CodeEditorProps = {
 	problemId: number;
@@ -116,6 +117,9 @@ const CodeEditor = ({
 		setTab("Output");
 	};
 
+	const sleep = (delay: number) =>
+		new Promise((resolve) => setTimeout(resolve, delay));
+
 	const checkStatus = async (token: string, isSubmission: boolean = false) => {
 		// We will come to the implementation later in the code
 		const res = await codeExecutionService.checkStatus(token);
@@ -127,9 +131,8 @@ const CodeEditor = ({
 		console.log("statusId...", statusId);
 		if (statusId === 1 || statusId === 2) {
 			// still processing
-			setTimeout(() => {
-				checkStatus(token, isSubmission);
-			}, 2000);
+			await sleep(1000);
+			checkStatus(token, isSubmission);
 			return;
 		} else {
 			if (isSubmission) {
@@ -172,12 +175,13 @@ const CodeEditor = ({
 			showErrorToast(res.errors);
 			return;
 		}
-		const tokens = res.data as Array<string>;
+		const tokens: string[] = res.data.data;
 		console.log("tokens...", tokens);
 		let i = 0;
 		const testcasesVerdict: Array<testcaseVerdict> = [];
 		while (testcasesVerdict.length < tokens.length) {
 			const currentTestcaseVerdict = await checkStatus(tokens[i], true);
+
 			console.log("for token...", tokens[i]);
 			console.log("currentTestcaseVerdict...", currentTestcaseVerdict);
 			if (currentTestcaseVerdict !== undefined) {
