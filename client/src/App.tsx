@@ -13,9 +13,7 @@ function App() {
 
 	useEffect(() => {
 		const token = getCookie("accessToken");
-		if (!token) {
-			navigate("/auth/login"); // Redirect to login if there's no token
-		} else {
+		if (token) {
 			const userData = localStorage.getItem("userData");
 			if (userData) {
 				const user = JSON.parse(userData);

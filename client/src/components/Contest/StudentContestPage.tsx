@@ -107,6 +107,7 @@ const StudentContestPage = () => {
 											problem={problem}
 											problemStatus={problemStatus}
 											contestId={contest.contestId}
+											assignmentId={undefined}
 										/>
 									) : null;
 								})}

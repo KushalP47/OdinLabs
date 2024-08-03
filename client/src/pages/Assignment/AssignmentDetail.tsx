@@ -104,6 +104,7 @@ const AssignmentDetail = () => {
 											problem={problem}
 											problemStatus={problemStatus}
 											assignmentId={assignment.assignmentId}
+											contestId={undefined}
 										/>
 									) : null;
 								})}

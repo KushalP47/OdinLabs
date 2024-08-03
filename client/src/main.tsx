@@ -244,7 +244,14 @@ const router = createBrowserRouter([
 			// Auth routes
 			{
 				path: "/auth/register",
-				element: <Register />,
+				element: (
+					<Protected
+						onlyAdminAllowed={false}
+						allowDuringContest={false}
+						isLoggedIn={false}>
+						<Register />
+					</Protected>
+				),
 			},
 			{
 				path: "/auth/login",

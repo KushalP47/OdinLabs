@@ -4,6 +4,7 @@ import { Problem } from "../../types/problems";
 import { Link } from "react-router-dom";
 
 interface ProblemCardProps {
+	key: number;
 	problem: Problem;
 	problemStatus?: ProblemStatus;
 	assignmentId?: number;
@@ -30,11 +31,15 @@ const ProblemCard: React.FC<ProblemCardProps> = ({
 	};
 
 	// Determine URL based on whether it is an assignment or contest
-	const problemLink = assignmentId
-		? `/assignment/${assignmentId}/problem/${problem.problemId}`
-		: contestId
-		? `/contest/${contestId}/problem/${problem.problemId}`
-		: "#";
+	let problemLink;
+	console.log(assignmentId, contestId);
+	if (assignmentId) {
+		problemLink = `/assignment/${assignmentId}/problem/${problem.problemId}`;
+	} else if (contestId) {
+		problemLink = `/contest/${contestId}/problem/${problem.problemId}`;
+	} else {
+		problemLink = `/practice/problem/${problem.problemId}`;
+	}
 
 	return (
 		<div className="card bg-white shadow-xl p-4">
