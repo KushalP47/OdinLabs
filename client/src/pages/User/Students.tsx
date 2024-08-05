@@ -257,6 +257,16 @@ const Students = () => {
 						}}>
 						Section 2
 					</a>
+					<a
+						className={`tab ${
+							sectionTab === "3" ? "bg-white text-secondary text-xl" : "text-xl"
+						}`}
+						onClick={() => {
+							setIsDataLoaded(false);
+							setSectionTab("3");
+						}}>
+						Section 3
+					</a>
 				</div>
 				<div className="">
 					<div className="flex flex-row w-full">

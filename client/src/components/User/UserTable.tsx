@@ -7,7 +7,7 @@ import SuccessModal from "../Utils/SuccessModal";
 
 const UserTable = () => {
 	const [users, setUsers] = useState([]);
-	const [selectedSection, setSelectedSection] = useState<"1" | "2">("1");
+	const [selectedSection, setSelectedSection] = useState<"1" | "2" | "3">("1");
 	const navigate = useNavigate();
 	const [errorModal, setErrorModal] = useState(false);
 	const [message, setMessage] = useState("");
@@ -74,6 +74,15 @@ const UserTable = () => {
 						}`}
 						onClick={() => setSelectedSection("2")}>
 						Section 2
+					</a>
+					<a
+						className={`tab ${
+							selectedSection === "3"
+								? "bg-white text-secondary text-xl"
+								: "text-xl"
+						}`}
+						onClick={() => setSelectedSection("3")}>
+						Section 3
 					</a>
 				</div>
 				<div className="mt-10 w-full px-6 lg:px-10">
