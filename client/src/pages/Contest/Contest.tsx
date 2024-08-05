@@ -13,7 +13,7 @@ import {
 	isCompletedContest,
 } from "../../lib/dateUtils";
 import ErrorModal from "../../components/Utils/ErrorModal";
-import { set } from "date-fns";
+
 
 const Contests = () => {
 	const [status, setStatus] = useState(false);
