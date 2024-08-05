@@ -70,6 +70,7 @@ class ProblemController {
             console.log(response);
             return res.status(201).json(new ApiResponse(201, response, "Problem created successfully"));
         } catch (error: any) {
+            console.log(error);
             return res.status(400).json(new ApiError(400, error.message));
         }
     };
@@ -143,6 +144,7 @@ class ProblemController {
             };
             return res.status(200).json(new ApiResponse(200, response, "Problem updated successfully"));
         } catch (error: any) {
+            console.log(error);
             return res.status(400).json(new ApiError(400, error.message));
         };
     };

@@ -82,7 +82,10 @@ const CreateProblemForm = () => {
 			setMessage("Problem created successfully!");
 			setSuccessModalOpen(true);
 		} else {
-			setMessage("An error occurred while creating the problem.");
+			setMessage(
+				response.data.message ||
+					"An error occurred while creating the problem.",
+			);
 			setErrorModalOpen(true);
 		}
 	};
