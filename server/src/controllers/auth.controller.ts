@@ -17,7 +17,7 @@ class AuthController {
         if (!data.ok) {
             return res
 
-                .status(400)
+                .status(200)
                 .json(new ApiError(400, data.message));
 
         }
@@ -26,7 +26,7 @@ class AuthController {
         const accessToken = data.user?.generateAccessToken();
         if (!accessToken) {
             return res
-                .status(401)
+                .status(200)
                 .json(new ApiError(401, "Error creating access token"));
         }
 
@@ -61,7 +61,7 @@ class AuthController {
         const accessToken = data.user?.generateAccessToken();
         if (!accessToken) {
             return res
-                .status(401)
+                .status(200)
                 .json(new ApiError(401, "Error creating access token"));
         }
 
@@ -87,17 +87,17 @@ class AuthController {
         const userData: IUserFunctionResponse = await userFromEmail(userEmail);
 
         if (!userData.ok || !userData.user) {
-            return res.status(404).json(new ApiError(404, "User not found"));
+            return res.status(200).json(new ApiError(404, "User not found"));
         }
 
         if (userData.user.userSecret !== userSecret) {
-            return res.status(403).json(new ApiError(403, "Invalid secret"));
+            return res.status(200).json(new ApiError(403, "Invalid secret"));
         }
 
         const result = await updateUserPassword(userData.user._id, newPassword);
 
         if (!result.ok) {
-            return res.status(500).json(new ApiError(500, "Failed to update password"));
+            return res.status(200).json(new ApiError(500, "Failed to update password"));
         }
 
         return res.json(

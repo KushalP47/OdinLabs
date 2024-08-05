@@ -13,7 +13,7 @@ export const verifyJWT = asyncHandler(async (req: Request, res: Response, next: 
         if (!accessToken) {
             // throw new ApiError(401, "User not authenticated!!");
             return res
-                .status(401)
+                .status(200)
                 .json(new ApiError(401, "Request doesn't have token!!"));
         }
 
@@ -27,7 +27,7 @@ export const verifyJWT = asyncHandler(async (req: Request, res: Response, next: 
         if (!user) {
             // throw new ApiError(401, "User not authenticated!!");
             return res
-                .status(401)
+                .status(200)
                 .json(new ApiError(401, "User is not registered!!"));
         }
 

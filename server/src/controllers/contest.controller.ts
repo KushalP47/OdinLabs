@@ -158,7 +158,7 @@ class ContestController {
             const intContestId = Number(contestId);
             const contest = await Contest.findOne({ contestId: intContestId });
             if (!contest) {
-                return res.status(404).json(new ApiError(404, "Contest not found"));
+                return res.status(200).json(new ApiError(404, "Contest not found"));
             }
             const user = req.body.user;
             const contestUser = contest.contestUsers.find((contestUser) => contestUser.contestUserRollNumber === user.userRollNumber);
@@ -233,7 +233,7 @@ class ContestController {
                 .findOne({ contestId: intContestId })
                 .select("contestStartTime contestEndTime");
             if (!contest) {
-                return res.status(404).json(new ApiError(404, "Contest not found"));
+                return res.status(200).json(new ApiError(404, "Contest not found"));
             }
             const response = {
                 ok: true,

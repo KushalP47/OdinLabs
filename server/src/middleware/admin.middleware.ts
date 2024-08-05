@@ -13,7 +13,7 @@ export const verifyIsAdmin = asyncHandler(async (req: Request, res: Response, ne
         if (!accessToken) {
             // throw new ApiError(401, "User not authenticated!!");
             return res
-                .status(401)
+                .status(200)
                 .json(new ApiError(401, "Request doesn't have token!!"));
         }
 
@@ -27,13 +27,13 @@ export const verifyIsAdmin = asyncHandler(async (req: Request, res: Response, ne
         if (!user) {
             // throw new ApiError(401, "User not authenticated!!");
             return res
-                .status(401)
+                .status(200)
                 .json(new ApiError(401, "User is not registered!!"));
         }
 
         if (!user.userIsAdmin) {
             return res
-                .status(401)
+                .status(200)
                 .json(new ApiError(401, "User is not an admin!!"));
         }
 

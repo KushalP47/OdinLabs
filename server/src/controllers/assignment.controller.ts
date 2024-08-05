@@ -121,7 +121,7 @@ class AssignmentController {
             const intAssignmentId = parseInt(assignmentId, 10);
             const response = await updateAssignmentDeadlines(intAssignmentId, assignmentStartTime, assignmentEndTime);
             if (!response.ok) {
-                return res.status(400).json(new ApiError(400, response.message));
+                return res.status(200).json(new ApiError(400, response.message));
             }
             return res.status(200).json(new ApiResponse(200, response, "Assignment deadlines updated successfully"));
         } catch (error: any) {
@@ -144,7 +144,7 @@ class AssignmentController {
             const intAssignmentId = parseInt(assignmentId, 10);
             const assignment = await Assignment.findOne({ assignmentId: intAssignmentId });
             if (!assignment) {
-                return res.status(402).json(new ApiError(404, "Assignment not found"));
+                return res.status(200).json(new ApiError(404, "Assignment not found"));
             }
             assignment.assignmentName = assignmentName;
             assignment.assignmentDescription = assignmentDescription;
@@ -174,7 +174,7 @@ class AssignmentController {
             const intAssignmentId = Number(assignmentId);
             const assignment = await Assignment.findOne({ assignmentId: intAssignmentId });
             if (!assignment) {
-                return res.status(404).json(new ApiError(404, "Assignment not found"));
+                return res.status(200).json(new ApiError(404, "Assignment not found"));
             }
             const response = {
                 ok: true,
