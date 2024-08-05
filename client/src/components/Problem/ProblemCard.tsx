@@ -33,6 +33,9 @@ const ProblemCard = ({
 	const [problemLink, setProblemLink] = useState("");
 	// Determine URL based on whether it is an assignment or contest
 	useEffect(() => {
+		console.log("assignmentId", assignmentId);
+		console.log("contestId", contestId);
+		console.log("key", key);
 		if (assignmentId !== undefined) {
 			console.log("problem Id", key);
 			setProblemLink(

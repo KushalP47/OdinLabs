@@ -8,7 +8,7 @@ import AssignmentCard from "../../components/Assignment/AssignmentCard";
 import { Assignment } from "../../types/assignment";
 import { useNavigate } from "react-router-dom";
 import { isOngoing, isUpcoming, isCompleted } from "../../lib/dateUtils";
-
+import ErrorModal from "../../components/Utils/ErrorModal";
 const Assignments = () => {
 	const [status, setStatus] = useState(false);
 	const currentStatus = useSelector((state: any) => state.auth.status);
@@ -16,18 +16,32 @@ const Assignments = () => {
 	const isAdmin = user?.userIsAdmin;
 	const [assignments, setAssignments] = useState<Assignment[]>([]);
 	const navigate = useNavigate();
-
+	const [errorModal, setErrorModal] = useState<boolean>(false);
+	const [message, setMessage] = useState<string>("");
 	useEffect(() => {
 		setStatus(currentStatus);
 		if (currentStatus) {
 			assignmentService
 				.getAllAssignments()
 				.then((data) => {
-					if (data.data.ok) setAssignments(data.data.assignments);
-					else console.error(data.data.message);
+					if (data.data.ok) {
+						if (user?.userIsAdmin === false) {
+							const userAssignments = data.data.assignments.filter(
+								(assignment: Assignment) =>
+									assignment.assignmentSection === user?.userSection,
+							);
+							setAssignments(userAssignments);
+						} else {
+							setAssignments(data.data.assignments);
+						}
+					} else {
+						setMessage(data.data.message);
+						setErrorModal(true);
+					}
 				})
 				.catch((err) => {
-					console.error(err);
+					setMessage("Error fetching assignments" || err?.message);
+					setErrorModal(true);
 				});
 		}
 	}, [currentStatus]);
@@ -106,6 +120,13 @@ const Assignments = () => {
 						<h2 className="text-2xl text-basecolor">
 							Please login to view this page
 						</h2>
+					)}
+					{errorModal && (
+						<ErrorModal
+							message={message}
+							isOpen={errorModal}
+							onClose={() => setErrorModal(false)}
+						/>
 					)}
 				</div>
 			</div>

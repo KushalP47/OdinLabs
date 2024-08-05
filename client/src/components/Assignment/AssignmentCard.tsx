@@ -1,11 +1,12 @@
 // src/components/Assignment/AssignmentCard.tsx
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Assignment } from "../../types/assignment";
 import { formatDate, isOngoing } from "../../lib/dateUtils";
 import { useNavigate } from "react-router-dom";
 
 interface AssignmentCardProps {
+	key: number;
 	assignment: Assignment;
 	user: any;
 	handleClick: (id: number) => void;
@@ -13,6 +14,7 @@ interface AssignmentCardProps {
 }
 
 const AssignmentCard: React.FC<AssignmentCardProps> = ({
+	key,
 	assignment,
 	user,
 	handleClick,
@@ -37,6 +39,10 @@ const AssignmentCard: React.FC<AssignmentCardProps> = ({
 		// Direct navigation for admin or ongoing assignment
 		navigate(`/assignment/update/${assignment.assignmentId}`);
 	};
+
+	useEffect(() => {
+		console.log("Assignment Card Rendered", key);
+	}, []);
 	return (
 		<div key={assignment.assignmentId} className="mb-4">
 			<div className="card bg-white w-full shadow-xl flex flex-row px-4">
