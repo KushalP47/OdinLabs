@@ -12,6 +12,7 @@ interface ProblemCardProps {
 }
 
 const ProblemCard = ({
+	key,
 	problem,
 	problemStatus,
 	assignmentId,
@@ -32,16 +33,18 @@ const ProblemCard = ({
 	const [problemLink, setProblemLink] = useState("");
 	// Determine URL based on whether it is an assignment or contest
 	useEffect(() => {
-		if (assignmentId) {
+		if (assignmentId !== undefined) {
+			console.log("problem Id", key);
 			setProblemLink(
 				`/assignment/${assignmentId}/problem/${problem.problemId}`,
 			);
-		} else if (contestId) {
+		} else if (contestId !== undefined) {
+			console.log("problem Id", key);
 			setProblemLink(`/contest/${contestId}/problem/${problem.problemId}`);
 		} else {
 			setProblemLink(`#`);
 		}
-	}, [assignmentId, contestId, problem.problemId]);
+	}, []);
 
 	return (
 		<div className="card bg-white shadow-xl p-4">
