@@ -36,19 +36,29 @@ const Room = () => {
 
 	const startStream = useCallback(async () => {
 		setStatus(true);
-		const stream = await navigator.mediaDevices.getDisplayMedia({
-			video: true,
-			audio: false,
-		});
-		dispatch(
-			startStreamAction({ streamData: stream.active, streamId: roomId }),
-		);
-		setMyStream(stream);
-		console.log("Starting stream, joining room:", roomId);
-		socket.emit("join-room", { roomId, emailId, userName });
+		if (navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia) {
+			try {
+				const stream = await navigator.mediaDevices.getDisplayMedia({
+					video: true,
+					audio: false,
+				});
+				dispatch(
+					startStreamAction({ streamData: stream.active, streamId: roomId }),
+				);
+				setMyStream(stream);
+				console.log("Starting stream, joining room:", roomId);
+				socket.emit("join-room", { roomId, emailId, userName });
 
-		stream.getTracks().forEach((track) => peer.addTrack(track, stream));
-		console.log("Stream added to peer connection");
+				stream.getTracks().forEach((track) => peer.addTrack(track, stream));
+				console.log("Stream added to peer connection");
+			} catch (error) {
+				console.error("Error accessing display media:", error);
+				setStatus(false);
+			}
+		} else {
+			console.error("getDisplayMedia is not supported in this browser.");
+			setStatus(false);
+		}
 	}, [socket, roomId, emailId, peer]);
 
 	const createOffer = useCallback(async () => {
