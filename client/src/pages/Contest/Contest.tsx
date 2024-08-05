@@ -12,6 +12,8 @@ import {
 	isUpcomingContest,
 	isCompletedContest,
 } from "../../lib/dateUtils";
+import ErrorModal from "../../components/Utils/ErrorModal";
+import { set } from "date-fns";
 
 const Contests = () => {
 	const [status, setStatus] = useState(false);
@@ -20,6 +22,8 @@ const Contests = () => {
 	const isAdmin = user?.userIsAdmin;
 	const [contests, setContests] = useState<Contest[]>([]);
 	const navigate = useNavigate();
+	const [errorModal, setErrorModal] = useState<boolean>(false);
+	const [message, setMessage] = useState<string>("");
 
 	useEffect(() => {
 		setStatus(currentStatus);
@@ -28,15 +32,23 @@ const Contests = () => {
 				.getAllContests()
 				.then((data) => {
 					if (data.data.ok) {
-						const userContests = data.data.contests.filter(
-							(contest: Contest) =>
-								contest.contestSection === user?.userSection,
-						);
-						setContests(userContests);
-					} else console.error(data.data.message);
+						if (user?.userIsAdmin === false) {
+							const userContests = data.data.contests.filter(
+								(contest: Contest) =>
+									contest.contestSection === user?.userSection,
+							);
+							setContests(userContests);
+						} else {
+							setContests(data.data.contests);
+						}
+					} else {
+						setMessage(data.data.message);
+						setErrorModal(true);
+					}
 				})
 				.catch((err) => {
-					console.error(err);
+					setMessage("Error fetching contests" || err?.message);
+					setErrorModal(true);
 				});
 		}
 	}, [currentStatus]);
@@ -115,6 +127,13 @@ const Contests = () => {
 						<h2 className="text-2xl text-basecolor">
 							Please login to view this page
 						</h2>
+					)}
+					{errorModal && (
+						<ErrorModal
+							message={message}
+							isOpen={errorModal}
+							onClose={() => setErrorModal(false)}
+						/>
 					)}
 				</div>
 			</div>
