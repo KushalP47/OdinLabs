@@ -49,7 +49,8 @@ const Navbar: React.FC<NavbarProps> = ({
 
 		if (difference > 0) {
 			timeLeft = {
-				hours: Math.floor(difference / (1000 * 60 * 60)),
+				days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+				hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
 				minutes: Math.floor((difference / 1000 / 60) % 60),
 				seconds: Math.floor((difference / 1000) % 60),
 			};
@@ -88,6 +89,9 @@ const Navbar: React.FC<NavbarProps> = ({
 		if (contestId && user.userIsAdmin === false) toFullscreen();
 		return (
 			<span className="countdown font-mono text-2xl">
+				<span
+					style={{ "--value": timeLeft.days } as React.CSSProperties}></span>
+				:
 				<span
 					style={{ "--value": timeLeft.hours } as React.CSSProperties}></span>
 				:
