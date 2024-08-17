@@ -274,53 +274,59 @@ const Students = () => {
 							<div className="text-basecolor text-2xl font-bold">
 								Online Students
 							</div>
-							<table className="scroll-smooth w-full">
-								<thead className="text-xs text-secondary uppercase bg-gray-50">
-									<tr>
-										<th scope="col" className="px-6 py-3">
-											Sr. No.
-										</th>
-										<th scope="col" className="px-6 py-3">
-											Student Name
-										</th>
-										<th scope="col" className="px-6 py-3">
-											Email
-										</th>
-										<th scope="col" className="px-6 py-3">
-											Roll Number
-										</th>
-									</tr>
-								</thead>
-								<tbody>
-									{totalUsers.map((student, index) => (
-										<tr
-											key={student.userEmail}
-											className="bg-white text-basecolor hover:bg-gray-50 text-md border-b"
-											onClick={() =>
-												handleStudentClick(student.userName, student.userEmail)
-											}>
-											{student.userStatus === "online" && (
-												<>
-													<td className="px-6 py-4">{index + 1}</td>
-													<td className="px-6 py-4">{student.userName}</td>
-													<td className="px-6 py-4">{student.userEmail}</td>
-													<td className="px-6 py-4">
-														{student.userRollNumber}
-													</td>
-												</>
-											)}
+							<div className="overflow-y-auto max-h-100">
+								<table className="scroll-smooth w-full overflow-y-auto max-h-5">
+									<thead className="text-xs text-secondary uppercase bg-gray-50">
+										<tr>
+											<th scope="col" className="px-6 py-3">
+												Sr. No.
+											</th>
+											<th scope="col" className="px-6 py-3">
+												Student Name
+											</th>
+											<th scope="col" className="px-6 py-3">
+												Email
+											</th>
+											<th scope="col" className="px-6 py-3">
+												Roll Number
+											</th>
 										</tr>
-									))}
-								</tbody>
-							</table>
+									</thead>
+									<tbody>
+										{totalUsers.map((student, index) => (
+											<tr
+												key={student.userEmail}
+												className="bg-white text-basecolor hover:bg-gray-50 text-md border-b"
+												onClick={() =>
+													handleStudentClick(
+														student.userName,
+														student.userEmail,
+													)
+												}>
+												{student.userStatus === "online" && (
+													<>
+														<td className="px-6 py-4">{index + 1}</td>
+														<td className="px-6 py-4">{student.userName}</td>
+														<td className="px-6 py-4">{student.userEmail}</td>
+														<td className="px-6 py-4">
+															{student.userRollNumber}
+														</td>
+													</>
+												)}
+											</tr>
+										))}
+									</tbody>
+								</table>
+							</div>
 						</div>
 						{/* <div className="divider divider-horizontal"></div> */}
-						<div>
-							<div className="flex flex-col w-full px-2">
-								<div className="text-basecolor text-2xl font-bold">
-									Offline Students
-								</div>
-								<table className="scroll-smooth w-full">
+
+						<div className="flex flex-col w-1/2 px-2">
+							<div className="text-basecolor text-2xl font-bold">
+								Offline Students
+							</div>
+							<div className="overflow-y-auto max-h-100">
+								<table className="scroll-smooth w-full overflow-y-auto max-h-5">
 									<thead className="text-xs text-secondary uppercase bg-gray-50">
 										<tr>
 											<th scope="col" className="px-6 py-3">
