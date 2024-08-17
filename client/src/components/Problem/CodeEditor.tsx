@@ -94,11 +94,11 @@ const CodeEditor = ({
 		setRunProcessing(true);
 		let finalCode = code;
 		if (language.value === "python") {
-			finalCode = code + problemPythonDriverCode;
+			finalCode = problemPythonDriverCode + code;
 		} else if (language.value === "java") {
-			finalCode = code + problemJavaDriverCode;
+			finalCode = problemJavaDriverCode + code;
 		} else {
-			finalCode = code + problemCppDriverCode;
+			finalCode = problemCppDriverCode + code;
 		}
 		const res = await codeExecutionService.executeCode(
 			finalCode,
