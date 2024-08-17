@@ -51,6 +51,7 @@ const CodeEditor = ({
 	const [submissionDetails, setSubmissionDetails] = useState<Submission | null>(
 		null,
 	);
+	const [timerCount, setTimerCount] = useState<number>(1);
 	const templates = {
 		cpp: problemCppTemplate,
 		java: problemJavaTemplate,
@@ -112,12 +113,15 @@ const CodeEditor = ({
 			showErrorToast(res.message);
 		}
 		const token = res.token;
-		await checkStatus(token);
+		const output = await checkStatus(token);
+		if (!output) return;
 		setTab("Output");
 	};
 
-	const sleep = (delay: number) =>
-		new Promise((resolve) => setTimeout(resolve, delay));
+	const sleep = (delay: number) => {
+		new Promise((resolve) => setTimeout(resolve, timerCount * delay));
+		setTimerCount(timerCount + 1);
+	};
 
 	const checkStatus = async (token: string, isSubmission: boolean = false) => {
 		// We will come to the implementation later in the code
@@ -134,6 +138,7 @@ const CodeEditor = ({
 			checkStatus(token, isSubmission);
 			return;
 		} else {
+			setTimerCount(1);
 			if (isSubmission) {
 				const TestCaseVeridict: testcaseVerdict = {
 					status: res.status?.description || "",
@@ -146,6 +151,7 @@ const CodeEditor = ({
 				setRunProcessing(false);
 				setOutputDetails(res);
 				showSuccessToast(`Compiled Successfully!`);
+				setTab("Output");
 				console.log("response.data", res);
 				return;
 			}
@@ -156,11 +162,11 @@ const CodeEditor = ({
 		setSubmitProcessing(true);
 		let finalCode = code;
 		if (language.value === "python") {
-			finalCode = code + problemPythonDriverCode;
+			finalCode = problemPythonDriverCode + code;
 		} else if (language.value === "java") {
-			finalCode = code + problemJavaDriverCode;
+			finalCode = problemJavaDriverCode + code;
 		} else {
-			finalCode = code + problemCppDriverCode;
+			finalCode = problemCppDriverCode + code;
 		}
 		console.log("submitting code...", code);
 		const res = await codeExecutionService.submitCode(
