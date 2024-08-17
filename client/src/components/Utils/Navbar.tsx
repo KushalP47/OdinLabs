@@ -116,7 +116,7 @@ const Navbar: React.FC<NavbarProps> = ({
 		<>
 			{/* Normal Navbar */}
 			{!deadline && !contestId && !assignmentId && (
-				<div className="navbar bg-base-100">
+				<div className="navbar bg-basecolor">
 					<div className="navbar-start">
 						<Link
 							to="/dashboard"
@@ -169,16 +169,6 @@ const Navbar: React.FC<NavbarProps> = ({
 										</li>
 									)}
 									<li>
-										<div className="flex flex-row justify-between">
-											Dark Mode
-											<input
-												type="checkbox"
-												value="synthwave"
-												className="toggle theme-controller"
-											/>
-										</div>
-									</li>
-									<li>
 										<Link to="/submissions">Submissions</Link>
 									</li>
 									<li className="btn btn-primary text-white">
@@ -201,7 +191,7 @@ const Navbar: React.FC<NavbarProps> = ({
 
 			{/* Navbar for Assignments */}
 			{deadline && assignmentId && (
-				<div className="navbar bg-base-100">
+				<div className="navbar bg-basecolor">
 					<div className="navbar-start">
 						<Link
 							to="/dashboard"
@@ -256,16 +246,6 @@ const Navbar: React.FC<NavbarProps> = ({
 										</li>
 									)}
 									<li>
-										<div className="flex flex-row justify-between">
-											Dark Mode
-											<input
-												type="checkbox"
-												value="synthwave"
-												className="toggle theme-controller"
-											/>
-										</div>
-									</li>
-									<li>
 										<a className="justify-between">Marks</a>
 									</li>
 									<li>
@@ -291,7 +271,7 @@ const Navbar: React.FC<NavbarProps> = ({
 
 			{/* Navbar for Contests */}
 			{deadline && contestId && (
-				<div className="navbar bg-base-100">
+				<div className="navbar bg-basecolor">
 					<div className="navbar-start">
 						<div className="btn btn-ghost text-3xl font-bold text-secondary">
 							<img src={logo} className="w-16px h-16px" />

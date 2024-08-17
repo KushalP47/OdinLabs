@@ -44,7 +44,7 @@ const CreateAssignmentPage = () => {
 				reset();
 				setProblems([]); // Reset problem list
 			} else {
-				setMessage("Error creating assignment.");
+				setMessage(response.data.message || "Failed to create assignment.");
 				setErrorModalOpen(true);
 			}
 		} catch (error) {
