@@ -318,6 +318,7 @@ const Problem = () => {
 								problemCppDriverCode={problem.problemCppDriverCode}
 								problemJavaDriverCode={problem.problemJavaDriverCode}
 								problemPythonDriverCode={problem.problemPythonDriverCode}
+								problemSampleInput={problem.problemSampleInput}
 							/>
 						</div>
 					</>

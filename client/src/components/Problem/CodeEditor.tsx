@@ -27,6 +27,7 @@ type CodeEditorProps = {
 	problemJavaDriverCode?: string;
 	problemPythonTemplate: string;
 	problemPythonDriverCode?: string;
+	problemSampleInput: string;
 };
 
 const CodeEditor = ({
@@ -38,9 +39,10 @@ const CodeEditor = ({
 	problemJavaDriverCode,
 	problemPythonTemplate,
 	problemPythonDriverCode,
+	problemSampleInput,
 }: CodeEditorProps) => {
 	const [code, setCode] = useState(problemCppTemplate);
-	const [customInput, setCustomInput] = useState("");
+	const [customInput, setCustomInput] = useState(problemSampleInput);
 	const [outputDetails, setOutputDetails] = useState(null);
 	const [runProcessing, setRunProcessing] = useState(false);
 	const [submitProcessing, setSubmitProcessing] = useState(false);
@@ -51,7 +53,7 @@ const CodeEditor = ({
 	const [submissionDetails, setSubmissionDetails] = useState<Submission | null>(
 		null,
 	);
-	const [timerCount, setTimerCount] = useState<number>(1);
+	// const [timerCount, setTimerCount] = useState<number>(1);
 	const templates = {
 		cpp: problemCppTemplate,
 		java: problemJavaTemplate,
@@ -119,8 +121,8 @@ const CodeEditor = ({
 	};
 
 	const sleep = (delay: number) => {
-		new Promise((resolve) => setTimeout(resolve, timerCount * delay));
-		setTimerCount(timerCount + 1);
+		new Promise((resolve) => setTimeout(resolve, delay));
+		// setTimerCount((timerCount) => timerCount + 1);
 	};
 
 	const checkStatus = async (token: string, isSubmission: boolean = false) => {
@@ -138,7 +140,7 @@ const CodeEditor = ({
 			checkStatus(token, isSubmission);
 			return;
 		} else {
-			setTimerCount(1);
+			// setTimerCount(1);
 			if (isSubmission) {
 				const TestCaseVeridict: testcaseVerdict = {
 					status: res.status?.description || "",
