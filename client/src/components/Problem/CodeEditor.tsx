@@ -97,7 +97,7 @@ const CodeEditor = ({
 		setRunProcessing(true);
 		let finalCode = code;
 		if (language.value === "python") {
-			finalCode = problemPythonDriverCode + code;
+			finalCode = code + problemPythonDriverCode;
 		} else if (language.value === "java") {
 			finalCode = problemJavaDriverCode + code;
 		} else {
@@ -164,7 +164,7 @@ const CodeEditor = ({
 		setSubmitProcessing(true);
 		let finalCode = code;
 		if (language.value === "python") {
-			finalCode = problemPythonDriverCode + code;
+			finalCode = code + problemPythonDriverCode;
 		} else if (language.value === "java") {
 			finalCode = problemJavaDriverCode + code;
 		} else {
