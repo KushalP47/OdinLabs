@@ -12,6 +12,9 @@ const Submissions = ({ submissions, problemId = null }: SubmissionsProps) => {
 		null,
 	);
 	useEffect(() => {
+		submissions.sort((a, b) => {
+			return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+		});
 		console.log("submissions...", submissions);
 	}, [submissions]);
 
@@ -51,7 +54,9 @@ const Submissions = ({ submissions, problemId = null }: SubmissionsProps) => {
 									<td className="px-4 py-2 border">
 										{submission.submissionStatus}
 									</td>
-									<td className="px-4 py-2 border">{submission.createdAt}</td>
+									<td className="px-4 py-2 border">
+										{new Date(submission.createdAt).toLocaleString()}
+									</td>
 								</tr>
 							))}
 					</tbody>

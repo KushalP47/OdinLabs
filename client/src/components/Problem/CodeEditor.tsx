@@ -120,10 +120,8 @@ const CodeEditor = ({
 		setTab("Output");
 	};
 
-	const sleep = (delay: number) => {
-		new Promise((resolve) => setTimeout(resolve, delay));
-		// setTimerCount((timerCount) => timerCount + 1);
-	};
+	const delay = (ms: number) =>
+		new Promise((resolve) => setTimeout(resolve, ms));
 
 	const checkStatus = async (token: string, isSubmission: boolean = false) => {
 		// We will come to the implementation later in the code
@@ -131,13 +129,15 @@ const CodeEditor = ({
 		if (res.errors) {
 			setRunProcessing(false);
 			showErrorToast(res.errors || res.message || "Something went wrong!");
+			return;
 		}
 		const statusId = res.status?.id;
 		console.log("statusId...", statusId);
 		if (statusId === 1 || statusId === 2) {
 			// still processing
-			await sleep(1000);
-			checkStatus(token, isSubmission);
+			await delay(2000); // Wait for 2 seconds before calling checkStatus again
+			console.log("Waited for 2 seconds, now Calling checkStatus again...");
+			await checkStatus(token, isSubmission);
 			return;
 		} else {
 			// setTimerCount(1);
