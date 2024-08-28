@@ -13,7 +13,7 @@ const Submissions = ({ submissions, problemId = null }: SubmissionsProps) => {
 	);
 	useEffect(() => {
 		submissions.sort((a, b) => {
-			return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+			return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
 		});
 		console.log("submissions...", submissions);
 	}, [submissions]);
