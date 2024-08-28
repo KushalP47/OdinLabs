@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import CodeEditorWindow from "../Editor/CodeEditorWindow";
 import { languageOptions } from "../../constants/languageOptions";
 import { themeOptions } from "../../constants/themeOptions";
@@ -53,6 +53,7 @@ const CodeEditor = ({
 	const [submissionDetails, setSubmissionDetails] = useState<Submission | null>(
 		null,
 	);
+
 	// const [timerCount, setTimerCount] = useState<number>(1);
 	const templates = {
 		cpp: problemCppTemplate,
@@ -120,39 +121,54 @@ const CodeEditor = ({
 		setTab("Output");
 	};
 
+	const [timerCount, setTimerCount] = useState<number>(1);
+	const timerCountRef = useRef(timerCount);
+
 	const delay = (ms: number) =>
 		new Promise((resolve) => setTimeout(resolve, ms));
 
 	const checkStatus = async (token: string, isSubmission: boolean = false) => {
-		// We will come to the implementation later in the code
+		// Call the service to check the status
 		const res = await codeExecutionService.checkStatus(token);
 		if (res.errors) {
 			setRunProcessing(false);
 			showErrorToast(res.errors || res.message || "Something went wrong!");
 			return;
 		}
+
 		const statusId = res.status?.id;
 		console.log("statusId...", statusId);
+
 		if (statusId === 1 || statusId === 2) {
-			// still processing
-			await delay(2000); // Wait for 2 seconds before calling checkStatus again
-			console.log("Waited for 2 seconds, now Calling checkStatus again...");
-			await checkStatus(token, isSubmission);
+			// Still processing
+			setTimerCount((prev) => {
+				const newCount = prev + 1;
+				timerCountRef.current = newCount; // Update the ref with the new value
+				return newCount;
+			});
+
+			console.log(
+				`Waited for ${timerCountRef.current} seconds, now calling checkStatus again...`,
+			);
+			await delay(timerCountRef.current * 1000); // Use the ref value for delay
+			await checkStatus(token, isSubmission); // Call checkStatus recursively
 			return;
 		} else {
-			// setTimerCount(1);
+			setTimerCount(1); // Reset timerCount when done
+			timerCountRef.current = 1; // Also reset the ref value
+
 			if (isSubmission) {
-				const TestCaseVeridict: testcaseVerdict = {
+				const TestCaseVerdict: testcaseVerdict = {
 					status: res.status?.description || "",
 					time: res.time || 0,
 					memory: res.memory || 0,
 				};
-				console.log("TestCaseVeridict...", TestCaseVeridict);
-				return TestCaseVeridict;
+				console.log("TestCaseVerdict...", TestCaseVerdict);
+				return TestCaseVerdict;
 			} else {
 				setRunProcessing(false);
 				setOutputDetails(res);
-				showSuccessToast(`Compiled Successfully!`);
+				showSuccessToast("Compiled Successfully!");
 				setTab("Output");
 				console.log("response.data", res);
 				return;
