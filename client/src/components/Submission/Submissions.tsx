@@ -7,16 +7,18 @@ type SubmissionsProps = {
 	problemId?: string | null;
 };
 const Submissions = ({ submissions, problemId = null }: SubmissionsProps) => {
+	const [sortedSubmissions, setSortedSubmissions] = useState<Submission[]>([]);
+
+	useEffect(() => {
+		const sorted = [...submissions].sort((a, b) => {
+			return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+		});
+		setSortedSubmissions(sorted);
+	}, [submissions]);
 	const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 	const [submissionDetails, setSubmissionDetails] = useState<Submission | null>(
 		null,
 	);
-	useEffect(() => {
-		submissions.sort((a, b) => {
-			return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-		});
-		console.log("submissions...", submissions);
-	}, [submissions]);
 
 	const handleClick = (submission: Submission) => {
 		setIsModalVisible(true);
@@ -39,8 +41,8 @@ const Submissions = ({ submissions, problemId = null }: SubmissionsProps) => {
 						</tr>
 					</thead>
 					<tbody>
-						{submissions.length > 0 &&
-							submissions.map((submission) => (
+						{sortedSubmissions.length > 0 &&
+							sortedSubmissions.map((submission) => (
 								<tr
 									key={submission.submissionId}
 									className="cursor-pointer hover:bg-gray-100 p-2 rounded"
