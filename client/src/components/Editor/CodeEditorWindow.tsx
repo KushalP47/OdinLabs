@@ -1,3 +1,6 @@
+import { loader } from "@monaco-editor/react";
+import * as monaco from "monaco-editor";
+loader.config({ monaco });
 import Editor from "@monaco-editor/react";
 
 type CodeEditorWindowProps = {
@@ -15,6 +18,7 @@ const CodeEditorWindow = ({
 	theme,
 	readOnly,
 }: CodeEditorWindowProps) => {
+	// const Editor = monaco.editor;
 	const handleEditorChange = (value: string | undefined) => {
 		if (value === undefined) return;
 		onChange("code", value);

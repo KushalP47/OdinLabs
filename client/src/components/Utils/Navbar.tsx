@@ -158,7 +158,7 @@ const Navbar: React.FC<NavbarProps> = ({
 								</div>
 								<ul
 									tabIndex={0}
-									className="menu menu-lg text-primary dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-60 p-2 shadow">
+									className="menu menu-lg text-white dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-60 p-2 shadow">
 									{user?.userIsAdmin ? (
 										<li>
 											<Link to="/students">Watch</Link>
@@ -232,7 +232,7 @@ const Navbar: React.FC<NavbarProps> = ({
 								</div>
 								<ul
 									tabIndex={0}
-									className="menu menu-lg text-primary dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-60 p-2 shadow">
+									className="menu menu-lg text-white dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-60 p-2 shadow">
 									<li>
 										<a className="justify-between">Profile</a>
 									</li>
@@ -245,9 +245,9 @@ const Navbar: React.FC<NavbarProps> = ({
 											<Link to="/room">Stream</Link>
 										</li>
 									)}
-									<li>
+									{/* <li>
 										<a className="justify-between">Marks</a>
-									</li>
+									</li> */}
 									<li>
 										<Link to="/submissions">Submissions</Link>
 									</li>
