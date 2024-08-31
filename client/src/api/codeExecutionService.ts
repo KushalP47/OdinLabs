@@ -86,6 +86,21 @@ export class CodeExecutionService {
         const response = await fetch(apiUrl, options);
         return response.json();
     }
+
+    async getContestUserProblemStatus(problemId: string, userRollNumber: string) {
+        const userCookie = getCookie("accessToken");
+        const options = {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${userCookie}`,
+            },
+        };
+        const apiUrl = `${this.serverUrl}/api/v1/judge/getContestUserProblemStatus/${problemId}/${userRollNumber}`;
+        const response = await fetch(apiUrl, options);
+        return response.json();
+    }
+
 }
 
 export const codeExecutionService = new CodeExecutionService();
