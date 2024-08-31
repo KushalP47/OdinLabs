@@ -2,26 +2,30 @@ import { ContestUser } from "../../types/contest";
 import { codeExecutionService } from "../../api/codeExecutionService";
 import { Submission } from "../../types/submissions";
 import { useState } from "react";
-// import { useSelector } from "react-redux";
+// import { useSelector } from "react-redux"; // Uncomment if using Redux
 import ErrorModal from "../Utils/ErrorModal";
 import Submissions from "../Submission/Submissions";
+
 interface LeaderboardTabProps {
 	contestUsers: ContestUser[];
 }
 
 const LeaderboardTab = ({ contestUsers }: LeaderboardTabProps) => {
 	const [submissionStatus, setSubmissionStatus] = useState<Submission[]>([]);
-	// const user = useSelector((state: any) => state.auth.user);
+	const userData = localStorage.getItem("userData");
+	if (!userData) return <>User data not found</>;
+	const user = JSON.parse(userData);
 	const [isErrorModalVisible, setIsErrorModalVisible] =
 		useState<boolean>(false);
 	const [errorModalMessage, setErrorModalMessage] = useState<string>("");
 	const [submissionModalVisible, setSubmissionModalVisible] =
 		useState<boolean>(false);
+
 	const handleProblemClick = async (
 		problemId: number,
 		contestUserRollNumber: string,
 	) => {
-		// if (!user.userIsAdmin) return;
+		if (!user.userIsAdmin) return;
 		const resp = await codeExecutionService.getContestUserProblemStatus(
 			String(problemId),
 			contestUserRollNumber,
@@ -32,14 +36,55 @@ const LeaderboardTab = ({ contestUsers }: LeaderboardTabProps) => {
 			setSubmissionStatus(resp.data.data);
 			setSubmissionModalVisible(true);
 		} else {
-			// handle error
 			setIsErrorModalVisible(true);
 			setErrorModalMessage(resp.data.message || resp.message);
 		}
 	};
+
+	const downloadCSV = () => {
+		const headers = [
+			"Rank",
+			"Name",
+			"Roll Number",
+			...contestUsers[0].contestUserProblemStatus.map(
+				(_, idx) => `Problem ${idx + 1}`,
+			),
+			"Marks",
+		];
+		const rows = contestUsers
+			.sort((a, b) => b.contestUserCurrentMarks - a.contestUserCurrentMarks)
+			.map((user, index) => [
+				index + 1,
+				user.contestUserName,
+				user.contestUserRollNumber,
+				...user.contestUserProblemStatus.map((problem) => problem.problemScore),
+				user.contestUserCurrentMarks,
+			]);
+
+		let csvContent =
+			"data:text/csv;charset=utf-8," +
+			[headers.join(","), ...rows.map((e) => e.join(","))].join("\n");
+		var encodedUri = encodeURI(csvContent);
+		var link = document.createElement("a");
+		link.setAttribute("href", encodedUri);
+		link.setAttribute("download", "leaderboard.csv");
+		document.body.appendChild(link); // Required for FF
+
+		link.click();
+	};
+
 	return (
 		<div className="bg-white p-4 rounded-2xl shadow-md w-full mx-auto mt-5">
 			<div className="overflow-x-auto">
+				{user.userIsAdmin && (
+					<div className="flex justify-end">
+						<button
+							onClick={downloadCSV}
+							className="btn text-white  btn-success mb-4">
+							Download
+						</button>
+					</div>
+				)}
 				<table className="min-w-full bg-white border border-gray-200 rounded-lg">
 					<thead>
 						<tr className="bg-secondary text-white font-semibold">
@@ -47,7 +92,9 @@ const LeaderboardTab = ({ contestUsers }: LeaderboardTabProps) => {
 							<th className="py-3 px-6 text-left">Name</th>
 							<th className="py-3 px-6 text-left">Roll Number</th>
 							{contestUsers[0].contestUserProblemStatus.map((problem) => (
-								<th className="py-3 px-6 text-left">{problem.problemId}</th>
+								<th key={problem.problemId} className="py-3 px-6 text-left">
+									{problem.problemId}
+								</th>
 							))}
 							<th className="py-3 px-6 text-left">Marks</th>
 						</tr>
@@ -74,6 +121,7 @@ const LeaderboardTab = ({ contestUsers }: LeaderboardTabProps) => {
 									</td>
 									{user.contestUserProblemStatus.map((problem) => (
 										<td
+											key={problem.problemId}
 											className="py-3 px-6 font-semibold text-gray-700"
 											onClick={() =>
 												handleProblemClick(
@@ -106,7 +154,6 @@ const LeaderboardTab = ({ contestUsers }: LeaderboardTabProps) => {
 						</div>
 					</div>
 				)}
-
 				{isErrorModalVisible && (
 					<ErrorModal
 						isOpen={isErrorModalVisible}
