@@ -34,7 +34,7 @@ const LeaderboardTab = ({ contestUsers }: LeaderboardTabProps) => {
 		} else {
 			// handle error
 			setIsErrorModalVisible(true);
-			setErrorModalMessage(resp.data.message);
+			setErrorModalMessage(resp.data.message || resp.message);
 		}
 	};
 	return (
@@ -92,10 +92,19 @@ const LeaderboardTab = ({ contestUsers }: LeaderboardTabProps) => {
 					</tbody>
 				</table>
 				{submissionModalVisible && (
-					<Submissions
-						submissions={submissionStatus}
-						closeSubmissionModal={() => setSubmissionModalVisible(false)}
-					/>
+					<div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-50">
+						<div className="bg-white rounded-lg shadow-lg p-6 w-3/5 mx-auto flex flex-col items-center">
+							<h2 className="text-xl font-semibold mb-4 text-basecolor text-center">
+								Submissions
+							</h2>
+							<Submissions submissions={submissionStatus} />
+							<button
+								className="btn btn-error text-white px-4 py-2 mt-4 rounded text-lg hover:bg-red-600"
+								onClick={() => setSubmissionModalVisible(false)}>
+								Close
+							</button>
+						</div>
+					</div>
 				)}
 
 				{isErrorModalVisible && (
