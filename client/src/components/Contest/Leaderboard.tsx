@@ -14,6 +14,9 @@ const LeaderboardTab = ({ contestUsers }: LeaderboardTabProps) => {
 							<th className="py-3 px-6 text-left">Rank</th>
 							<th className="py-3 px-6 text-left">Name</th>
 							<th className="py-3 px-6 text-left">Roll Number</th>
+							{contestUsers[0].contestUserProblemStatus.map((problem) => (
+								<th className="py-3 px-6 text-left">{problem.problemId}</th>
+							))}
 							<th className="py-3 px-6 text-left">Marks</th>
 						</tr>
 					</thead>
@@ -37,6 +40,11 @@ const LeaderboardTab = ({ contestUsers }: LeaderboardTabProps) => {
 									<td className="py-3 px-6 font-semibold text-gray-700">
 										{user.contestUserRollNumber}
 									</td>
+									{user.contestUserProblemStatus.map((problem) => (
+										<td className="py-3 px-6 font-semibold text-gray-700">
+											{problem.problemScore}
+										</td>
+									))}
 									<td className="py-3 px-6 font-semibold text-gray-700">
 										{user.contestUserCurrentMarks} Marks
 									</td>
