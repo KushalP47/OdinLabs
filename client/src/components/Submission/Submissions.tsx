@@ -5,8 +5,12 @@ import SubmissionDetails from "./SubmissionDetails";
 type SubmissionsProps = {
 	submissions: Submission[];
 	problemId?: string | null;
+	closeSubmissionModal?: () => void;
 };
-const Submissions = ({ submissions, problemId = null }: SubmissionsProps) => {
+const Submissions = ({
+	submissions,
+	problemId = null,
+}: SubmissionsProps) => {
 	const [sortedSubmissions, setSortedSubmissions] = useState<Submission[]>([]);
 
 	useEffect(() => {

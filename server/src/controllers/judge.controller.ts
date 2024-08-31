@@ -153,6 +153,26 @@ class JudgeController {
             res.send(new ApiError(400, "Error fetching submissions"));
         }
     }
+
+    async getContestUserProblemStatus(req: Request, res: Response) {
+        try {
+            const { problemId, userRollNumber } = req.params;
+            const submissions = await Submission.find({ submissionUserRollNumber: userRollNumber, submissionProblemId: Number(problemId) });
+            const response = {
+                ok: true,
+                message: "Submissions fetched successfully",
+                data: submissions
+            }
+            res.json(
+                new ApiResponse(
+                    200,
+                    response
+                )
+            );
+        } catch (Error) {
+            res.send(new ApiError(400, "Error fetching submissions"));
+        }
+    }
 }
 
 export const judgeController = new JudgeController();
