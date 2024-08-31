@@ -6,8 +6,20 @@ const app = express();
 
 // Updated CORS options
 const corsOptions = {
-    origin: '*', // Allow the client to make requests
-    // credentials: true, // Reflect (pass through) the request's credentials
+    origin: function (
+        origin: string | undefined,
+        callback: (error?: any, allow?: boolean) => void
+    ) {
+        // Allow requests from specific origins
+        if (!origin || origin.startsWith("http://localhost") || origin.startsWith("http://10.20.10.111")) {
+            // Allow requests from any localhost origin or without origin (like Postman)
+            callback(null, true);
+        } else {
+            // Block requests from other origins
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
+    credentials: true, // Reflect (pass through) the request's credentials
 };
 
 // Apply CORS middleware
