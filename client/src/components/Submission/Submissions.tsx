@@ -10,7 +10,6 @@ type SubmissionsProps = {
 const Submissions = ({
 	submissions,
 	problemId = null,
-	closeSubmissionModal,
 }: SubmissionsProps) => {
 	const [sortedSubmissions, setSortedSubmissions] = useState<Submission[]>([]);
 
