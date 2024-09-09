@@ -4,6 +4,7 @@ class ApiError extends Error {
     success: boolean;
     errors: Array<any>;
     message: string;
+    serverTime: string;
 
     constructor(
         statusCode: number,
@@ -17,6 +18,7 @@ class ApiError extends Error {
         this.success = false;
         this.errors = errors;
         this.message = message;
+        this.serverTime = new Date().toISOString();
         if (stack) {
             this.stack = stack;
         } else {
@@ -31,6 +33,7 @@ class ApiError extends Error {
             success: this.success,
             errors: this.errors,
             message: this.message,
+            serverTime: this.serverTime,
         };
     }
 }
