@@ -13,7 +13,7 @@ import {
 	isCompletedContest,
 } from "../../lib/dateUtils";
 import ErrorModal from "../../components/Utils/ErrorModal";
-
+import { set } from "date-fns";
 
 const Contests = () => {
 	const [status, setStatus] = useState(false);
@@ -24,13 +24,14 @@ const Contests = () => {
 	const navigate = useNavigate();
 	const [errorModal, setErrorModal] = useState<boolean>(false);
 	const [message, setMessage] = useState<string>("");
-
+	const [serverTime, setServerTime] = useState<string>("");
 	useEffect(() => {
 		setStatus(currentStatus);
 		if (currentStatus) {
 			contestService
 				.getAllContests()
 				.then((data) => {
+					setServerTime(data.serverTime);
 					if (data.data.ok) {
 						if (user?.userIsAdmin === false) {
 							const userContests = data.data.contests.filter(
@@ -93,13 +94,13 @@ const Contests = () => {
 											{contests.map((contest) => {
 												const isCurrentContest =
 													contestStatus === "Ongoing" &&
-													isOngoingContest(contest);
+													isOngoingContest(contest, serverTime);
 												const isFutureContest =
 													contestStatus === "Upcoming" &&
-													isUpcomingContest(contest);
+													isUpcomingContest(contest, serverTime);
 												const isPastContest =
 													contestStatus === "Completed" &&
-													isCompletedContest(contest);
+													isCompletedContest(contest, serverTime);
 
 												if (
 													isCurrentContest ||
