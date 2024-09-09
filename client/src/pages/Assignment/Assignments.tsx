@@ -106,6 +106,7 @@ const Assignments = () => {
 															key={assignment.assignmentId}
 															assignment={assignment}
 															user={user}
+															serverTime={serverTime}
 															handleClick={handleAssignmentClick}
 															isAdmin={isAdmin} // Pass admin status
 														/>

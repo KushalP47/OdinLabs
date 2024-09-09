@@ -13,12 +13,14 @@ interface ContestCardProps {
 	contest: Contest;
 	user: any;
 	handleClick: (id: number) => void;
+	serverTime: string;
 	isAdmin: boolean; // Pass admin status as a prop
 }
 
 const ContestCard: React.FC<ContestCardProps> = ({
 	contest,
 	user,
+	serverTime,
 	handleClick,
 	isAdmin,
 }) => {
@@ -29,7 +31,7 @@ const ContestCard: React.FC<ContestCardProps> = ({
 	)?.contestUserCurrentMarks;
 
 	// Check if the contest is ongoing
-	const ongoing = isOngoingContest(contest);
+	const ongoing = isOngoingContest(contest, serverTime);
 
 	// State for confirmation modal
 	const [isModalOpen, setIsModalOpen] = useState(false);

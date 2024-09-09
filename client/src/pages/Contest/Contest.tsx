@@ -13,7 +13,6 @@ import {
 	isCompletedContest,
 } from "../../lib/dateUtils";
 import ErrorModal from "../../components/Utils/ErrorModal";
-import { set } from "date-fns";
 
 const Contests = () => {
 	const [status, setStatus] = useState(false);
@@ -112,6 +111,7 @@ const Contests = () => {
 															key={contest.contestId}
 															contest={contest}
 															user={user}
+															serverTime={serverTime}
 															handleClick={handleContestClick}
 															isAdmin={isAdmin} // Pass admin status
 														/>
