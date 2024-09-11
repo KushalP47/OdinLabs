@@ -158,7 +158,7 @@ const Navbar: React.FC<NavbarProps> = ({
 								</div>
 								<ul
 									tabIndex={0}
-									className="menu menu-lg text-white dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-60 p-2 shadow">
+									className="menu menu-lg text-white dropdown-content bg-basecolor rounded-box z-[1] mt-3 w-60 p-2 shadow">
 									{user?.userIsAdmin ? (
 										<li>
 											<Link to="/students">Watch</Link>
@@ -275,7 +275,7 @@ const Navbar: React.FC<NavbarProps> = ({
 					<div className="navbar-start">
 						<div className="btn btn-ghost text-3xl font-bold text-secondary">
 							<img src={logo} className="w-16px h-16px" />
-							OdinLabs
+							{user?.userRollNumber ? user.userRollNumber : "OdinLabs"}
 						</div>
 					</div>
 					<div className="navbar-center hidden lg:flex">
