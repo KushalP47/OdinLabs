@@ -26,8 +26,8 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 // Other middleware
-app.use(express.json({ limit: "16kb" })); // Limit the size of JSON payloads
-app.use(express.urlencoded({ extended: true, limit: "16kb" })); // Parse URL-encoded payloads
+app.use(express.json({ limit: "128kb" })); // Limit the size of JSON payloads
+app.use(express.urlencoded({ extended: true, limit: "128kb" })); // Parse URL-encoded payloads
 app.use(express.static("public")); // Serve static files from 'public' folder
 
 app.use(cookieParser());
