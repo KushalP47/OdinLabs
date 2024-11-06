@@ -4,7 +4,7 @@ dotenv.config({     // configure dotenv
 });
 import connectDB from "./config/db";
 import { app } from "./config/app";
-import { io } from "./config/socket";
+// import { io } from "./config/socket";
 
 // starting the server
 app.listen(process.env.PORT || 8000, () => {
@@ -12,7 +12,7 @@ app.listen(process.env.PORT || 8000, () => {
 });
 
 // starting the socket
-io.listen(8001);
+// io.listen(8001);
 
 // connecting to the database
 connectDB();
