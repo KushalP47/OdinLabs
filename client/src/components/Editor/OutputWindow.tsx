@@ -21,6 +21,12 @@ const OutputWindow = ({ outputDetails, language_id }: OutputWindowProps) => {
 					{language_id === 71 && outputDetails.compile_output !== null
 						? `${atob(outputDetails.compile_output)}`
 						: null}
+					{language_id === 63 && outputDetails.compile_output !== null
+						? `${atob(outputDetails.compile_output)}`
+						: null}
+					{language_id === 50 && outputDetails.compile_output !== null
+						? `${atob(outputDetails.compile_output)}`
+						: null}
 				</pre>
 			);
 		} else if (statusId === 3) {
@@ -37,6 +43,12 @@ const OutputWindow = ({ outputDetails, language_id }: OutputWindowProps) => {
 					{language_id === 71 && outputDetails.stdout !== null
 						? `${atob(outputDetails.stdout)}`
 						: null}
+					{language_id === 63 && outputDetails.stdout !== null
+						? `${atob(outputDetails.stdout)}`
+						: null}
+					{language_id === 50 && outputDetails.stdout !== null
+						? `${atob(outputDetails.stdout)}`
+						: null}
 				</pre>
 			);
 		} else if (statusId === 4) {
@@ -51,6 +63,12 @@ const OutputWindow = ({ outputDetails, language_id }: OutputWindowProps) => {
 						: null}
 
 					{language_id === 71 && outputDetails.stdout !== null
+						? `${atob(outputDetails.stdout)}`
+						: null}
+					{language_id === 63 && outputDetails.stdout !== null
+						? `${atob(outputDetails.stdout)}`
+						: null}
+					{language_id === 50 && outputDetails.stdout !== null
 						? `${atob(outputDetails.stdout)}`
 						: null}
 				</pre>
@@ -76,6 +94,14 @@ const OutputWindow = ({ outputDetails, language_id }: OutputWindowProps) => {
 						? `${atob(outputDetails.stderr)}`
 						: null}{" "}
 					// Python
+					{language_id === 63 && outputDetails.stderr !== null
+						? `${atob(outputDetails.stderr)}`
+						: null}{" "}
+					// JavaScript
+					{language_id === 50 && outputDetails.stderr !== null
+						? `${atob(outputDetails.stderr)}`
+						: null}{" "}
+					// C
 				</pre>
 			);
 		}

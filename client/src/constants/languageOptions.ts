@@ -17,6 +17,18 @@ export const languageOptions: Array<LanguageOption> = [
         label: "Python",
         value: "python",
     },
+    {
+        id: 63,
+        name: "JavaScript (Node.js 12.14.0)",
+        label: "JavaScript",
+        value: "javascript",
+    },
+    {
+        id: 50,
+        name: "C (GCC 9.2.0)",
+        label: "C",
+        value: "c",
+    }
 ];
 
 export interface LanguageOption {

@@ -62,17 +62,17 @@ const router = createBrowserRouter([
 					</Protected>
 				),
 			},
-			{
-				path: "/room",
-				element: (
-					<Protected
-						onlyAdminAllowed={false}
-						allowDuringContest={false}
-						isLoggedIn={true}>
-						<Room />
-					</Protected>
-				),
-			},
+			// {
+			// 	path: "/room",
+			// 	element: (
+			// 		<Protected
+			// 			onlyAdminAllowed={false}
+			// 			allowDuringContest={false}
+			// 			isLoggedIn={true}>
+			// 			<Room />
+			// 		</Protected>
+			// 	),
+			// },
 			{
 				path: "/submissions",
 				element: (

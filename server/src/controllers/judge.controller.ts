@@ -90,6 +90,8 @@ class JudgeController {
             maxMarks = 40;
         } else if (problemDifficulty === "Hard") {
             maxMarks = 80;
+        }else if (problemDifficulty === "Very Easy") {
+            maxMarks = 10;
         }
         // if submission is related to assignment than update the score in assignment
         if (assignmentId) {

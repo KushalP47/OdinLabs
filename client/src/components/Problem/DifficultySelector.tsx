@@ -1,6 +1,6 @@
 import React from "react";
 
-type DifficultyLevel = "easy" | "medium" | "hard";
+type DifficultyLevel = "easy" | "medium" | "hard" | "very_easy";
 
 interface DifficultySelectorProps {
 	selectedDifficulty: string;
@@ -15,6 +15,7 @@ const DifficultySelector: React.FC<DifficultySelectorProps> = ({
 		easy: "text-success",
 		medium: "text-warning",
 		hard: "text-error",
+		very_easy: "text-success",
 	};
 
 	const lowerCaseDifficulty =
@@ -31,6 +32,9 @@ const DifficultySelector: React.FC<DifficultySelectorProps> = ({
 				className={`border rounded-md p-2 bg-gray-50 dark:bg-editorbg text-lg ${customClassNames[lowerCaseDifficulty]}`}
 				required>
 				<option value="">Select Difficulty</option>
+				<option value="Very Easy" className={`${customClassNames.very_easy}`}>
+					Very Easy
+				</option>
 				<option value="Easy" className={`${customClassNames.easy}`}>
 					Easy
 				</option>
