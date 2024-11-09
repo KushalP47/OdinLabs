@@ -158,8 +158,8 @@ const Navbar: React.FC<NavbarProps> = ({
 								</div>
 								<ul
 									tabIndex={0}
-									className="menu menu-lg text-white dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-60 p-2 shadow">
-									{user?.userIsAdmin ? (
+									className="menu menu-lg text-white dropdown-content bg-basecolor rounded-box z-[1] mt-3 w-60 p-2 shadow">
+									{/* {user?.userIsAdmin ? (
 										<li>
 											<Link to="/students">Watch</Link>
 										</li>
@@ -167,7 +167,7 @@ const Navbar: React.FC<NavbarProps> = ({
 										<li>
 											<Link to="/room">Stream</Link>
 										</li>
-									)}
+									)} */}
 									<li>
 										<Link to="/submissions">Submissions</Link>
 									</li>
@@ -236,7 +236,7 @@ const Navbar: React.FC<NavbarProps> = ({
 									<li>
 										<a className="justify-between">Profile</a>
 									</li>
-									{user?.userIsAdmin ? (
+									{/* {user?.userIsAdmin ? (
 										<li>
 											<Link to="/students">Watch</Link>
 										</li>
@@ -244,7 +244,7 @@ const Navbar: React.FC<NavbarProps> = ({
 										<li>
 											<Link to="/room">Stream</Link>
 										</li>
-									)}
+									)} */}
 									{/* <li>
 										<a className="justify-between">Marks</a>
 									</li> */}
@@ -275,7 +275,7 @@ const Navbar: React.FC<NavbarProps> = ({
 					<div className="navbar-start">
 						<div className="btn btn-ghost text-3xl font-bold text-secondary">
 							<img src={logo} className="w-16px h-16px" />
-							OdinLabs
+							{user?.userRollNumber ? user.userRollNumber : "OdinLabs"}
 						</div>
 					</div>
 					<div className="navbar-center hidden lg:flex">

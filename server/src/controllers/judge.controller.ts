@@ -23,13 +23,12 @@ class JudgeController {
             console.log(sourceCode, languageId, problemId);
 
             const testcases = await getTestCases(problemId);
-
             const submissionJson = testcases.map((testCase) => ({
                 "language_id": languageId,
                 "source_code": sourceCode,
                 "stdin": testCase.input,
                 "expected_output": testCase.expectedOutput,
-                "cpu_time_limit": 2,
+                "cpu_time_limit": (languageId === 62) ? 2.5 : 1.0,
             }));
 
             const submissionString = JSON.stringify(
@@ -91,6 +90,8 @@ class JudgeController {
             maxMarks = 40;
         } else if (problemDifficulty === "Hard") {
             maxMarks = 80;
+        }else if (problemDifficulty === "Very Easy") {
+            maxMarks = 10;
         }
         // if submission is related to assignment than update the score in assignment
         if (assignmentId) {

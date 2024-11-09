@@ -1,5 +1,6 @@
 import { User, IUserFunctionResponse } from '../../models/user.model';
 
+const admins: Array<string> = ['kushal.p@ahduni.edu.in', 'neel.s2@ahduni.edu.in', 'harsh.b2@ahduni.edu.in', 'vraj.d1@ahduni.edu.in', 'jayendra.bhalodiya@ahduni.edu.in', 'amit.nanavati@ahduni.edu.in']
 export const createUser = async (userEmail: string, userPassword: string, userName: string, userRollNumber: string, userSection: string, userTeamName: string): Promise<IUserFunctionResponse> => {
     const data: IUserFunctionResponse = {
         ok: false,
@@ -23,7 +24,7 @@ export const createUser = async (userEmail: string, userPassword: string, userNa
         return data;
     }
 
-    const userIsAdmin = (userEmail === 'kushal.p@ahduni.edu.in' || userEmail === 'neel.s2@ahduni.edu.in' || userEmail === 'harsh.b2@ahduni.edu.in' || userEmail === 'amit.nanavati@ahduni.edu.in'); // Simplified isAdmin check
+    const userIsAdmin = admins.includes(userEmail);
     const newUser = new User({
         userEmail, // Simplified based on the user.model.ts structure
         userPassword, // Simplified based on the user.model.ts structure

@@ -18,12 +18,14 @@ const Assignments = () => {
 	const navigate = useNavigate();
 	const [errorModal, setErrorModal] = useState<boolean>(false);
 	const [message, setMessage] = useState<string>("");
+	const [serverTime, setServerTime] = useState<string>("");
 	useEffect(() => {
 		setStatus(currentStatus);
 		if (currentStatus) {
 			assignmentService
 				.getAllAssignments()
 				.then((data) => {
+					setServerTime(data.serverTime);
 					if (data.data.ok) {
 						if (user?.userIsAdmin === false) {
 							const userAssignments = data.data.assignments.filter(
@@ -86,13 +88,13 @@ const Assignments = () => {
 											{assignments.map((assignment) => {
 												const isCurrentAssignment =
 													assignmentStatus === "Ongoing" &&
-													isOngoing(assignment);
+													isOngoing(assignment, serverTime);
 												const isFutureAssignment =
 													assignmentStatus === "Upcoming" &&
-													isUpcoming(assignment);
+													isUpcoming(assignment, serverTime);
 												const isPastAssignment =
 													assignmentStatus === "Completed" &&
-													isCompleted(assignment);
+													isCompleted(assignment, serverTime);
 
 												if (
 													isCurrentAssignment ||
@@ -104,6 +106,7 @@ const Assignments = () => {
 															key={assignment.assignmentId}
 															assignment={assignment}
 															user={user}
+															serverTime={serverTime}
 															handleClick={handleAssignmentClick}
 															isAdmin={isAdmin} // Pass admin status
 														/>

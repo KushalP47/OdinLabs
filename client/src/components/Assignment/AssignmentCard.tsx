@@ -9,6 +9,7 @@ interface AssignmentCardProps {
 	key: number;
 	assignment: Assignment;
 	user: any;
+	serverTime: string;
 	handleClick: (id: number) => void;
 	isAdmin: boolean; // Pass admin status as a prop
 }
@@ -17,6 +18,7 @@ const AssignmentCard: React.FC<AssignmentCardProps> = ({
 	key,
 	assignment,
 	user,
+	serverTime,
 	handleClick,
 	isAdmin,
 }) => {
@@ -27,7 +29,7 @@ const AssignmentCard: React.FC<AssignmentCardProps> = ({
 	)?.assignmentUserCurrentMarks;
 
 	// Check if the assignment is ongoing
-	const ongoing = isOngoing(assignment);
+	const ongoing = isOngoing(assignment, serverTime);
 
 	// Function to handle solve button click
 	const handleSolveClick = () => {

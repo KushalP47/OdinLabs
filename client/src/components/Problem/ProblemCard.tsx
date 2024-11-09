@@ -25,7 +25,7 @@ const ProblemCard = ({
 			case "Medium":
 				return "font-bold text-warning";
 			case "Hard":
-				return "font-bold text-danger";
+				return "font-bold text-error";
 			default:
 				return "font-bold text-gray-500"; // Default class if difficulty is not matched
 		}
