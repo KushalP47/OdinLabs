@@ -1,6 +1,6 @@
 import { User, IUserFunctionResponse } from '../../models/user.model';
 
-const admins: Array<string> = ['kushal.p@ahduni.edu.in', 'neel.s2@ahduni.edu.in', 'harsh.b2@ahduni.edu.in', 'vraj.d1@ahduni.edu.in', 'jayendra.bhalodiya@ahduni.edu.in', 'amit.nanavati@ahduni.edu.in']
+const admins: Array<string> = []
 export const createUser = async (userEmail: string, userPassword: string, userName: string, userRollNumber: string, userSection: string, userTeamName: string): Promise<IUserFunctionResponse> => {
     const data: IUserFunctionResponse = {
         ok: false,
