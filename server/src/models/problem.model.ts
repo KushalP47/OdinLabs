@@ -58,7 +58,7 @@ const problemSchema = new Schema({
     problemDifficulty: {
         type: String,
         required: true,
-        enum: ['Easy', 'Medium', 'Hard']
+        enum: ['Easy', 'Medium', 'Hard', 'Very Easy']
     },
     problemInputFormat: {
         type: String,
