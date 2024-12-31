@@ -21,7 +21,6 @@ public class UserController {
     // with this method we will save user in our database
     @PostMapping("/addUser")
     public User addUser(@RequestBody User user) {
-        System.out.println(user.getUserName());
         return userRepo.save(user);
     }
     
