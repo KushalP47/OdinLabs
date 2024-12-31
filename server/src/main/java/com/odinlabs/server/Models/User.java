@@ -1,8 +1,17 @@
 package com.odinlabs.server.Models;
 
+import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties.Jwt;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
+import java.util.Base64;
 
 @Document(collection = "user")
 public class User {
@@ -34,7 +43,7 @@ public class User {
     public User(String userEmail, String userPassword, String userName, String userRollNumber, 
                 String userSection, String userTeamName, Boolean userIsAdmin) {
         this.userEmail = userEmail;
-        this.userPassword = userPassword;
+        setPassword(userPassword); // this.userPassword = userPassword;
         this.userName = userName;
         this.userRollNumber = userRollNumber;
         this.userSection = userSection;
@@ -61,4 +70,36 @@ public class User {
     public void setUserSection(String userSection) { this.userSection = userSection; }
     public void setUserTeamName(String userTeamName) { this.userTeamName = userTeamName; }
     public void setUserIsAdmin(Boolean userIsAdmin) { this.userIsAdmin = userIsAdmin; }
+
+
+
+    public void setPassword(String password) {
+        this.userPassword = encryptPassword(password);
+    }
+
+    private String encryptPassword(String password) {
+        try {
+            KeySpec spec = new PBEKeySpec(password.toCharArray(), salt().getBytes(), 65536, 128);
+            SecretKeyFactory f = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+            byte[] hash = f.generateSecret(spec).getEncoded();
+            return Base64.getEncoder().encodeToString(hash);
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+        private String salt() {
+        SecureRandom random = new SecureRandom();
+        byte[] bytes = new byte[16];
+        random.nextBytes(bytes);
+        return Base64.getEncoder().encodeToString(bytes);
+    }
+
+    public String generateAccessToken() {
+        String jwtSecret = System.getenv("ACCESS_TOKEN_SECRET") != null ? System.getenv("ACCESS_TOKEN_SECRET") : "";
+        String token = "";
+        return token;
+    }
+
+
 }
