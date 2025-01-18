@@ -1,6 +1,5 @@
 package com.odinlabs.server.Models;
 
-import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties.Jwt;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -94,12 +93,5 @@ public class User {
         random.nextBytes(bytes);
         return Base64.getEncoder().encodeToString(bytes);
     }
-
-    public String generateAccessToken() {
-        String jwtSecret = System.getenv("ACCESS_TOKEN_SECRET") != null ? System.getenv("ACCESS_TOKEN_SECRET") : "";
-        String token = "";
-        return token;
-    }
-
 
 }
