@@ -18,18 +18,26 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody User user) {
-        user.setUserPassword(userRepo.encryptPassword(user.getUserPassword()));
-        userRepo.save(user);
-        return new ResponseEntity<>("User Registered Successfully", HttpStatus.CREATED);
+        try {
+            user.setUserPassword(userRepo.encryptPassword(user.getUserPassword()));
+            userRepo.save(user);
+            return new ResponseEntity<>("User Registered Successfully", HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>("User Registration Failed: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody User user) {
-        User foundUser = userRepo.findByUserEmail(user.getUserEmail());
-        if (foundUser != null && userRepo.validPassword(user.getUserPassword(), foundUser.getUserPassword())) {
-            return new ResponseEntity<>("Login Successful", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("Invalid Credentials", HttpStatus.UNAUTHORIZED);
+        try {
+            User foundUser = userRepo.findByUserEmail(user.getUserEmail());
+            if (foundUser != null && userRepo.validPassword(user.getUserPassword(), foundUser.getUserPassword())) {
+                return new ResponseEntity<>("Login Successful", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Invalid Credentials", HttpStatus.UNAUTHORIZED);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>("Login Failed: " + e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
