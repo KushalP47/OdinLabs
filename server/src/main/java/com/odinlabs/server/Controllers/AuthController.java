@@ -9,29 +9,30 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.odinlabs.server.Models.User;
 import com.odinlabs.server.Repository.UserRepo;
+import com.odinlabs.server.Service.UserService;
 
 @RestController
 public class AuthController {
 
     @Autowired
-    private UserRepo userRepo;
+    private UserService userService;
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody User user) {
-        try {
-            user.setUserPassword(userRepo.encryptPassword(user.getUserPassword()));
-            userRepo.save(user);
-            return new ResponseEntity<>("User Registered Successfully", HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>("User Registration Failed: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+        String result = userService.registerUser(user);
+        if (result.equals("User Registered Successfully")) {
+            return new ResponseEntity<>(result, HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
         }
     }
+
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody User user) {
         try {
-            User foundUser = userRepo.findByUserEmail(user.getUserEmail());
-            if (foundUser != null && userRepo.validPassword(user.getUserPassword(), foundUser.getUserPassword())) {
+            User foundUser = userService.findByUserEmail(user.getUserEmail());
+            if (foundUser != null && userService.validPassword(user.getUserPassword(), foundUser.getUserPassword())) {
                 return new ResponseEntity<>("Login Successful", HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("Invalid Credentials", HttpStatus.UNAUTHORIZED);

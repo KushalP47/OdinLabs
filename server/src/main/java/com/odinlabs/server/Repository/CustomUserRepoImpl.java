@@ -12,7 +12,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class CustomUserRepoImpl implements CustomUserRepo {
 
-
     @Autowired
     private PasswordService passwordService;
 
@@ -34,5 +33,17 @@ public class CustomUserRepoImpl implements CustomUserRepo {
         Query query = new Query();
         query.addCriteria(Criteria.where("userEmail").is(email));
         return mongoTemplate.findOne(query, User.class);
+    }
+
+    public boolean emailExists(String email) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("userEmail").is(email));
+        return mongoTemplate.exists(query, User.class);
+    }
+
+    public boolean rollNumberExists(String rollNumber) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("userRollNumber").is(rollNumber));
+        return mongoTemplate.exists(query, User.class);
     }
 }
