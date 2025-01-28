@@ -36,7 +36,7 @@ public class AuthController {
             User foundUser = userService.findByUserEmail(user.getUserEmail());
             if (foundUser != null && userService.validPassword(user.getUserPassword(), foundUser.getUserPassword())) {
                 String token = jwtService.generateToken(foundUser);
-                return ResponseEntity.ok().header("Authorization", "Bearer " + token).body(jwtService.extractAllClaims(token).toString());
+                return ResponseEntity.ok().header("Authorization", "Bearer " + token).body("Login Successful");
             } else {
                 return new ResponseEntity<>("Invalid Credentials", HttpStatus.UNAUTHORIZED);
             }
