@@ -58,4 +58,18 @@ public class UserService {
     public boolean validPassword(String rawPassword, String hashedPassword) {
         return userRepo.validPassword(rawPassword, hashedPassword);
     }
+
+    public boolean updateUserPassword(String userId, String newPassword) {
+        try {
+            User user = userRepo.findById(userId).orElse(null);
+            if (user != null) {
+                user.setUserPassword(userRepo.encryptPassword(newPassword));
+                userRepo.save(user);
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }

@@ -11,6 +11,8 @@ import com.odinlabs.server.Models.User;
 import com.odinlabs.server.Service.JwtService;
 import com.odinlabs.server.Service.UserService;
 
+import java.util.Map;
+
 @RestController
 public class AuthController {
 
@@ -51,8 +53,28 @@ public class AuthController {
     }
 
     @PostMapping("/forgot-password")
-    public String forgotPassword() {
-        return "Forgot Password";
+    public ResponseEntity<String> forgotPassword(@RequestBody Map<String, String> request) {
+        String userEmail = request.get("userEmail");
+        String userSecret = request.get("userSecret");
+        String newPassword = request.get("newPassword");
+
+        User user = userService.findByUserEmail(userEmail);
+
+        if (user == null) {
+            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+        }
+
+        if (!user.getUserSecret().equals(userSecret)) {
+            return new ResponseEntity<>("Invalid secret", HttpStatus.FORBIDDEN);
+        }
+
+        boolean result = userService.updateUserPassword(user.getId(), newPassword);
+
+        if (!result) {
+            return new ResponseEntity<>("Failed to update password", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>("Your password has been updated successfully!", HttpStatus.OK);
     }
 
 }
