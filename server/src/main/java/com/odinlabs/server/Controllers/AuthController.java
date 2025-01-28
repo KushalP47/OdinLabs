@@ -3,9 +3,7 @@ package com.odinlabs.server.Controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.odinlabs.server.Models.User;
 import com.odinlabs.server.Service.JwtService;
@@ -14,6 +12,7 @@ import com.odinlabs.server.Service.UserService;
 import java.util.Map;
 
 @RestController
+@RequestMapping("/api/v1/auth")
 public class AuthController {
 
     @Autowired
