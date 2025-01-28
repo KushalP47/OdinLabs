@@ -27,6 +27,11 @@ public class JwtService {
     public String generateToken(User user) {
         return Jwts.builder()
                 .setSubject(user.getUserEmail())
+                .claim("_id", user.getId())
+                .claim("name", user.getUserName())
+                .claim("email", user.getUserEmail())
+                .claim("rollNumber", user.getUserRollNumber())
+                .claim("isAdmin", user.getUserIsAdmin())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(SignatureAlgorithm.HS512, encodeSecret(secret))
@@ -51,7 +56,7 @@ public class JwtService {
         return claimsResolver.apply(claims);
     }
 
-    private Claims extractAllClaims(String token) {
+    public Claims extractAllClaims(String token) {
         return Jwts.parser().setSigningKey(encodeSecret(secret)).parseClaimsJws(token).getBody();
     }
 
