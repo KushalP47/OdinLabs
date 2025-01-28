@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.odinlabs.server.Models.User;
-import com.odinlabs.server.Repository.UserRepo;
+import com.odinlabs.server.Service.JwtService;
 import com.odinlabs.server.Service.UserService;
 
 @RestController
@@ -16,6 +16,9 @@ public class AuthController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private JwtService jwtService;
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody User user) {
@@ -27,13 +30,13 @@ public class AuthController {
         }
     }
 
-
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody User user) {
         try {
             User foundUser = userService.findByUserEmail(user.getUserEmail());
             if (foundUser != null && userService.validPassword(user.getUserPassword(), foundUser.getUserPassword())) {
-                return new ResponseEntity<>("Login Successful", HttpStatus.OK);
+                String token = jwtService.generateToken(foundUser);
+                return ResponseEntity.ok().header("Authorization", "Bearer " + token).body("Login Successful");
             } else {
                 return new ResponseEntity<>("Invalid Credentials", HttpStatus.UNAUTHORIZED);
             }
