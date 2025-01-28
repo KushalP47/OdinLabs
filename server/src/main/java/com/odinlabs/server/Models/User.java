@@ -4,6 +4,9 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.security.SecureRandom;
+import java.util.Base64;
+
 @Document(collection = "user")
 public class User {
     @Id
@@ -30,6 +33,9 @@ public class User {
     @Field("userIsAdmin")
     private Boolean userIsAdmin;
 
+    @Field("userSecret")
+    private String userSecret;
+
     // Constructor
     public User(String userEmail,
             String userName,
@@ -45,6 +51,7 @@ public class User {
         this.userSection = userSection;
         this.userTeamName = userTeamName;
         this.userIsAdmin = userIsAdmin;
+        this.userSecret = generateRandomString(16); // Generate a random string for userSecret
     }
 
     // Getters
@@ -80,6 +87,10 @@ public class User {
         return this.userIsAdmin;
     }
 
+    public String getUserSecret() {
+        return this.userSecret;
+    }
+
     // Setters
     public void setId(String _id) {
         this._id = _id;
@@ -111,6 +122,14 @@ public class User {
 
     public void setUserIsAdmin(Boolean userIsAdmin) {
         this.userIsAdmin = userIsAdmin;
+    }
+
+    // Method to generate a random string
+    private String generateRandomString(int length) {
+        SecureRandom random = new SecureRandom();
+        byte[] bytes = new byte[length];
+        random.nextBytes(bytes);
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
     }
 
 }
