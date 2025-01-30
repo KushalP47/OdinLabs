@@ -3,6 +3,8 @@ package com.odinlabs.server.Repository;
 import com.odinlabs.server.Models.User;
 import com.odinlabs.server.Service.PasswordService;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -45,5 +47,19 @@ public class CustomUserRepoImpl implements CustomUserRepo {
         Query query = new Query();
         query.addCriteria(Criteria.where("userRollNumber").is(rollNumber));
         return mongoTemplate.exists(query, User.class);
+    }
+
+    @Override
+    public User findByUserRollNumber(String userRollNumber) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("userRollNumber").is(userRollNumber));
+        return mongoTemplate.findOne(query, User.class);
+    }
+
+    @Override
+    public List<User> findByUserSection(String userSection) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("userSection").is(userSection));
+        return mongoTemplate.find(query, User.class);
     }
 }

@@ -124,6 +124,10 @@ public class User {
         this.userIsAdmin = userIsAdmin;
     }
 
+    public void setUserSecret(String userSecret) {
+        this.userSecret = userSecret;
+    }
+
     // Method to generate a random string
     private String generateRandomString(int length) {
         SecureRandom random = new SecureRandom();

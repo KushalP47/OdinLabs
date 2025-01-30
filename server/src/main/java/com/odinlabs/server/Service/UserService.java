@@ -5,6 +5,10 @@ import com.odinlabs.server.Repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
+import java.util.Base64;
+import java.util.List;
+
 @Service
 public class UserService {
 
@@ -71,5 +75,63 @@ public class UserService {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public List<User> getUsersFromSection(String section) {
+        return userRepo.findByUserSection(section);
+    }
+
+    public User findByUserRollNumber(String rollNumber) {
+        return userRepo.findByUserRollNumber(rollNumber);
+    }
+
+    public boolean editUser(String userId, User user) {
+        try {
+            User existingUser = userRepo.findById(userId).orElse(null);
+            if (existingUser != null) {
+                existingUser.setUserEmail(user.getUserEmail());
+                existingUser.setUserName(user.getUserName());
+                existingUser.setUserPassword(userRepo.encryptPassword(user.getUserPassword()));
+                existingUser.setUserRollNumber(user.getUserRollNumber());
+                existingUser.setUserSection(user.getUserSection());
+                existingUser.setUserTeamName(user.getUserTeamName());
+                existingUser.setUserIsAdmin(user.getUserIsAdmin());
+                userRepo.save(existingUser);
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean deleteUser(String userId) {
+        try {
+            userRepo.deleteById(userId);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean changeUserSecret(String userEmail) {
+        try {
+            User user = userRepo.findByUserEmail(userEmail);
+            if (user != null) {
+                user.setUserSecret(generateRandomString(16));
+                userRepo.save(user);
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private String generateRandomString(int length) {
+        SecureRandom random = new SecureRandom();
+        byte[] bytes = new byte[length];
+        random.nextBytes(bytes);
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
     }
 }

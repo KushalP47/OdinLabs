@@ -46,11 +46,6 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/logout")
-    public String logout() {
-        return "Logout";
-    }
-
     @PostMapping("/forgot-password")
     public ResponseEntity<String> forgotPassword(@RequestBody Map<String, String> request) {
         String userEmail = request.get("userEmail");
